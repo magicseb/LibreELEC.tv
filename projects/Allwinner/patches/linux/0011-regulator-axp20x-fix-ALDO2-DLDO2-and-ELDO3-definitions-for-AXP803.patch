@@ -1,0 +1,121 @@
+From patchwork Sat Jan 26 06:18:09 2019
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Patchwork-Submitter: Vasily Khoruzhick <anarsoul@gmail.com>
+X-Patchwork-Id: 1035824
+Return-Path: <SRS0=RQnK=QC=vger.kernel.org=linux-kernel-owner@kernel.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B380C282C3
+	for <linux-kernel@archiver.kernel.org>; Sat, 26 Jan 2019 06:18:58 +0000 (UTC)
+Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
+	by mail.kernel.org (Postfix) with ESMTP id DA5CC218A6
+	for <linux-kernel@archiver.kernel.org>; Sat, 26 Jan 2019 06:18:57 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="iKvIgjXT"
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+        id S1727857AbfAZGST (ORCPT
+        <rfc822;linux-kernel@archiver.kernel.org>);
+        Sat, 26 Jan 2019 01:18:19 -0500
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:32902 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726030AbfAZGSS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Jan 2019 01:18:18 -0500
+Received: by mail-pf1-f195.google.com with SMTP id c123so5748894pfb.0
+        for <linux-kernel@vger.kernel.org>;
+ Fri, 25 Jan 2019 22:18:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JSmITJw8ipgTHDHuuQbVyNNP7a2K+4jjuUDKEO/2BSQ=;
+        b=iKvIgjXTU+cd0F7lUCt9CqpCckQ8Lgi4IWCA2A3uqy99Mj0FoEQfml8lOh5o2hcjaz
+         LK6mLVA7ktj7qgKo05JFa+wxGgmViaKD3kwQhGNdJPWPbypRikJtiQ9X7OncP5OU5T4y
+         Onjj2C8vnf5Ji51YM0oE+aW+dPJSZD4JMQB5KfVip/csehJZfXjSqDTXDOe8HGcfiUXy
+         DY2dDe65mlm8Y8CINF2pL6pExl/YMvnzK4ksBMk5ApAMAldJdyDFPEzfAZpj5S2AR82j
+         jaOLwtye0VOVvWhXrjPr0ruLkNk2NwuN5PdK2EOfk7axkVBJwqLqbZUzcVG4jefrrXSt
+         oPfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JSmITJw8ipgTHDHuuQbVyNNP7a2K+4jjuUDKEO/2BSQ=;
+        b=HbbuR+peiN4ZGxh1K3ea6qlYG6RotGvRqCLBfuB19dm+NFw9Hrjiar98FC82Yikyq/
+         5d4FHhM6yM8E50hOM/r6xO23H1up+eEdH9wjOPOwXj/kgyg1N1j5nds03r/SDFpFAw+b
+         7cttnUd6LSoe57Y27zUxG2i0NGEGQyoKKUL7qgsbXgM+94Bv7Em5qoePpN3se3lVX0NM
+         tl7fsrF2B0syFKEpN1nsyASJcmEDyARkoZ/sD9h4dm5e6f0sfun7C5RiK0yKJnK1HcNm
+         jUl7ZzbcofTQRINdLHjd8ha5rfqIZ5PzznEqfEqAlbAEYiLdpuE0NY3lp2eDFpwyzyli
+         PBfw==
+X-Gm-Message-State: AJcUukdzFm8KfTEzwoyBqSIVpljLcfmJcoQHyvQDbmOrlDrhkoH9Do46
+        56MMagGJb69BtrFXk9QVXNU=
+X-Google-Smtp-Source: 
+ ALg8bN5Lp4psJFzc3iU5Wp4n4UXGTX50I1KuRfCGOg7kq/kwqpaoaJslhHffMN3StBzDuBgqBN4AgA==
+X-Received: by 2002:a62:c683:: with SMTP id x3mr13649666pfk.10.1548483497516;
+        Fri, 25 Jan 2019 22:18:17 -0800 (PST)
+Received: from anarsoul-thinkpad.lan (216-71-193-140.dyn.novuscom.net.
+ [216.71.193.140])
+        by smtp.gmail.com with ESMTPSA id
+ 85sm36537643pfw.17.2019.01.25.22.18.16
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Jan 2019 22:18:16 -0800 (PST)
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Olliver Schinagl <oliver@schinagl.nl>,
+        linux-kernel@vger.kernel.org
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: [PATCH] regulator: axp20x: fix ALDO2,
+ DLDO2 and ELDO3 definitions for AXP803
+Date: Fri, 25 Jan 2019 22:18:09 -0800
+Message-Id: <20190126061809.18035-1-anarsoul@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Sender: linux-kernel-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-kernel.vger.kernel.org>
+X-Mailing-List: linux-kernel@vger.kernel.org
+
+Looks like refactoring didn't go well and left ALDO2, DLDO2 and ELDO3
+definitions broken for AXP803 - now they are using register address
+instead of mask. Fix it by using mask where necessary.
+
+Fixes: db4a555f7c4cf ("regulator: axp20x: use defines for masks")
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+---
+ drivers/regulator/axp20x-regulator.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
+index 48af859fd053..a808b03cae10 100644
+--- a/drivers/regulator/axp20x-regulator.c
++++ b/drivers/regulator/axp20x-regulator.c
+@@ -719,7 +719,7 @@ static const struct regulator_desc axp803_regulators[] = {
+ 		 AXP22X_ALDO1_V_OUT, AXP22X_ALDO1_V_OUT_MASK,
+ 		 AXP22X_PWR_OUT_CTRL3, AXP806_PWR_OUT_ALDO1_MASK),
+ 	AXP_DESC(AXP803, ALDO2, "aldo2", "aldoin", 700, 3300, 100,
+-		 AXP22X_ALDO2_V_OUT, AXP22X_ALDO2_V_OUT,
++		 AXP22X_ALDO2_V_OUT, AXP22X_ALDO2_V_OUT_MASK,
+ 		 AXP22X_PWR_OUT_CTRL3, AXP806_PWR_OUT_ALDO2_MASK),
+ 	AXP_DESC(AXP803, ALDO3, "aldo3", "aldoin", 700, 3300, 100,
+ 		 AXP22X_ALDO3_V_OUT, AXP22X_ALDO3_V_OUT_MASK,
+@@ -729,7 +729,7 @@ static const struct regulator_desc axp803_regulators[] = {
+ 		 AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_DLDO1_MASK),
+ 	AXP_DESC_RANGES(AXP803, DLDO2, "dldo2", "dldoin",
+ 			axp803_dldo2_ranges, AXP803_DLDO2_NUM_VOLTAGES,
+-			AXP22X_DLDO2_V_OUT, AXP22X_DLDO2_V_OUT,
++			AXP22X_DLDO2_V_OUT, AXP22X_DLDO2_V_OUT_MASK,
+ 			AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_DLDO2_MASK),
+ 	AXP_DESC(AXP803, DLDO3, "dldo3", "dldoin", 700, 3300, 100,
+ 		 AXP22X_DLDO3_V_OUT, AXP22X_DLDO3_V_OUT_MASK,
+@@ -744,7 +744,7 @@ static const struct regulator_desc axp803_regulators[] = {
+ 		 AXP22X_ELDO2_V_OUT, AXP22X_ELDO2_V_OUT_MASK,
+ 		 AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_ELDO2_MASK),
+ 	AXP_DESC(AXP803, ELDO3, "eldo3", "eldoin", 700, 1900, 50,
+-		 AXP22X_ELDO3_V_OUT, AXP22X_ELDO3_V_OUT,
++		 AXP22X_ELDO3_V_OUT, AXP22X_ELDO3_V_OUT_MASK,
+ 		 AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_ELDO3_MASK),
+ 	AXP_DESC(AXP803, FLDO1, "fldo1", "fldoin", 700, 1450, 50,
+ 		 AXP803_FLDO1_V_OUT, AXP803_FLDO1_V_OUT_MASK,
