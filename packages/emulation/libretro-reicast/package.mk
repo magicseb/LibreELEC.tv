@@ -15,7 +15,7 @@ PKG_LIBPATH="$PKG_LIBNAME"
 PKG_LIBVAR="REICAST_LIB"
 
 make_target() {
-  if [ "$DEVICE" = "RPi2" ]; then
+  if [ "$DEVICE" = "RPi2" -o "$DEVICE" = "RPi3" ]; then
     make platform=${DEVICE,,}
   else
     case $TARGET_CPU in
