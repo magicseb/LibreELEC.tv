@@ -1,0 +1,1939 @@
+From 7b98593280de12828cbe71cdf6f1f03985c11a5b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tim-Philipp=20M=C3=BCller?= <tim@centricular.com>
+Date: Sat, 23 Jun 2018 21:33:16 +0200
+Subject: [PATCH] app: Update for g_type_class_add_private() deprecation in
+ recent GLib
+
+https://gitlab.gnome.org/GNOME/glib/merge_requests/7
+---
+ gst-libs/gst/app/gstappsink.c | 7 ++-----
+ gst-libs/gst/app/gstappsrc.c  | 6 ++----
+ 2 files changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/gst-libs/gst/app/gstappsink.c b/gst-libs/gst/app/gstappsink.c
+index ae3b2a098..cac9821fa 100644
+--- a/gst-libs/gst/app/gstappsink.c
++++ b/gst-libs/gst/app/gstappsink.c
+@@ -188,6 +188,7 @@ static guint gst_app_sink_signals[LAST_SIGNAL] = { 0 };
+ 
+ #define gst_app_sink_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstAppSink, gst_app_sink, GST_TYPE_BASE_SINK,
++    G_ADD_PRIVATE (GstAppSink)
+     G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER,
+         gst_app_sink_uri_handler_init));
+ 
+@@ -447,8 +448,6 @@ gst_app_sink_class_init (GstAppSinkClass * klass)
+   klass->pull_sample = gst_app_sink_pull_sample;
+   klass->try_pull_preroll = gst_app_sink_try_pull_preroll;
+   klass->try_pull_sample = gst_app_sink_try_pull_sample;
+-
+-  g_type_class_add_private (klass, sizeof (GstAppSinkPrivate));
+ }
+ 
+ static void
+@@ -456,9 +455,7 @@ gst_app_sink_init (GstAppSink * appsink)
+ {
+   GstAppSinkPrivate *priv;
+ 
+-  priv = appsink->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (appsink, GST_TYPE_APP_SINK,
+-      GstAppSinkPrivate);
++  priv = appsink->priv = gst_app_sink_get_instance_private (appsink);
+ 
+   g_mutex_init (&priv->mutex);
+   g_cond_init (&priv->cond);
+diff --git a/gst-libs/gst/app/gstappsrc.c b/gst-libs/gst/app/gstappsrc.c
+index 541eb60d5..cc937f489 100644
+--- a/gst-libs/gst/app/gstappsrc.c
++++ b/gst-libs/gst/app/gstappsrc.c
+@@ -242,6 +242,7 @@ static guint gst_app_src_signals[LAST_SIGNAL] = { 0 };
+ 
+ #define gst_app_src_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstAppSrc, gst_app_src, GST_TYPE_BASE_SRC,
++    G_ADD_PRIVATE (GstAppSrc)
+     G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER, gst_app_src_uri_handler_init));
+ 
+ static void
+@@ -562,8 +563,6 @@ gst_app_src_class_init (GstAppSrcClass * klass)
+   klass->push_buffer_list = gst_app_src_push_buffer_list_action;
+   klass->push_sample = gst_app_src_push_sample_action;
+   klass->end_of_stream = gst_app_src_end_of_stream;
+-
+-  g_type_class_add_private (klass, sizeof (GstAppSrcPrivate));
+ }
+ 
+ static void
+@@ -571,8 +570,7 @@ gst_app_src_init (GstAppSrc * appsrc)
+ {
+   GstAppSrcPrivate *priv;
+ 
+-  priv = appsrc->priv = G_TYPE_INSTANCE_GET_PRIVATE (appsrc, GST_TYPE_APP_SRC,
+-      GstAppSrcPrivate);
++  priv = appsrc->priv = gst_app_src_get_instance_private (appsrc);
+ 
+   g_mutex_init (&priv->mutex);
+   g_cond_init (&priv->cond);
+From fae8c2459064413b1dc34b3f9dc1693627541f2a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tim-Philipp=20M=C3=BCller?= <tim@centricular.com>
+Date: Sat, 23 Jun 2018 21:33:16 +0200
+Subject: [PATCH] audio: Update for g_type_class_add_private() deprecation in
+ recent GLib
+
+https://gitlab.gnome.org/GNOME/glib/merge_requests/7
+---
+ gst-libs/gst/audio/gstaudioaggregator.c | 26 +++++++------------------
+ gst-libs/gst/audio/gstaudiobasesink.c   | 13 ++++---------
+ gst-libs/gst/audio/gstaudiobasesrc.c    |  8 ++------
+ gst-libs/gst/audio/gstaudiocdsrc.c      |  7 ++-----
+ gst-libs/gst/audio/gstaudiodecoder.c    | 19 ++++++++++++------
+ gst-libs/gst/audio/gstaudioencoder.c    | 20 +++++++++++++------
+ 6 files changed, 42 insertions(+), 51 deletions(-)
+
+diff --git a/gst-libs/gst/audio/gstaudioaggregator.c b/gst-libs/gst/audio/gstaudioaggregator.c
+index 05710896b..742a8acf9 100644
+--- a/gst-libs/gst/audio/gstaudioaggregator.c
++++ b/gst-libs/gst/audio/gstaudioaggregator.c
+@@ -106,7 +106,7 @@ struct _GstAudioAggregatorPadPrivate
+ /*****************************************
+  * GstAudioAggregatorPad implementation  *
+  *****************************************/
+-G_DEFINE_TYPE (GstAudioAggregatorPad, gst_audio_aggregator_pad,
++G_DEFINE_TYPE_WITH_PRIVATE (GstAudioAggregatorPad, gst_audio_aggregator_pad,
+     GST_TYPE_AGGREGATOR_PAD);
+ 
+ enum
+@@ -136,8 +136,6 @@ gst_audio_aggregator_pad_class_init (GstAudioAggregatorPadClass * klass)
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+   GstAggregatorPadClass *aggpadclass = (GstAggregatorPadClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstAudioAggregatorPadPrivate));
+-
+   gobject_class->finalize = gst_audio_aggregator_pad_finalize;
+   aggpadclass->flush = GST_DEBUG_FUNCPTR (gst_audio_aggregator_pad_flush_pad);
+ }
+@@ -145,9 +143,7 @@ gst_audio_aggregator_pad_class_init (GstAudioAggregatorPadClass * klass)
+ static void
+ gst_audio_aggregator_pad_init (GstAudioAggregatorPad * pad)
+ {
+-  pad->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (pad, GST_TYPE_AUDIO_AGGREGATOR_PAD,
+-      GstAudioAggregatorPadPrivate);
++  pad->priv = gst_audio_aggregator_pad_get_instance_private (pad);
+ 
+   gst_audio_info_init (&pad->info);
+ 
+@@ -187,8 +183,8 @@ struct _GstAudioAggregatorConvertPadPrivate
+ };
+ 
+ 
+-G_DEFINE_TYPE (GstAudioAggregatorConvertPad, gst_audio_aggregator_convert_pad,
+-    GST_TYPE_AUDIO_AGGREGATOR_PAD);
++G_DEFINE_TYPE_WITH_PRIVATE (GstAudioAggregatorConvertPad,
++    gst_audio_aggregator_convert_pad, GST_TYPE_AUDIO_AGGREGATOR_PAD);
+ 
+ static void
+ gst_audio_aggregator_convert_pad_update_converter (GstAudioAggregatorConvertPad
+@@ -337,8 +333,6 @@ gst_audio_aggregator_convert_pad_class_init (GstAudioAggregatorConvertPadClass *
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+   GstAudioAggregatorPadClass *aaggpad_class =
+       (GstAudioAggregatorPadClass *) klass;
+-  g_type_class_add_private (klass,
+-      sizeof (GstAudioAggregatorConvertPadPrivate));
+ 
+   gobject_class->set_property = gst_audio_aggregator_convert_pad_set_property;
+   gobject_class->get_property = gst_audio_aggregator_convert_pad_get_property;
+@@ -361,9 +355,7 @@ gst_audio_aggregator_convert_pad_class_init (GstAudioAggregatorConvertPadClass *
+ static void
+ gst_audio_aggregator_convert_pad_init (GstAudioAggregatorConvertPad * pad)
+ {
+-  pad->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (pad, GST_TYPE_AUDIO_AGGREGATOR_CONVERT_PAD,
+-      GstAudioAggregatorConvertPadPrivate);
++  pad->priv = gst_audio_aggregator_convert_pad_get_instance_private (pad);
+ }
+ 
+ /**************************************
+@@ -441,7 +433,7 @@ enum
+   PROP_DISCONT_WAIT,
+ };
+ 
+-G_DEFINE_ABSTRACT_TYPE (GstAudioAggregator, gst_audio_aggregator,
++G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GstAudioAggregator, gst_audio_aggregator,
+     GST_TYPE_AGGREGATOR);
+ 
+ static GstBuffer *
+@@ -462,8 +454,6 @@ gst_audio_aggregator_class_init (GstAudioAggregatorClass * klass)
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+   GstAggregatorClass *gstaggregator_class = (GstAggregatorClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstAudioAggregatorPrivate));
+-
+   gobject_class->set_property = gst_audio_aggregator_set_property;
+   gobject_class->get_property = gst_audio_aggregator_get_property;
+   gobject_class->dispose = gst_audio_aggregator_dispose;
+@@ -516,9 +506,7 @@ gst_audio_aggregator_class_init (GstAudioAggregatorClass * klass)
+ static void
+ gst_audio_aggregator_init (GstAudioAggregator * aagg)
+ {
+-  aagg->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (aagg, GST_TYPE_AUDIO_AGGREGATOR,
+-      GstAudioAggregatorPrivate);
++  aagg->priv = gst_audio_aggregator_get_instance_private (aagg);
+ 
+   g_mutex_init (&aagg->priv->mutex);
+ 
+diff --git a/gst-libs/gst/audio/gstaudiobasesink.c b/gst-libs/gst/audio/gstaudiobasesink.c
+index 275d2a5ec..94af258cd 100644
+--- a/gst-libs/gst/audio/gstaudiobasesink.c
++++ b/gst-libs/gst/audio/gstaudiobasesink.c
+@@ -39,9 +39,6 @@
+ GST_DEBUG_CATEGORY_STATIC (gst_audio_base_sink_debug);
+ #define GST_CAT_DEFAULT gst_audio_base_sink_debug
+ 
+-#define GST_AUDIO_BASE_SINK_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_AUDIO_BASE_SINK, GstAudioBaseSinkPrivate))
+-
+ struct _GstAudioBaseSinkPrivate
+ {
+   /* upstream latency */
+@@ -125,7 +122,7 @@ enum
+     GST_DEBUG_CATEGORY_INIT (gst_audio_base_sink_debug, "audiobasesink", 0, "audiobasesink element");
+ #define gst_audio_base_sink_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstAudioBaseSink, gst_audio_base_sink,
+-    GST_TYPE_BASE_SINK, _do_init);
++    GST_TYPE_BASE_SINK, G_ADD_PRIVATE (GstAudioBaseSink) _do_init);
+ 
+ static void gst_audio_base_sink_dispose (GObject * object);
+ 
+@@ -180,8 +177,6 @@ gst_audio_base_sink_class_init (GstAudioBaseSinkClass * klass)
+   gstelement_class = (GstElementClass *) klass;
+   gstbasesink_class = (GstBaseSinkClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstAudioBaseSinkPrivate));
+-
+   gobject_class->set_property = gst_audio_base_sink_set_property;
+   gobject_class->get_property = gst_audio_base_sink_get_property;
+   gobject_class->dispose = gst_audio_base_sink_dispose;
+@@ -278,9 +273,10 @@ gst_audio_base_sink_class_init (GstAudioBaseSinkClass * klass)
+ static void
+ gst_audio_base_sink_init (GstAudioBaseSink * audiobasesink)
+ {
+-  GstBaseSink *basesink;
++  GstBaseSink *basesink = GST_BASE_SINK_CAST (audiobasesink);
+ 
+-  audiobasesink->priv = GST_AUDIO_BASE_SINK_GET_PRIVATE (audiobasesink);
++  audiobasesink->priv =
++      gst_audio_base_sink_get_instance_private (audiobasesink);
+ 
+   audiobasesink->buffer_time = DEFAULT_BUFFER_TIME;
+   audiobasesink->latency_time = DEFAULT_LATENCY_TIME;
+@@ -296,7 +292,6 @@ gst_audio_base_sink_init (GstAudioBaseSink * audiobasesink)
+       (GstAudioClockGetTimeFunc) gst_audio_base_sink_get_time, audiobasesink,
+       NULL);
+ 
+-  basesink = GST_BASE_SINK_CAST (audiobasesink);
+   basesink->can_activate_push = TRUE;
+   basesink->can_activate_pull = DEFAULT_CAN_ACTIVATE_PULL;
+ 
+diff --git a/gst-libs/gst/audio/gstaudiobasesrc.c b/gst-libs/gst/audio/gstaudiobasesrc.c
+index 4412868c4..8847d75b1 100644
+--- a/gst-libs/gst/audio/gstaudiobasesrc.c
++++ b/gst-libs/gst/audio/gstaudiobasesrc.c
+@@ -45,9 +45,6 @@
+ GST_DEBUG_CATEGORY_STATIC (gst_audio_base_src_debug);
+ #define GST_CAT_DEFAULT gst_audio_base_src_debug
+ 
+-#define GST_AUDIO_BASE_SRC_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_AUDIO_BASE_SRC, GstAudioBaseSrcPrivate))
+-
+ struct _GstAudioBaseSrcPrivate
+ {
+   /* the clock slaving algorithm in use */
+@@ -97,6 +94,7 @@ _do_init (GType type)
+ 
+ #define gst_audio_base_src_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstAudioBaseSrc, gst_audio_base_src, GST_TYPE_PUSH_SRC,
++    G_ADD_PRIVATE (GstAudioBaseSrc)
+     _do_init (g_define_type_id));
+ 
+ static void gst_audio_base_src_set_property (GObject * object, guint prop_id,
+@@ -136,8 +134,6 @@ gst_audio_base_src_class_init (GstAudioBaseSrcClass * klass)
+   gstelement_class = (GstElementClass *) klass;
+   gstbasesrc_class = (GstBaseSrcClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstAudioBaseSrcPrivate));
+-
+   gobject_class->set_property = gst_audio_base_src_set_property;
+   gobject_class->get_property = gst_audio_base_src_get_property;
+   gobject_class->dispose = gst_audio_base_src_dispose;
+@@ -217,7 +213,7 @@ gst_audio_base_src_class_init (GstAudioBaseSrcClass * klass)
+ static void
+ gst_audio_base_src_init (GstAudioBaseSrc * audiobasesrc)
+ {
+-  audiobasesrc->priv = GST_AUDIO_BASE_SRC_GET_PRIVATE (audiobasesrc);
++  audiobasesrc->priv = gst_audio_base_src_get_instance_private (audiobasesrc);
+ 
+   audiobasesrc->buffer_time = DEFAULT_BUFFER_TIME;
+   audiobasesrc->latency_time = DEFAULT_LATENCY_TIME;
+diff --git a/gst-libs/gst/audio/gstaudiocdsrc.c b/gst-libs/gst/audio/gstaudiocdsrc.c
+index c4576e5da..81421d327 100644
+--- a/gst-libs/gst/audio/gstaudiocdsrc.c
++++ b/gst-libs/gst/audio/gstaudiocdsrc.c
+@@ -179,6 +179,7 @@ static GstIndex *gst_audio_cd_src_get_index (GstElement * src);
+ 
+ #define gst_audio_cd_src_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstAudioCdSrc, gst_audio_cd_src, GST_TYPE_PUSH_SRC,
++    G_ADD_PRIVATE (GstAudioCdSrc)
+     G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER,
+         gst_audio_cd_src_uri_handler_init));
+ 
+@@ -216,8 +217,6 @@ gst_audio_cd_src_class_init (GstAudioCdSrcClass * klass)
+   GST_DEBUG_CATEGORY_INIT (gst_audio_cd_src_debug, "audiocdsrc", 0,
+       "Audio CD source base class");
+ 
+-  g_type_class_add_private (klass, sizeof (GstAudioCdSrcPrivate));
+-
+   /* our very own formats */
+   track_format = gst_format_register ("track", "CD track");
+   sector_format = gst_format_register ("sector", "CD sector");
+@@ -285,9 +284,7 @@ gst_audio_cd_src_class_init (GstAudioCdSrcClass * klass)
+ static void
+ gst_audio_cd_src_init (GstAudioCdSrc * src)
+ {
+-  src->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (src, GST_TYPE_AUDIO_CD_SRC,
+-      GstAudioCdSrcPrivate);
++  src->priv = gst_audio_cd_src_get_instance_private (src);
+ 
+   /* we're not live and we operate in time */
+   gst_base_src_set_format (GST_BASE_SRC (src), GST_FORMAT_TIME);
+diff --git a/gst-libs/gst/audio/gstaudiodecoder.c b/gst-libs/gst/audio/gstaudiodecoder.c
+index 0c4fb80a1..75a6328ff 100644
+--- a/gst-libs/gst/audio/gstaudiodecoder.c
++++ b/gst-libs/gst/audio/gstaudiodecoder.c
+@@ -129,10 +129,6 @@
+ GST_DEBUG_CATEGORY (audiodecoder_debug);
+ #define GST_CAT_DEFAULT audiodecoder_debug
+ 
+-#define GST_AUDIO_DECODER_GET_PRIVATE(obj)  \
+-    (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_AUDIO_DECODER, \
+-        GstAudioDecoderPrivate))
+-
+ enum
+ {
+   LAST_SIGNAL
+@@ -312,6 +308,7 @@ static gboolean gst_audio_decoder_transform_meta_default (GstAudioDecoder *
+     decoder, GstBuffer * outbuf, GstMeta * meta, GstBuffer * inbuf);
+ 
+ static GstElementClass *parent_class = NULL;
++static gint private_offset = 0;
+ 
+ static void gst_audio_decoder_class_init (GstAudioDecoderClass * klass);
+ static void gst_audio_decoder_init (GstAudioDecoder * dec,
+@@ -338,11 +335,20 @@ gst_audio_decoder_get_type (void)
+ 
+     _type = g_type_register_static (GST_TYPE_ELEMENT,
+         "GstAudioDecoder", &audio_decoder_info, G_TYPE_FLAG_ABSTRACT);
++
++    private_offset =
++        g_type_add_instance_private (_type, sizeof (GstAudioDecoderPrivate));
++
+     g_once_init_leave (&audio_decoder_type, _type);
+   }
+   return audio_decoder_type;
+ }
+ 
++static inline GstAudioDecoderPrivate *
++gst_audio_decoder_get_instance_private (GstAudioDecoder * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
+ 
+ static void
+ gst_audio_decoder_class_init (GstAudioDecoderClass * klass)
+@@ -357,7 +363,8 @@ gst_audio_decoder_class_init (GstAudioDecoderClass * klass)
+ 
+   parent_class = g_type_class_peek_parent (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstAudioDecoderPrivate));
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
+ 
+   GST_DEBUG_CATEGORY_INIT (audiodecoder_debug, "audiodecoder", 0,
+       "audio decoder base class");
+@@ -412,7 +419,7 @@ gst_audio_decoder_init (GstAudioDecoder * dec, GstAudioDecoderClass * klass)
+ 
+   GST_DEBUG_OBJECT (dec, "gst_audio_decoder_init");
+ 
+-  dec->priv = GST_AUDIO_DECODER_GET_PRIVATE (dec);
++  dec->priv = gst_audio_decoder_get_instance_private (dec);
+ 
+   /* Setup sink pad */
+   pad_template =
+diff --git a/gst-libs/gst/audio/gstaudioencoder.c b/gst-libs/gst/audio/gstaudioencoder.c
+index 2bce0b2e8..c2f0382ae 100644
+--- a/gst-libs/gst/audio/gstaudioencoder.c
++++ b/gst-libs/gst/audio/gstaudioencoder.c
+@@ -137,10 +137,6 @@
+ GST_DEBUG_CATEGORY_STATIC (gst_audio_encoder_debug);
+ #define GST_CAT_DEFAULT gst_audio_encoder_debug
+ 
+-#define GST_AUDIO_ENCODER_GET_PRIVATE(obj)  \
+-    (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_AUDIO_ENCODER, \
+-        GstAudioEncoderPrivate))
+-
+ enum
+ {
+   PROP_0,
+@@ -247,6 +243,7 @@ struct _GstAudioEncoderPrivate
+ 
+ 
+ static GstElementClass *parent_class = NULL;
++static gint private_offset = 0;
+ 
+ static void gst_audio_encoder_class_init (GstAudioEncoderClass * klass);
+ static void gst_audio_encoder_init (GstAudioEncoder * parse,
+@@ -278,12 +275,22 @@ gst_audio_encoder_get_type (void)
+     audio_encoder_type = g_type_register_static (GST_TYPE_ELEMENT,
+         "GstAudioEncoder", &audio_encoder_info, G_TYPE_FLAG_ABSTRACT);
+ 
++    private_offset =
++        g_type_add_instance_private (audio_encoder_type,
++        sizeof (GstAudioEncoderPrivate));
++
+     g_type_add_interface_static (audio_encoder_type, GST_TYPE_PRESET,
+         &preset_interface_info);
+   }
+   return audio_encoder_type;
+ }
+ 
++static inline GstAudioEncoderPrivate *
++gst_audio_encoder_get_instance_private (GstAudioEncoder * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static void gst_audio_encoder_finalize (GObject * object);
+ static void gst_audio_encoder_reset (GstAudioEncoder * enc, gboolean full);
+ 
+@@ -345,7 +352,8 @@ gst_audio_encoder_class_init (GstAudioEncoderClass * klass)
+   GST_DEBUG_CATEGORY_INIT (gst_audio_encoder_debug, "audioencoder", 0,
+       "audio encoder base class");
+ 
+-  g_type_class_add_private (klass, sizeof (GstAudioEncoderPrivate));
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
+ 
+   gobject_class->set_property = gst_audio_encoder_set_property;
+   gobject_class->get_property = gst_audio_encoder_get_property;
+@@ -392,7 +400,7 @@ gst_audio_encoder_init (GstAudioEncoder * enc, GstAudioEncoderClass * bclass)
+ 
+   GST_DEBUG_OBJECT (enc, "gst_audio_encoder_init");
+ 
+-  enc->priv = GST_AUDIO_ENCODER_GET_PRIVATE (enc);
++  enc->priv = gst_audio_encoder_get_instance_private (enc);
+ 
+   /* only push mode supported */
+   pad_template =
+From 18c457dfb40d1ab2b3f4d4c9f014fd2f97133fef Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tim-Philipp=20M=C3=BCller?= <tim@centricular.com>
+Date: Sat, 23 Jun 2018 21:33:16 +0200
+Subject: [PATCH] video: Update for g_type_class_add_private() deprecation in
+ recent GLib
+
+https://gitlab.gnome.org/GNOME/glib/merge_requests/7
+---
+ gst-libs/gst/video/gstvideodecoder.c | 22 ++++++++++++++++------
+ gst-libs/gst/video/gstvideoencoder.c | 19 +++++++++++++------
+ gst-libs/gst/video/gstvideopool.c    | 10 +++-------
+ gst-libs/gst/video/gstvideosink.c    |  9 +++------
+ 4 files changed, 35 insertions(+), 25 deletions(-)
+
+diff --git a/gst-libs/gst/video/gstvideodecoder.c b/gst-libs/gst/video/gstvideodecoder.c
+index 3b2daaa0e..8636c2f91 100644
+--- a/gst-libs/gst/video/gstvideodecoder.c
++++ b/gst-libs/gst/video/gstvideodecoder.c
+@@ -288,10 +288,6 @@
+ GST_DEBUG_CATEGORY (videodecoder_debug);
+ #define GST_CAT_DEFAULT videodecoder_debug
+ 
+-#define GST_VIDEO_DECODER_GET_PRIVATE(obj)  \
+-    (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_VIDEO_DECODER, \
+-        GstVideoDecoderPrivate))
+-
+ struct _GstVideoDecoderPrivate
+ {
+   /* FIXME introduce a context ? */
+@@ -410,6 +406,8 @@ struct _GstVideoDecoderPrivate
+ };
+ 
+ static GstElementClass *parent_class = NULL;
++static gint private_offset = 0;
++
+ static void gst_video_decoder_class_init (GstVideoDecoderClass * klass);
+ static void gst_video_decoder_init (GstVideoDecoder * dec,
+     GstVideoDecoderClass * klass);
+@@ -493,11 +491,21 @@ gst_video_decoder_get_type (void)
+ 
+     _type = g_type_register_static (GST_TYPE_ELEMENT,
+         "GstVideoDecoder", &info, G_TYPE_FLAG_ABSTRACT);
++
++    private_offset =
++        g_type_add_instance_private (_type, sizeof (GstVideoDecoderPrivate));
++
+     g_once_init_leave (&type, _type);
+   }
+   return type;
+ }
+ 
++static inline GstVideoDecoderPrivate *
++gst_video_decoder_get_instance_private (GstVideoDecoder * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static void
+ gst_video_decoder_class_init (GstVideoDecoderClass * klass)
+ {
+@@ -511,7 +519,9 @@ gst_video_decoder_class_init (GstVideoDecoderClass * klass)
+       "Base Video Decoder");
+ 
+   parent_class = g_type_class_peek_parent (klass);
+-  g_type_class_add_private (klass, sizeof (GstVideoDecoderPrivate));
++
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
+ 
+   gobject_class->finalize = gst_video_decoder_finalize;
+ 
+@@ -536,7 +546,7 @@ gst_video_decoder_init (GstVideoDecoder * decoder, GstVideoDecoderClass * klass)
+ 
+   GST_DEBUG_OBJECT (decoder, "gst_video_decoder_init");
+ 
+-  decoder->priv = GST_VIDEO_DECODER_GET_PRIVATE (decoder);
++  decoder->priv = gst_video_decoder_get_instance_private (decoder);
+ 
+   pad_template =
+       gst_element_class_get_pad_template (GST_ELEMENT_CLASS (klass), "sink");
+diff --git a/gst-libs/gst/video/gstvideoencoder.c b/gst-libs/gst/video/gstvideoencoder.c
+index 2e40a91ef..dc5998974 100644
+--- a/gst-libs/gst/video/gstvideoencoder.c
++++ b/gst-libs/gst/video/gstvideoencoder.c
+@@ -111,10 +111,6 @@
+ GST_DEBUG_CATEGORY (videoencoder_debug);
+ #define GST_CAT_DEFAULT videoencoder_debug
+ 
+-#define GST_VIDEO_ENCODER_GET_PRIVATE(obj)  \
+-    (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_VIDEO_ENCODER, \
+-        GstVideoEncoderPrivate))
+-
+ /* properties */
+ 
+ #define DEFAULT_QOS                 FALSE
+@@ -211,6 +207,8 @@ forced_key_unit_event_new (GstClockTime running_time, gboolean all_headers,
+ }
+ 
+ static GstElementClass *parent_class = NULL;
++static gint private_offset = 0;
++
+ static void gst_video_encoder_class_init (GstVideoEncoderClass * klass);
+ static void gst_video_encoder_init (GstVideoEncoder * enc,
+     GstVideoEncoderClass * klass);
+@@ -285,6 +283,8 @@ gst_video_encoder_get_type (void)
+ 
+     _type = g_type_register_static (GST_TYPE_ELEMENT,
+         "GstVideoEncoder", &info, G_TYPE_FLAG_ABSTRACT);
++    private_offset =
++        g_type_add_instance_private (_type, sizeof (GstVideoEncoderPrivate));
+     g_type_add_interface_static (_type, GST_TYPE_PRESET,
+         &preset_interface_info);
+     g_once_init_leave (&type, _type);
+@@ -292,6 +292,12 @@ gst_video_encoder_get_type (void)
+   return type;
+ }
+ 
++static inline GstVideoEncoderPrivate *
++gst_video_encoder_get_instance_private (GstVideoEncoder * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static void
+ gst_video_encoder_set_property (GObject * object, guint prop_id,
+     const GValue * value, GParamSpec * pspec)
+@@ -338,7 +344,8 @@ gst_video_encoder_class_init (GstVideoEncoderClass * klass)
+ 
+   parent_class = g_type_class_peek_parent (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstVideoEncoderPrivate));
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
+ 
+   gobject_class->set_property = gst_video_encoder_set_property;
+   gobject_class->get_property = gst_video_encoder_get_property;
+@@ -491,7 +498,7 @@ gst_video_encoder_init (GstVideoEncoder * encoder, GstVideoEncoderClass * klass)
+ 
+   GST_DEBUG_OBJECT (encoder, "gst_video_encoder_init");
+ 
+-  priv = encoder->priv = GST_VIDEO_ENCODER_GET_PRIVATE (encoder);
++  priv = encoder->priv = gst_video_encoder_get_instance_private (encoder);
+ 
+   pad_template =
+       gst_element_class_get_pad_template (GST_ELEMENT_CLASS (klass), "sink");
+diff --git a/gst-libs/gst/video/gstvideopool.c b/gst-libs/gst/video/gstvideopool.c
+index 671e65797..1b919fd06 100644
+--- a/gst-libs/gst/video/gstvideopool.c
++++ b/gst-libs/gst/video/gstvideopool.c
+@@ -104,11 +104,9 @@ struct _GstVideoBufferPoolPrivate
+ 
+ static void gst_video_buffer_pool_finalize (GObject * object);
+ 
+-#define GST_VIDEO_BUFFER_POOL_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_VIDEO_BUFFER_POOL, GstVideoBufferPoolPrivate))
+-
+ #define gst_video_buffer_pool_parent_class parent_class
+-G_DEFINE_TYPE (GstVideoBufferPool, gst_video_buffer_pool, GST_TYPE_BUFFER_POOL);
++G_DEFINE_TYPE_WITH_PRIVATE (GstVideoBufferPool, gst_video_buffer_pool,
++    GST_TYPE_BUFFER_POOL);
+ 
+ static const gchar **
+ video_buffer_pool_get_options (GstBufferPool * pool)
+@@ -296,8 +294,6 @@ gst_video_buffer_pool_class_init (GstVideoBufferPoolClass * klass)
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+   GstBufferPoolClass *gstbufferpool_class = (GstBufferPoolClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstVideoBufferPoolPrivate));
+-
+   gobject_class->finalize = gst_video_buffer_pool_finalize;
+ 
+   gstbufferpool_class->get_options = video_buffer_pool_get_options;
+@@ -311,7 +307,7 @@ gst_video_buffer_pool_class_init (GstVideoBufferPoolClass * klass)
+ static void
+ gst_video_buffer_pool_init (GstVideoBufferPool * pool)
+ {
+-  pool->priv = GST_VIDEO_BUFFER_POOL_GET_PRIVATE (pool);
++  pool->priv = gst_video_buffer_pool_get_instance_private (pool);
+ }
+ 
+ static void
+diff --git a/gst-libs/gst/video/gstvideosink.c b/gst-libs/gst/video/gstvideosink.c
+index 9cfe780cc..819eea6a8 100644
+--- a/gst-libs/gst/video/gstvideosink.c
++++ b/gst-libs/gst/video/gstvideosink.c
+@@ -37,8 +37,6 @@
+ 
+ #include "gstvideosink.h"
+ 
+-G_DEFINE_TYPE (GstVideoSink, gst_video_sink, GST_TYPE_BASE_SINK);
+-
+ enum
+ {
+   PROP_SHOW_PREROLL_FRAME = 1
+@@ -51,6 +49,8 @@ struct _GstVideoSinkPrivate
+   gboolean show_preroll_frame;  /* ATOMIC */
+ };
+ 
++G_DEFINE_TYPE_WITH_PRIVATE (GstVideoSink, gst_video_sink, GST_TYPE_BASE_SINK);
++
+ #ifndef GST_DISABLE_GST_DEBUG
+ #define GST_CAT_DEFAULT gst_video_sink_ensure_debug_category()
+ 
+@@ -145,8 +145,7 @@ gst_video_sink_init (GstVideoSink * videosink)
+   gst_base_sink_set_max_lateness (GST_BASE_SINK (videosink), 20 * GST_MSECOND);
+   gst_base_sink_set_qos_enabled (GST_BASE_SINK (videosink), TRUE);
+ 
+-  videosink->priv = G_TYPE_INSTANCE_GET_PRIVATE (videosink,
+-      GST_TYPE_VIDEO_SINK, GstVideoSinkPrivate);
++  videosink->priv = gst_video_sink_get_instance_private (videosink);
+ }
+ 
+ static void
+@@ -175,8 +174,6 @@ gst_video_sink_class_init (GstVideoSinkClass * klass)
+   basesink_class->render = GST_DEBUG_FUNCPTR (gst_video_sink_show_frame);
+   basesink_class->preroll =
+       GST_DEBUG_FUNCPTR (gst_video_sink_show_preroll_frame);
+-
+-  g_type_class_add_private (klass, sizeof (GstVideoSinkPrivate));
+ }
+ 
+ static GstFlowReturn
+From 92579cb8450eed0b5fcefa56b61caa1f7fd772d7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tim-Philipp=20M=C3=BCller?= <tim@centricular.com>
+Date: Sat, 23 Jun 2018 21:33:16 +0200
+Subject: [PATCH] tag: Update for g_type_class_add_private() deprecation in
+ recent GLib
+
+https://gitlab.gnome.org/GNOME/glib/merge_requests/7
+---
+ gst-libs/gst/tag/gsttagdemux.c | 16 +++++++++++++---
+ gst-libs/gst/tag/gsttagmux.c   | 16 +++++++++++++---
+ 2 files changed, 26 insertions(+), 6 deletions(-)
+
+diff --git a/gst-libs/gst/tag/gsttagdemux.c b/gst-libs/gst/tag/gsttagdemux.c
+index 3802a566e..700e77243 100644
+--- a/gst-libs/gst/tag/gsttagdemux.c
++++ b/gst-libs/gst/tag/gsttagdemux.c
+@@ -167,6 +167,7 @@ static void gst_tag_demux_class_init (gpointer g_class, gpointer d);
+ static void gst_tag_demux_init (GstTagDemux * obj, GstTagDemuxClass * klass);
+ 
+ static gpointer parent_class;   /* NULL */
++static gint private_offset = 0;
+ 
+ /* Cannot use boilerplate macros here because we want the abstract flag */
+ GType
+@@ -189,11 +190,20 @@ gst_tag_demux_get_type (void)
+ 
+     object_type = g_type_register_static (GST_TYPE_ELEMENT,
+         "GstTagDemux", &object_info, G_TYPE_FLAG_ABSTRACT);
++
++    private_offset =
++        g_type_add_instance_private (object_type, sizeof (GstTagDemuxPrivate));
+   }
+ 
+   return object_type;
+ }
+ 
++static inline GstTagDemuxPrivate *
++gst_tag_demux_get_instance_private (GstTagDemux * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static void
+ gst_tag_demux_base_init (gpointer klass)
+ {
+@@ -218,7 +228,8 @@ gst_tag_demux_class_init (gpointer klass, gpointer d)
+ 
+   element_class->change_state = GST_DEBUG_FUNCPTR (gst_tag_demux_change_state);
+ 
+-  g_type_class_add_private (klass, sizeof (GstTagDemuxPrivate));
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
+ 
+   /* subclasses must set at least one of these */
+   tagdemux_class->min_start_size = 0;
+@@ -267,8 +278,7 @@ gst_tag_demux_init (GstTagDemux * demux, GstTagDemuxClass * gclass)
+   GstElementClass *element_klass = GST_ELEMENT_CLASS (gclass);
+   GstPadTemplate *tmpl;
+ 
+-  demux->priv = g_type_instance_get_private ((GTypeInstance *) demux,
+-      GST_TYPE_TAG_DEMUX);
++  demux->priv = gst_tag_demux_get_instance_private (demux);
+ 
+   /* sink pad */
+   tmpl = gst_element_class_get_pad_template (element_klass, "sink");
+diff --git a/gst-libs/gst/tag/gsttagmux.c b/gst-libs/gst/tag/gsttagmux.c
+index f9aa0240f..0b90acf80 100644
+--- a/gst-libs/gst/tag/gsttagmux.c
++++ b/gst-libs/gst/tag/gsttagmux.c
+@@ -74,6 +74,7 @@ GST_DEBUG_CATEGORY_STATIC (gst_tag_mux_debug);
+ #define GST_CAT_DEFAULT gst_tag_mux_debug
+ 
+ static GstElementClass *parent_class;
++static gint private_offset = 0;
+ 
+ static void gst_tag_mux_class_init (GstTagMuxClass * klass);
+ static void gst_tag_mux_init (GstTagMux * mux, GstTagMuxClass * mux_class);
+@@ -100,6 +101,9 @@ gst_tag_mux_get_type (void)
+         (GClassInitFunc) gst_tag_mux_class_init, sizeof (GstTagMux),
+         (GInstanceInitFunc) gst_tag_mux_init, G_TYPE_FLAG_ABSTRACT);
+ 
++    private_offset =
++        g_type_add_instance_private (_type, sizeof (GstTagMuxPrivate));
++
+     g_type_add_interface_static (_type, GST_TYPE_TAG_SETTER, &interface_info);
+ 
+     g_once_init_leave (&tag_mux_type, _type);
+@@ -107,6 +111,12 @@ gst_tag_mux_get_type (void)
+   return tag_mux_type;
+ }
+ 
++static inline GstTagMuxPrivate *
++gst_tag_mux_get_instance_private (GstTagMux * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static void
+ gst_tag_mux_finalize (GObject * obj)
+ {
+@@ -144,7 +154,8 @@ gst_tag_mux_class_init (GstTagMuxClass * klass)
+   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_tag_mux_finalize);
+   gstelement_class->change_state = GST_DEBUG_FUNCPTR (gst_tag_mux_change_state);
+ 
+-  g_type_class_add_private (klass, sizeof (GstTagMuxPrivate));
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
+ 
+   GST_DEBUG_CATEGORY_INIT (gst_tag_mux_debug, "tagmux", 0,
+       "tag muxer base class");
+@@ -156,8 +167,7 @@ gst_tag_mux_init (GstTagMux * mux, GstTagMuxClass * mux_class)
+   GstElementClass *element_klass = GST_ELEMENT_CLASS (mux_class);
+   GstPadTemplate *tmpl;
+ 
+-  mux->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (mux, GST_TYPE_TAG_MUX, GstTagMuxPrivate);
++  mux->priv = gst_tag_mux_get_instance_private (mux);
+ 
+   /* pad through which data comes in to the element */
+   tmpl = gst_element_class_get_pad_template (element_klass, "sink");
+From 511a8d7dddae5e7e26fe319d8322230d7910b3ce Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tim-Philipp=20M=C3=BCller?= <tim@centricular.com>
+Date: Sat, 23 Jun 2018 21:33:16 +0200
+Subject: [PATCH] pbutils: Update for g_type_class_add_private() deprecation in
+ recent GLib
+
+https://gitlab.gnome.org/GNOME/glib/merge_requests/7
+---
+ gst-libs/gst/pbutils/gstaudiovisualizer.c | 19 ++++++++++++++-----
+ gst-libs/gst/pbutils/gstdiscoverer.c      |  7 ++-----
+ 2 files changed, 16 insertions(+), 10 deletions(-)
+
+diff --git a/gst-libs/gst/pbutils/gstaudiovisualizer.c b/gst-libs/gst/pbutils/gstaudiovisualizer.c
+index a185f25d2..9b1cd6134 100644
+--- a/gst-libs/gst/pbutils/gstaudiovisualizer.c
++++ b/gst-libs/gst/pbutils/gstaudiovisualizer.c
+@@ -60,6 +60,7 @@ enum
+ };
+ 
+ static GstBaseTransformClass *parent_class = NULL;
++static gint private_offset = 0;
+ 
+ static void gst_audio_visualizer_class_init (GstAudioVisualizerClass * klass);
+ static void gst_audio_visualizer_init (GstAudioVisualizer * scope,
+@@ -96,9 +97,6 @@ static gboolean gst_audio_visualizer_do_bufferpool (GstAudioVisualizer * scope,
+ static gboolean
+ default_decide_allocation (GstAudioVisualizer * scope, GstQuery * query);
+ 
+-#define GST_AUDIO_VISUALIZER_GET_PRIVATE(obj)  \
+-    (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_AUDIO_VISUALIZER, GstAudioVisualizerPrivate))
+-
+ struct _GstAudioVisualizerPrivate
+ {
+   gboolean negotiated;
+@@ -520,18 +518,29 @@ gst_audio_visualizer_get_type (void)
+     /* TODO: rename when exporting it as a library */
+     _type = g_type_register_static (GST_TYPE_ELEMENT,
+         "GstAudioVisualizer", &audio_visualizer_info, G_TYPE_FLAG_ABSTRACT);
++
++    private_offset =
++        g_type_add_instance_private (_type, sizeof (GstAudioVisualizerPrivate));
++
+     g_once_init_leave (&audio_visualizer_type, _type);
+   }
+   return (GType) audio_visualizer_type;
+ }
+ 
++static inline GstAudioVisualizerPrivate *
++gst_audio_visualizer_get_instance_private (GstAudioVisualizer * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static void
+ gst_audio_visualizer_class_init (GstAudioVisualizerClass * klass)
+ {
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+   GstElementClass *element_class = (GstElementClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstAudioVisualizerPrivate));
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
+ 
+   parent_class = g_type_class_peek_parent (klass);
+ 
+@@ -566,7 +575,7 @@ gst_audio_visualizer_init (GstAudioVisualizer * scope,
+ {
+   GstPadTemplate *pad_template;
+ 
+-  scope->priv = GST_AUDIO_VISUALIZER_GET_PRIVATE (scope);
++  scope->priv = gst_audio_visualizer_get_instance_private (scope);
+ 
+   /* create the sink and src pads */
+   pad_template =
+diff --git a/gst-libs/gst/pbutils/gstdiscoverer.c b/gst-libs/gst/pbutils/gstdiscoverer.c
+index 06e03a202..b15b52244 100644
+--- a/gst-libs/gst/pbutils/gstdiscoverer.c
++++ b/gst-libs/gst/pbutils/gstdiscoverer.c
+@@ -158,7 +158,7 @@ _do_init (void)
+ };
+ 
+ G_DEFINE_TYPE_EXTENDED (GstDiscoverer, gst_discoverer, G_TYPE_OBJECT, 0,
+-    _do_init ());
++    G_ADD_PRIVATE (GstDiscoverer) _do_init ());
+ 
+ enum
+ {
+@@ -212,8 +212,6 @@ gst_discoverer_class_init (GstDiscovererClass * klass)
+   gobject_class->set_property = gst_discoverer_set_property;
+   gobject_class->get_property = gst_discoverer_get_property;
+ 
+-  g_type_class_add_private (klass, sizeof (GstDiscovererPrivate));
+-
+   /* properties */
+   /**
+    * GstDiscoverer:timeout:
+@@ -312,8 +310,7 @@ gst_discoverer_init (GstDiscoverer * dc)
+   GstElement *tmp;
+   GstFormat format = GST_FORMAT_TIME;
+ 
+-  dc->priv = G_TYPE_INSTANCE_GET_PRIVATE (dc, GST_TYPE_DISCOVERER,
+-      GstDiscovererPrivate);
++  dc->priv = gst_discoverer_get_instance_private (dc);
+ 
+   dc->priv->timeout = DEFAULT_PROP_TIMEOUT;
+   dc->priv->async = FALSE;
+From 7f9730ecf4ede6689bf8bd6ad15ced81c79f0728 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tim-Philipp=20M=C3=BCller?= <tim@centricular.com>
+Date: Sat, 23 Jun 2018 21:33:16 +0200
+Subject: [PATCH] rtp: Update for g_type_class_add_private() deprecation in
+ recent GLib
+
+https://gitlab.gnome.org/GNOME/glib/merge_requests/7
+---
+ gst-libs/gst/rtp/gstrtpbaseaudiopayload.c | 11 ++-------
+ gst-libs/gst/rtp/gstrtpbasedepayload.c    | 29 ++++++++++++++++-------
+ gst-libs/gst/rtp/gstrtpbasepayload.c      | 26 +++++++++++++-------
+ 3 files changed, 41 insertions(+), 25 deletions(-)
+
+diff --git a/gst-libs/gst/rtp/gstrtpbaseaudiopayload.c b/gst-libs/gst/rtp/gstrtpbaseaudiopayload.c
+index ca48d6605..52a4c095a 100644
+--- a/gst-libs/gst/rtp/gstrtpbaseaudiopayload.c
++++ b/gst-libs/gst/rtp/gstrtpbaseaudiopayload.c
+@@ -114,11 +114,6 @@ struct _GstRTPBaseAudioPayloadPrivate
+   gboolean buffer_list;
+ };
+ 
+-
+-#define GST_RTP_BASE_AUDIO_PAYLOAD_GET_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE ((o), GST_TYPE_RTP_BASE_AUDIO_PAYLOAD, \
+-                                GstRTPBaseAudioPayloadPrivate))
+-
+ static void gst_rtp_base_audio_payload_finalize (GObject * object);
+ 
+ static void gst_rtp_base_audio_payload_set_property (GObject * object,
+@@ -158,7 +153,7 @@ static gboolean gst_rtp_base_payload_audio_sink_event (GstRTPBasePayload
+     * payload, GstEvent * event);
+ 
+ #define gst_rtp_base_audio_payload_parent_class parent_class
+-G_DEFINE_TYPE (GstRTPBaseAudioPayload, gst_rtp_base_audio_payload,
++G_DEFINE_TYPE_WITH_PRIVATE (GstRTPBaseAudioPayload, gst_rtp_base_audio_payload,
+     GST_TYPE_RTP_BASE_PAYLOAD);
+ 
+ static void
+@@ -168,8 +163,6 @@ gst_rtp_base_audio_payload_class_init (GstRTPBaseAudioPayloadClass * klass)
+   GstElementClass *gstelement_class;
+   GstRTPBasePayloadClass *gstrtpbasepayload_class;
+ 
+-  g_type_class_add_private (klass, sizeof (GstRTPBaseAudioPayloadPrivate));
+-
+   gobject_class = (GObjectClass *) klass;
+   gstelement_class = (GstElementClass *) klass;
+   gstrtpbasepayload_class = (GstRTPBasePayloadClass *) klass;
+@@ -198,7 +191,7 @@ gst_rtp_base_audio_payload_class_init (GstRTPBaseAudioPayloadClass * klass)
+ static void
+ gst_rtp_base_audio_payload_init (GstRTPBaseAudioPayload * payload)
+ {
+-  payload->priv = GST_RTP_BASE_AUDIO_PAYLOAD_GET_PRIVATE (payload);
++  payload->priv = gst_rtp_base_audio_payload_get_instance_private (payload);
+ 
+   /* these need to be set by child object if frame based */
+   payload->frame_size = 0;
+diff --git a/gst-libs/gst/rtp/gstrtpbasedepayload.c b/gst-libs/gst/rtp/gstrtpbasedepayload.c
+index 09a4f2594..2420174d2 100644
+--- a/gst-libs/gst/rtp/gstrtpbasedepayload.c
++++ b/gst-libs/gst/rtp/gstrtpbasedepayload.c
+@@ -31,9 +31,6 @@
+ GST_DEBUG_CATEGORY_STATIC (rtpbasedepayload_debug);
+ #define GST_CAT_DEFAULT (rtpbasedepayload_debug)
+ 
+-#define GST_RTP_BASE_DEPAYLOAD_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_RTP_BASE_DEPAYLOAD, GstRTPBaseDepayloadPrivate))
+-
+ struct _GstRTPBaseDepayloadPrivate
+ {
+   GstClockTime npt_start;
+@@ -95,6 +92,8 @@ static gboolean gst_rtp_base_depayload_handle_event (GstRTPBaseDepayload *
+     filter, GstEvent * event);
+ 
+ static GstElementClass *parent_class = NULL;
++static gint private_offset = 0;
++
+ static void gst_rtp_base_depayload_class_init (GstRTPBaseDepayloadClass *
+     klass);
+ static void gst_rtp_base_depayload_init (GstRTPBaseDepayload * rtpbasepayload,
+@@ -119,14 +118,26 @@ gst_rtp_base_depayload_get_type (void)
+       0,
+       (GInstanceInitFunc) gst_rtp_base_depayload_init,
+     };
++    GType _type;
++
++    _type = g_type_register_static (GST_TYPE_ELEMENT, "GstRTPBaseDepayload",
++        &rtp_base_depayload_info, G_TYPE_FLAG_ABSTRACT);
++
++    private_offset =
++        g_type_add_instance_private (_type,
++        sizeof (GstRTPBaseDepayloadPrivate));
+ 
+-    g_once_init_leave ((gsize *) & rtp_base_depayload_type,
+-        g_type_register_static (GST_TYPE_ELEMENT, "GstRTPBaseDepayload",
+-            &rtp_base_depayload_info, G_TYPE_FLAG_ABSTRACT));
++    g_once_init_leave ((gsize *) & rtp_base_depayload_type, _type);
+   }
+   return rtp_base_depayload_type;
+ }
+ 
++static inline GstRTPBaseDepayloadPrivate *
++gst_rtp_base_depayload_get_instance_private (GstRTPBaseDepayload * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static void
+ gst_rtp_base_depayload_class_init (GstRTPBaseDepayloadClass * klass)
+ {
+@@ -137,7 +148,8 @@ gst_rtp_base_depayload_class_init (GstRTPBaseDepayloadClass * klass)
+   gstelement_class = (GstElementClass *) klass;
+   parent_class = g_type_class_peek_parent (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstRTPBaseDepayloadPrivate));
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
+ 
+   gobject_class->finalize = gst_rtp_base_depayload_finalize;
+   gobject_class->set_property = gst_rtp_base_depayload_set_property;
+@@ -184,7 +196,8 @@ gst_rtp_base_depayload_init (GstRTPBaseDepayload * filter,
+   GstPadTemplate *pad_template;
+   GstRTPBaseDepayloadPrivate *priv;
+ 
+-  priv = GST_RTP_BASE_DEPAYLOAD_GET_PRIVATE (filter);
++  priv = gst_rtp_base_depayload_get_instance_private (filter);
++
+   filter->priv = priv;
+ 
+   GST_DEBUG_OBJECT (filter, "init");
+diff --git a/gst-libs/gst/rtp/gstrtpbasepayload.c b/gst-libs/gst/rtp/gstrtpbasepayload.c
+index b411af0b8..b518ac735 100644
+--- a/gst-libs/gst/rtp/gstrtpbasepayload.c
++++ b/gst-libs/gst/rtp/gstrtpbasepayload.c
+@@ -33,9 +33,6 @@
+ GST_DEBUG_CATEGORY_STATIC (rtpbasepayload_debug);
+ #define GST_CAT_DEFAULT (rtpbasepayload_debug)
+ 
+-#define GST_RTP_BASE_PAYLOAD_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_RTP_BASE_PAYLOAD, GstRTPBasePayloadPrivate))
+-
+ struct _GstRTPBasePayloadPrivate
+ {
+   gboolean ts_offset_random;
+@@ -141,6 +138,7 @@ static gboolean gst_rtp_base_payload_negotiate (GstRTPBasePayload * payload);
+ 
+ 
+ static GstElementClass *parent_class = NULL;
++static gint private_offset = 0;
+ 
+ GType
+ gst_rtp_base_payload_get_type (void)
+@@ -159,14 +157,25 @@ gst_rtp_base_payload_get_type (void)
+       0,
+       (GInstanceInitFunc) gst_rtp_base_payload_init,
+     };
++    GType _type;
++
++    _type = g_type_register_static (GST_TYPE_ELEMENT, "GstRTPBasePayload",
++        &rtpbasepayload_info, G_TYPE_FLAG_ABSTRACT);
++
++    private_offset =
++        g_type_add_instance_private (_type, sizeof (GstRTPBasePayloadPrivate));
+ 
+-    g_once_init_leave ((gsize *) & rtpbasepayload_type,
+-        g_type_register_static (GST_TYPE_ELEMENT, "GstRTPBasePayload",
+-            &rtpbasepayload_info, G_TYPE_FLAG_ABSTRACT));
++    g_once_init_leave ((gsize *) & rtpbasepayload_type, _type);
+   }
+   return rtpbasepayload_type;
+ }
+ 
++static inline GstRTPBasePayloadPrivate *
++gst_rtp_base_payload_get_instance_private (GstRTPBasePayload * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static void
+ gst_rtp_base_payload_class_init (GstRTPBasePayloadClass * klass)
+ {
+@@ -176,7 +185,8 @@ gst_rtp_base_payload_class_init (GstRTPBasePayloadClass * klass)
+   gobject_class = (GObjectClass *) klass;
+   gstelement_class = (GstElementClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstRTPBasePayloadPrivate));
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
+ 
+   parent_class = g_type_class_peek_parent (klass);
+ 
+@@ -307,7 +317,7 @@ gst_rtp_base_payload_init (GstRTPBasePayload * rtpbasepayload, gpointer g_class)
+   GstRTPBasePayloadPrivate *priv;
+ 
+   rtpbasepayload->priv = priv =
+-      GST_RTP_BASE_PAYLOAD_GET_PRIVATE (rtpbasepayload);
++      gst_rtp_base_payload_get_instance_private (rtpbasepayload);
+ 
+   templ =
+       gst_element_class_get_pad_template (GST_ELEMENT_CLASS (g_class), "src");
+From d736bfc855743fba84e80272b8a05750fd6143e5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tim-Philipp=20M=C3=BCller?= <tim@centricular.com>
+Date: Sat, 23 Jun 2018 21:33:16 +0200
+Subject: [PATCH] gl: Update for g_type_class_add_private() deprecation in
+ recent GLib
+
+https://gitlab.gnome.org/GNOME/glib/merge_requests/7
+---
+ gst-libs/gst/gl/cocoa/gstglcontext_cocoa.m | 11 ++++-------
+ gst-libs/gst/gl/cocoa/gstglwindow_cocoa.m  | 19 +++++++++----------
+ gst-libs/gst/gl/eagl/gstglcontext_eagl.m   | 10 +++-------
+ gst-libs/gst/gl/eagl/gstglwindow_eagl.m    | 10 +++-------
+ gst-libs/gst/gl/gstglbasefilter.c          | 10 +++-------
+ gst-libs/gst/gl/gstglbufferpool.c          | 13 ++++++-------
+ gst-libs/gst/gl/gstglcolorconvert.c        |  7 +++----
+ gst-libs/gst/gl/gstglcontext.c             | 14 +++++---------
+ gst-libs/gst/gl/gstgldisplay.c             | 22 +++++++++-------------
+ gst-libs/gst/gl/gstglframebuffer.c         | 19 +++++++------------
+ gst-libs/gst/gl/gstglshader.c              |  9 ++-------
+ gst-libs/gst/gl/gstglslstage.c             | 18 +++++++-----------
+ gst-libs/gst/gl/gstglupload.c              | 18 +++++++-----------
+ gst-libs/gst/gl/gstglviewconvert.c         |  9 ++-------
+ gst-libs/gst/gl/gstglwindow.c              | 14 +++++---------
+ gst-libs/gst/gl/win32/gstglcontext_wgl.c   |  9 +++------
+ gst-libs/gst/gl/win32/gstglwindow_win32.c  |  9 ++-------
+ gst-libs/gst/gl/x11/gstglcontext_glx.c     | 14 +++++---------
+ gst-libs/gst/gl/x11/gstglwindow_x11.c      | 14 +++++---------
+ 19 files changed, 90 insertions(+), 159 deletions(-)
+
+diff --git a/gst-libs/gst/gl/cocoa/gstglcontext_cocoa.m b/gst-libs/gst/gl/cocoa/gstglcontext_cocoa.m
+index b3ba59e9c..a93baa335 100644
+--- a/gst-libs/gst/gl/cocoa/gstglcontext_cocoa.m
++++ b/gst-libs/gst/gl/cocoa/gstglcontext_cocoa.m
+@@ -36,22 +36,19 @@ static gboolean gst_gl_context_cocoa_create_context (GstGLContext *context, GstG
+ static GstGLPlatform gst_gl_context_cocoa_get_gl_platform (GstGLContext * context);
+ static void gst_gl_context_cocoa_swap_buffers (GstGLContext * context);
+ 
+-#define GST_GL_CONTEXT_COCOA_GET_PRIVATE(o)  \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_CONTEXT_COCOA, GstGLContextCocoaPrivate))
+-
+ GST_DEBUG_CATEGORY_STATIC (gst_gl_context_cocoa_debug);
+ #define GST_CAT_DEFAULT gst_gl_context_cocoa_debug
+ 
+ G_DEFINE_TYPE_WITH_CODE (GstGLContextCocoa, gst_gl_context_cocoa,
+-    GST_TYPE_GL_CONTEXT, GST_DEBUG_CATEGORY_INIT (gst_gl_context_cocoa_debug, "glcontext_cocoa", 0, "Cocoa GL Context"); );
++    GST_TYPE_GL_CONTEXT,
++    G_ADD_PRIVATE (GstGLContextCocoa)
++    GST_DEBUG_CATEGORY_INIT (gst_gl_context_cocoa_debug, "glcontext_cocoa", 0, "Cocoa GL Context"); );
+ 
+ static void
+ gst_gl_context_cocoa_class_init (GstGLContextCocoaClass * klass)
+ {
+   GstGLContextClass *context_class = (GstGLContextClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLContextCocoaPrivate));
+-
+   context_class->swap_buffers =
+     GST_DEBUG_FUNCPTR (gst_gl_context_cocoa_swap_buffers);
+   context_class->destroy_context =
+@@ -70,7 +67,7 @@ static gboolean gst_gl_context_cocoa_create_context (GstGLContext *context, GstG
+ static void
+ gst_gl_context_cocoa_init (GstGLContextCocoa * context)
+ {
+-  context->priv = GST_GL_CONTEXT_COCOA_GET_PRIVATE (context);
++  context->priv = gst_gl_context_cocoa_get_instance_private (context);
+ }
+ 
+ /* Must be called in the gl thread */
+diff --git a/gst-libs/gst/gl/cocoa/gstglwindow_cocoa.m b/gst-libs/gst/gl/cocoa/gstglwindow_cocoa.m
+index 1aecf09c1..91c1187ef 100644
+--- a/gst-libs/gst/gl/cocoa/gstglwindow_cocoa.m
++++ b/gst-libs/gst/gl/cocoa/gstglwindow_cocoa.m
+@@ -62,16 +62,9 @@ - (BOOL) canBecomeKeyWindow;
+ /*                                                              */
+ /* =============================================================*/
+ 
+-#define GST_GL_WINDOW_COCOA_GET_PRIVATE(o)  \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_WINDOW_COCOA, GstGLWindowCocoaPrivate))
+-
+ #define GST_CAT_DEFAULT gst_gl_window_cocoa_debug
+ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+ 
+-#define DEBUG_INIT \
+-  GST_DEBUG_CATEGORY_GET (GST_CAT_DEFAULT, "glwindow");
+-#define gst_gl_window_cocoa_parent_class parent_class
+-G_DEFINE_TYPE_WITH_CODE (GstGLWindowCocoa, gst_gl_window_cocoa, GST_TYPE_GL_WINDOW, DEBUG_INIT);
+ static void gst_gl_window_cocoa_finalize (GObject * object);
+ 
+ static gboolean gst_gl_window_cocoa_open (GstGLWindow *window, GError **err);
+@@ -103,14 +96,20 @@ static gboolean gst_gl_window_cocoa_set_render_rectangle (GstGLWindow * window,
+   gpointer gl_queue;
+ };
+ 
++#define DEBUG_INIT \
++  GST_DEBUG_CATEGORY_GET (GST_CAT_DEFAULT, "glwindow");
++
++#define gst_gl_window_cocoa_parent_class parent_class
++G_DEFINE_TYPE_WITH_CODE (GstGLWindowCocoa, gst_gl_window_cocoa, GST_TYPE_GL_WINDOW,
++    G_ADD_PRIVATE (GstGLWindowCocoa)
++    DEBUG_INIT);
++
+ static void
+ gst_gl_window_cocoa_class_init (GstGLWindowCocoaClass * klass)
+ {
+   GstGLWindowClass *window_class = (GstGLWindowClass *) klass;
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLWindowCocoaPrivate));
+-
+   window_class->open = GST_DEBUG_FUNCPTR (gst_gl_window_cocoa_open);
+   window_class->close = GST_DEBUG_FUNCPTR (gst_gl_window_cocoa_close);
+   window_class->get_window_handle =
+@@ -133,7 +132,7 @@ static gboolean gst_gl_window_cocoa_set_render_rectangle (GstGLWindow * window,
+ static void
+ gst_gl_window_cocoa_init (GstGLWindowCocoa * window)
+ {
+-  window->priv = GST_GL_WINDOW_COCOA_GET_PRIVATE (window);
++  window->priv = gst_gl_window_cocoa_get_instance_private (window);
+ 
+   window->priv->preferred_width = 320;
+   window->priv->preferred_height = 240;
+diff --git a/gst-libs/gst/gl/eagl/gstglcontext_eagl.m b/gst-libs/gst/gl/eagl/gstglcontext_eagl.m
+index 392eeee49..409c1dac7 100644
+--- a/gst-libs/gst/gl/eagl/gstglcontext_eagl.m
++++ b/gst-libs/gst/gl/eagl/gstglcontext_eagl.m
+@@ -56,10 +56,8 @@ static GstGLPlatform gst_gl_context_eagl_get_gl_platform (GstGLContext *
+   GLuint depth_renderbuffer;
+ };
+ 
+-#define GST_GL_CONTEXT_EAGL_GET_PRIVATE(o)  \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_CONTEXT_EAGL, GstGLContextEaglPrivate))
+-
+-G_DEFINE_TYPE (GstGLContextEagl, gst_gl_context_eagl, GST_TYPE_GL_CONTEXT);
++G_DEFINE_TYPE_WITH_PRIVATE (GstGLContextEagl, gst_gl_context_eagl,
++    GST_TYPE_GL_CONTEXT);
+ 
+ static void
+ gst_gl_context_eagl_class_init (GstGLContextEaglClass * klass)
+@@ -68,8 +66,6 @@ static GstGLPlatform gst_gl_context_eagl_get_gl_platform (GstGLContext *
+ 
+   context_class = (GstGLContextClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLContextEaglPrivate));
+-
+   context_class->destroy_context =
+       GST_DEBUG_FUNCPTR (gst_gl_context_eagl_destroy_context);
+   context_class->create_context =
+@@ -90,7 +86,7 @@ static GstGLPlatform gst_gl_context_eagl_get_gl_platform (GstGLContext *
+ static void
+ gst_gl_context_eagl_init (GstGLContextEagl * context)
+ {
+-  context->priv = GST_GL_CONTEXT_EAGL_GET_PRIVATE (context);
++  context->priv = gst_gl_context_eagl_get_instance_private (context);
+ }
+ 
+ /* Must be called in the gl thread */
+diff --git a/gst-libs/gst/gl/eagl/gstglwindow_eagl.m b/gst-libs/gst/gl/eagl/gstglwindow_eagl.m
+index 088a47c22..672c6a578 100644
+--- a/gst-libs/gst/gl/eagl/gstglwindow_eagl.m
++++ b/gst-libs/gst/gl/eagl/gstglwindow_eagl.m
+@@ -29,9 +29,6 @@
+ #include "gstglwindow_eagl.h"
+ #include "gstglcontext_eagl.h"
+ 
+-#define GST_GL_WINDOW_EAGL_GET_PRIVATE(o)  \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_WINDOW_EAGL, GstGLWindowEaglPrivate))
+-
+ #define GST_CAT_DEFAULT gst_gl_window_eagl_debug
+ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+ 
+@@ -39,7 +36,8 @@
+   GST_DEBUG_CATEGORY_GET (GST_CAT_DEFAULT, "glwindow");
+ #define gst_gl_window_eagl_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstGLWindowEagl, gst_gl_window_eagl,
+-    GST_TYPE_GL_WINDOW, DEBUG_INIT);
++    GST_TYPE_GL_WINDOW, G_ADD_PRIVATE (GstGLWindowEagl) DEBUG_INIT);
++
+ static void gst_gl_window_eagl_finalize (GObject * object);
+ 
+ static guintptr gst_gl_window_eagl_get_display (GstGLWindow * window);
+@@ -66,8 +64,6 @@ static void gst_gl_window_eagl_send_message_async (GstGLWindow * window,
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+   GstGLWindowClass *window_class = (GstGLWindowClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLWindowEaglPrivate));
+-
+   gobject_class->finalize = gst_gl_window_eagl_finalize;
+ 
+   window_class->get_display =
+@@ -86,7 +82,7 @@ static void gst_gl_window_eagl_send_message_async (GstGLWindow * window,
+ static void
+ gst_gl_window_eagl_init (GstGLWindowEagl * window)
+ {
+-  window->priv = GST_GL_WINDOW_EAGL_GET_PRIVATE (window);
++  window->priv = gst_gl_window_eagl_get_instance_private (window);
+   window->priv->gl_queue =
+       (__bridge_retained gpointer)dispatch_queue_create ("org.freedesktop.gstreamer.glwindow", NULL);
+ }
+diff --git a/gst-libs/gst/gl/gstglbasefilter.c b/gst-libs/gst/gl/gstglbasefilter.c
+index 61514cecd..01622984b 100644
+--- a/gst-libs/gst/gl/gstglbasefilter.c
++++ b/gst-libs/gst/gl/gstglbasefilter.c
+@@ -42,9 +42,6 @@
+ #define GST_CAT_DEFAULT gst_gl_base_filter_debug
+ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+ 
+-#define GST_GL_BASE_FILTER_GET_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_BASE_FILTER, GstGLBaseFilterPrivate))
+-
+ struct _GstGLBaseFilterPrivate
+ {
+   GstGLContext *other_context;
+@@ -81,7 +81,8 @@
+ 
+ #define gst_gl_base_filter_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstGLBaseFilter, gst_gl_base_filter,
+-    GST_TYPE_BASE_TRANSFORM, GST_DEBUG_CATEGORY_INIT (gst_gl_base_filter_debug,
++    GST_TYPE_BASE_TRANSFORM, G_ADD_PRIVATE (GstGLBaseFilter)
++    GST_DEBUG_CATEGORY_INIT (gst_gl_base_filter_debug,
+         "glbasefilter", 0, "glbasefilter element"););
+ 
+ static void gst_gl_base_filter_finalize (GObject * object);
+@@ -99,8 +97,6 @@ gst_gl_base_filter_class_init (GstGLBaseFilterClass * klass)
+   GObjectClass *gobject_class;
+   GstElementClass *element_class;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLBaseFilterPrivate));
+-
+   gobject_class = (GObjectClass *) klass;
+   element_class = GST_ELEMENT_CLASS (klass);
+ 
+@@ -134,7 +130,7 @@ gst_gl_base_filter_init (GstGLBaseFilter * filter)
+ {
+   gst_base_transform_set_qos_enabled (GST_BASE_TRANSFORM (filter), TRUE);
+ 
+-  filter->priv = GST_GL_BASE_FILTER_GET_PRIVATE (filter);
++  filter->priv = gst_gl_base_filter_get_instance_private (filter);
+ }
+ 
+ static void
+diff --git a/gst-libs/gst/gl/gstglbufferpool.c b/gst-libs/gst/gl/gstglbufferpool.c
+index 309bc367b..e8327defb 100644
+--- a/gst-libs/gst/gl/gstglbufferpool.c
++++ b/gst-libs/gst/gl/gstglbufferpool.c
+@@ -59,13 +59,14 @@ static void gst_gl_buffer_pool_finalize (GObject * object);
+ GST_DEBUG_CATEGORY_STATIC (GST_CAT_GL_BUFFER_POOL);
+ #define GST_CAT_DEFAULT GST_CAT_GL_BUFFER_POOL
+ 
+-#define GST_GL_BUFFER_POOL_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_GL_BUFFER_POOL, GstGLBufferPoolPrivate))
++#define _init \
++    GST_DEBUG_CATEGORY_INIT (GST_CAT_GL_BUFFER_POOL, "glbufferpool", 0, \
++        "GL Buffer Pool");
+ 
+ #define gst_gl_buffer_pool_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstGLBufferPool, gst_gl_buffer_pool,
+-    GST_TYPE_BUFFER_POOL, GST_DEBUG_CATEGORY_INIT (GST_CAT_GL_BUFFER_POOL,
+-        "glbufferpool", 0, "GL Buffer Pool"));
++    GST_TYPE_BUFFER_POOL, G_ADD_PRIVATE (GstGLBufferPool)
++    _init);
+ 
+ static const gchar **
+ gst_gl_buffer_pool_get_options (GstBufferPool * pool)
+@@ -327,8 +328,6 @@ gst_gl_buffer_pool_class_init (GstGLBufferPoolClass * klass)
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+   GstBufferPoolClass *gstbufferpool_class = (GstBufferPoolClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLBufferPoolPrivate));
+-
+   gobject_class->finalize = gst_gl_buffer_pool_finalize;
+ 
+   gstbufferpool_class->get_options = gst_gl_buffer_pool_get_options;
+@@ -342,7 +341,7 @@ gst_gl_buffer_pool_init (GstGLBufferPool * pool)
+ {
+   GstGLBufferPoolPrivate *priv = NULL;
+ 
+-  pool->priv = GST_GL_BUFFER_POOL_GET_PRIVATE (pool);
++  pool->priv = gst_gl_buffer_pool_get_instance_private (pool);
+   priv = pool->priv;
+ 
+   priv->allocator = NULL;
+diff --git a/gst-libs/gst/gl/gstglcolorconvert.c b/gst-libs/gst/gl/gstglcolorconvert.c
+index d8c24f73c..ccad1d680 100644
+--- a/gst-libs/gst/gl/gstglcolorconvert.c
++++ b/gst-libs/gst/gl/gstglcolorconvert.c
+@@ -462,7 +462,8 @@ GST_DEBUG_CATEGORY_STATIC (gst_gl_color_convert_debug);
+   GST_DEBUG_CATEGORY_INIT (gst_gl_color_convert_debug, "glconvert", 0, "convert");
+ 
+ G_DEFINE_TYPE_WITH_CODE (GstGLColorConvert, gst_gl_color_convert,
+-    GST_TYPE_OBJECT, DEBUG_INIT);
++    GST_TYPE_OBJECT, G_ADD_PRIVATE (GstGLColorConvert) DEBUG_INIT);
++
+ static void gst_gl_color_convert_finalize (GObject * object);
+ static void gst_gl_color_convert_reset (GstGLColorConvert * convert);
+ 
+@@ -472,15 +473,13 @@ static void gst_gl_color_convert_reset (GstGLColorConvert * convert);
+ static void
+ gst_gl_color_convert_class_init (GstGLColorConvertClass * klass)
+ {
+-  g_type_class_add_private (klass, sizeof (GstGLColorConvertPrivate));
+-
+   G_OBJECT_CLASS (klass)->finalize = gst_gl_color_convert_finalize;
+ }
+ 
+ static void
+ gst_gl_color_convert_init (GstGLColorConvert * convert)
+ {
+-  convert->priv = GST_GL_COLOR_CONVERT_GET_PRIVATE (convert);
++  convert->priv = gst_gl_color_convert_get_instance_private (convert);
+ 
+   gst_gl_color_convert_reset (convert);
+ }
+diff --git a/gst-libs/gst/gl/gstglcontext.c b/gst-libs/gst/gl/gstglcontext.c
+index 20bed4e87..a76459481 100644
+--- a/gst-libs/gst/gl/gstglcontext.c
++++ b/gst-libs/gst/gl/gstglcontext.c
+@@ -187,12 +187,6 @@ _context_share_group_is_shared (struct ContextShareGroup *share)
+ GST_DEBUG_CATEGORY (GST_CAT_DEFAULT);
+ GST_DEBUG_CATEGORY_STATIC (gst_gl_debug);
+ 
+-#define gst_gl_context_parent_class parent_class
+-G_DEFINE_ABSTRACT_TYPE (GstGLContext, gst_gl_context, GST_TYPE_OBJECT);
+-
+-#define GST_GL_CONTEXT_GET_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_CONTEXT, GstGLContextPrivate))
+-
+ static void _init_debug (void);
+ 
+ static gpointer gst_gl_context_create_thread (GstGLContext * context);
+@@ -237,6 +231,10 @@ typedef struct
+   GstGLContextClass parent;
+ } GstGLWrappedContextClass;
+ 
++#define gst_gl_context_parent_class parent_class
++G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GstGLContext, gst_gl_context,
++    GST_TYPE_OBJECT);
++
+ #define GST_TYPE_GL_WRAPPED_CONTEXT (gst_gl_wrapped_context_get_type())
+ static GType gst_gl_wrapped_context_get_type (void);
+ G_DEFINE_TYPE (GstGLWrappedContext, gst_gl_wrapped_context,
+@@ -272,7 +270,7 @@ _ensure_window (GstGLContext * context)
+ static void
+ gst_gl_context_init (GstGLContext * context)
+ {
+-  context->priv = GST_GL_CONTEXT_GET_PRIVATE (context);
++  context->priv = gst_gl_context_get_instance_private (context);
+ 
+   context->window = NULL;
+   context->gl_vtable = g_slice_alloc0 (sizeof (GstGLFuncs));
+@@ -289,8 +287,6 @@ gst_gl_context_init (GstGLContext * context)
+ static void
+ gst_gl_context_class_init (GstGLContextClass * klass)
+ {
+-  g_type_class_add_private (klass, sizeof (GstGLContextPrivate));
+-
+   klass->get_proc_address =
+       GST_DEBUG_FUNCPTR (gst_gl_context_default_get_proc_address);
+   klass->get_gl_platform_version =
+diff --git a/gst-libs/gst/gl/gstgldisplay.c b/gst-libs/gst/gl/gstgldisplay.c
+index e10807304..3b72a566d 100644
+--- a/gst-libs/gst/gl/gstgldisplay.c
++++ b/gst-libs/gst/gl/gstgldisplay.c
+@@ -81,16 +81,6 @@ GST_DEBUG_CATEGORY_STATIC (gst_context);
+ GST_DEBUG_CATEGORY_STATIC (gst_gl_display_debug);
+ #define GST_CAT_DEFAULT gst_gl_display_debug
+ 
+-#define DEBUG_INIT \
+-  GST_DEBUG_CATEGORY_INIT (gst_gl_display_debug, "gldisplay", 0, "opengl display"); \
+-  GST_DEBUG_CATEGORY_GET (gst_context, "GST_CONTEXT");
+-
+-G_DEFINE_TYPE_WITH_CODE (GstGLDisplay, gst_gl_display, GST_TYPE_OBJECT,
+-    DEBUG_INIT);
+-
+-#define GST_GL_DISPLAY_GET_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_DISPLAY, GstGLDisplayPrivate))
+-
+ enum
+ {
+   SIGNAL_0,
+@@ -119,6 +109,14 @@ struct _GstGLDisplayPrivate
+   GCond thread_cond;
+ };
+ 
++#define DEBUG_INIT \
++  GST_DEBUG_CATEGORY_INIT (gst_gl_display_debug, "gldisplay", 0, "opengl display"); \
++  GST_DEBUG_CATEGORY_GET (gst_context, "GST_CONTEXT");
++
++G_DEFINE_TYPE_WITH_CODE (GstGLDisplay, gst_gl_display, GST_TYPE_OBJECT,
++    G_ADD_PRIVATE (GstGLDisplay)
++    DEBUG_INIT);
++
+ static gboolean
+ _unlock_main_thread (GstGLDisplay * display)
+ {
+@@ -158,8 +156,6 @@ _event_thread_main (GstGLDisplay * display)
+ static void
+ gst_gl_display_class_init (GstGLDisplayClass * klass)
+ {
+-  g_type_class_add_private (klass, sizeof (GstGLDisplayPrivate));
+-
+   /**
+    * GstGLDisplay::create-context:
+    * @object: the #GstGLDisplay
+@@ -186,7 +182,7 @@ gst_gl_display_class_init (GstGLDisplayClass * klass)
+ static void
+ gst_gl_display_init (GstGLDisplay * display)
+ {
+-  display->priv = GST_GL_DISPLAY_GET_PRIVATE (display);
++  display->priv = gst_gl_display_get_instance_private (display);
+ 
+   display->type = GST_GL_DISPLAY_TYPE_ANY;
+   display->priv->gl_api = GST_GL_API_ANY;
+diff --git a/gst-libs/gst/gl/gstglframebuffer.c b/gst-libs/gst/gl/gstglframebuffer.c
+index b1d64b288..98eee348f 100644
+--- a/gst-libs/gst/gl/gstglframebuffer.c
++++ b/gst-libs/gst/gl/gstglframebuffer.c
+@@ -79,15 +79,6 @@
+ GST_DEBUG_CATEGORY_STATIC (gst_gl_framebuffer_debug);
+ #define GST_CAT_DEFAULT gst_gl_framebuffer_debug
+ 
+-#define DEBUG_INIT \
+-  GST_DEBUG_CATEGORY_INIT (gst_gl_framebuffer_debug, "glframebuffer", 0, "GL Framebuffer");
+-
+-G_DEFINE_TYPE_WITH_CODE (GstGLFramebuffer, gst_gl_framebuffer, GST_TYPE_OBJECT,
+-    DEBUG_INIT);
+-
+-#define GST_GL_FRAMEBUFFER_GET_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_FRAMEBUFFER, GstGLFramebufferPrivate))
+-
+ static void gst_gl_framebuffer_finalize (GObject * object);
+ 
+ struct _GstGLFramebufferPrivate
+@@ -96,6 +87,12 @@ struct _GstGLFramebufferPrivate
+   guint effective_height;
+ };
+ 
++#define DEBUG_INIT \
++  GST_DEBUG_CATEGORY_INIT (gst_gl_framebuffer_debug, "glframebuffer", 0, "GL Framebuffer");
++
++G_DEFINE_TYPE_WITH_CODE (GstGLFramebuffer, gst_gl_framebuffer, GST_TYPE_OBJECT,
++    G_ADD_PRIVATE (GstGLFramebuffer) DEBUG_INIT);
++
+ struct fbo_attachment
+ {
+   guint attachment_point;
+@@ -124,15 +121,13 @@ _fbo_attachment_unset (struct fbo_attachment *attach)
+ static void
+ gst_gl_framebuffer_class_init (GstGLFramebufferClass * klass)
+ {
+-  g_type_class_add_private (klass, sizeof (GstGLFramebufferPrivate));
+-
+   G_OBJECT_CLASS (klass)->finalize = gst_gl_framebuffer_finalize;
+ }
+ 
+ static void
+ gst_gl_framebuffer_init (GstGLFramebuffer * fb)
+ {
+-  fb->priv = GST_GL_FRAMEBUFFER_GET_PRIVATE (fb);
++  fb->priv = gst_gl_framebuffer_get_instance_private (fb);
+ 
+   fb->attachments =
+       g_array_new (FALSE, FALSE, (sizeof (struct fbo_attachment)));
+diff --git a/gst-libs/gst/gl/gstglshader.c b/gst-libs/gst/gl/gstglshader.c
+index 6d14159c4..0f02ace8a 100644
+--- a/gst-libs/gst/gl/gstglshader.c
++++ b/gst-libs/gst/gl/gstglshader.c
+@@ -38,9 +38,6 @@
+ #define GLhandleARB GLuint
+ #endif
+ 
+-#define GST_GL_SHADER_GET_PRIVATE(o)					\
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_SHADER, GstGLShaderPrivate))
+-
+ #define USING_OPENGL(context) (gst_gl_context_check_gl_version (context, GST_GL_API_OPENGL, 1, 0))
+ #define USING_OPENGL3(context) (gst_gl_context_check_gl_version (context, GST_GL_API_OPENGL3, 3, 1))
+ #define USING_GLES(context) (gst_gl_context_check_gl_version (context, GST_GL_API_GLES, 1, 0))
+@@ -91,7 +88,7 @@ GST_DEBUG_CATEGORY_STATIC (gst_gl_shader_debug);
+ #define DEBUG_INIT \
+   GST_DEBUG_CATEGORY_INIT (gst_gl_shader_debug, "glshader", 0, "shader");
+ G_DEFINE_TYPE_WITH_CODE (GstGLShader, gst_gl_shader, GST_TYPE_OBJECT,
+-    DEBUG_INIT);
++    G_ADD_PRIVATE (GstGLShader) DEBUG_INIT);
+ 
+ static void
+ _cleanup_shader (GstGLContext * context, GstGLShader * shader)
+@@ -174,8 +171,6 @@ gst_gl_shader_class_init (GstGLShaderClass * klass)
+   /* bind class methods .. */
+   GObjectClass *obj_class = G_OBJECT_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLShaderPrivate));
+-
+   obj_class->finalize = gst_gl_shader_finalize;
+   obj_class->set_property = gst_gl_shader_set_property;
+   obj_class->get_property = gst_gl_shader_get_property;
+@@ -195,7 +190,7 @@ gst_gl_shader_init (GstGLShader * self)
+   /* initialize sources and create program object */
+   GstGLShaderPrivate *priv;
+ 
+-  priv = self->priv = GST_GL_SHADER_GET_PRIVATE (self);
++  priv = self->priv = gst_gl_shader_get_instance_private (self);
+ 
+   priv->linked = FALSE;
+   priv->uniform_locations =
+diff --git a/gst-libs/gst/gl/gstglslstage.c b/gst-libs/gst/gl/gstglslstage.c
+index 4e7374c30..b95c3fedd 100644
+--- a/gst-libs/gst/gl/gstglslstage.c
++++ b/gst-libs/gst/gl/gstglslstage.c
+@@ -55,14 +55,6 @@ static const gchar *es2_version_header = "#version 100\n";
+ GST_DEBUG_CATEGORY_STATIC (gst_glsl_stage_debug);
+ #define GST_CAT_DEFAULT gst_glsl_stage_debug
+ 
+-G_DEFINE_TYPE_WITH_CODE (GstGLSLStage, gst_glsl_stage, GST_TYPE_OBJECT,
+-    GST_DEBUG_CATEGORY_INIT (gst_glsl_stage_debug, "glslstage", 0,
+-        "GLSL Stage");
+-    );
+-
+-#define GST_GLSL_STAGE_GET_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GLSL_STAGE, GstGLSLStagePrivate))
+-
+ struct _GstGLSLStagePrivate
+ {
+   GstGLSLFuncs vtable;
+@@ -77,6 +69,12 @@ struct _GstGLSLStagePrivate
+   gboolean compiled;
+ };
+ 
++G_DEFINE_TYPE_WITH_CODE (GstGLSLStage, gst_glsl_stage, GST_TYPE_OBJECT,
++    G_ADD_PRIVATE (GstGLSLStage)
++    GST_DEBUG_CATEGORY_INIT (gst_glsl_stage_debug, "glslstage", 0,
++        "GLSL Stage");
++    );
++
+ static void
+ gst_glsl_stage_finalize (GObject * object)
+ {
+@@ -125,8 +123,6 @@ gst_glsl_stage_class_init (GstGLSLStageClass * klass)
+ {
+   GObjectClass *obj_class = G_OBJECT_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLSLStagePrivate));
+-
+   obj_class->finalize = gst_glsl_stage_finalize;
+   obj_class->set_property = gst_glsl_stage_set_property;
+   obj_class->get_property = gst_glsl_stage_get_property;
+@@ -135,7 +131,7 @@ gst_glsl_stage_class_init (GstGLSLStageClass * klass)
+ static void
+ gst_glsl_stage_init (GstGLSLStage * stage)
+ {
+-  stage->priv = GST_GLSL_STAGE_GET_PRIVATE (stage);
++  stage->priv = gst_glsl_stage_get_instance_private (stage);
+ }
+ 
+ static gboolean
+diff --git a/gst-libs/gst/gl/gstglupload.c b/gst-libs/gst/gl/gstglupload.c
+index fa4884a32..745cde0aa 100644
+--- a/gst-libs/gst/gl/gstglupload.c
++++ b/gst-libs/gst/gl/gstglupload.c
+@@ -63,16 +63,8 @@
+ GST_DEBUG_CATEGORY_STATIC (gst_gl_upload_debug);
+ #define GST_CAT_DEFAULT gst_gl_upload_debug
+ 
+-#define DEBUG_INIT \
+-  GST_DEBUG_CATEGORY_INIT (gst_gl_upload_debug, "glupload", 0, "upload");
+-
+-G_DEFINE_TYPE_WITH_CODE (GstGLUpload, gst_gl_upload, GST_TYPE_OBJECT,
+-    DEBUG_INIT);
+ static void gst_gl_upload_finalize (GObject * object);
+ 
+-#define GST_GL_UPLOAD_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), \
+-    GST_TYPE_GL_UPLOAD, GstGLUploadPrivate))
+-
+ static GstGLTextureTarget
+ _caps_get_texture_target (GstCaps * caps, GstGLTextureTarget default_target)
+ {
+@@ -113,6 +105,12 @@ struct _GstGLUploadPrivate
+   int method_i;
+ };
+ 
++#define DEBUG_INIT \
++  GST_DEBUG_CATEGORY_INIT (gst_gl_upload_debug, "glupload", 0, "upload");
++
++G_DEFINE_TYPE_WITH_CODE (GstGLUpload, gst_gl_upload, GST_TYPE_OBJECT,
++    G_ADD_PRIVATE (GstGLUpload) DEBUG_INIT);
++
+ static GstCaps *
+ _set_caps_features_with_passthrough (const GstCaps * caps,
+     const gchar * feature_name, GstCapsFeatures * passthrough)
+@@ -1559,15 +1557,13 @@ gst_gl_upload_get_input_template_caps (void)
+ static void
+ gst_gl_upload_class_init (GstGLUploadClass * klass)
+ {
+-  g_type_class_add_private (klass, sizeof (GstGLUploadPrivate));
+-
+   G_OBJECT_CLASS (klass)->finalize = gst_gl_upload_finalize;
+ }
+ 
+ static void
+ gst_gl_upload_init (GstGLUpload * upload)
+ {
+-  upload->priv = GST_GL_UPLOAD_GET_PRIVATE (upload);
++  upload->priv = gst_gl_upload_get_instance_private (upload);
+ }
+ 
+ /**
+diff --git a/gst-libs/gst/gl/gstglviewconvert.c b/gst-libs/gst/gl/gstglviewconvert.c
+index c19b7790c..d032c2105 100644
+--- a/gst-libs/gst/gl/gstglviewconvert.c
++++ b/gst-libs/gst/gl/gstglviewconvert.c
+@@ -102,14 +102,11 @@ struct _GstGLViewConvertPrivate
+   GLuint attr_texture;
+ };
+ 
+-#define GST_GL_VIEW_CONVERT_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), \
+-    GST_TYPE_GL_VIEW_CONVERT, GstGLViewConvertPrivate))
+-
+ #define DEBUG_INIT \
+   GST_DEBUG_CATEGORY_INIT (gst_gl_view_convert_debug, "glviewconvert", 0, "glviewconvert object");
+ 
+ G_DEFINE_TYPE_WITH_CODE (GstGLViewConvert, gst_gl_view_convert,
+-    GST_TYPE_OBJECT, DEBUG_INIT);
++    GST_TYPE_OBJECT, G_ADD_PRIVATE (GstGLViewConvert) DEBUG_INIT);
+ 
+ static void gst_gl_view_convert_set_property (GObject * object,
+     guint prop_id, const GValue * value, GParamSpec * pspec);
+@@ -261,8 +258,6 @@ gst_gl_view_convert_class_init (GstGLViewConvertClass * klass)
+ {
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLViewConvertPrivate));
+-
+   gobject_class->set_property = gst_gl_view_convert_set_property;
+   gobject_class->get_property = gst_gl_view_convert_get_property;
+   gobject_class->finalize = gst_gl_view_convert_finalize;
+@@ -302,7 +297,7 @@ gst_gl_view_convert_class_init (GstGLViewConvertClass * klass)
+ static void
+ gst_gl_view_convert_init (GstGLViewConvert * convert)
+ {
+-  convert->priv = GST_GL_VIEW_CONVERT_GET_PRIVATE (convert);
++  convert->priv = gst_gl_view_convert_get_instance_private (convert);
+ 
+   convert->shader = NULL;
+   convert->downmix_mode = DEFAULT_DOWNMIX;
+diff --git a/gst-libs/gst/gl/gstglwindow.c b/gst-libs/gst/gl/gstglwindow.c
+index f7237a497..17ad5edcc 100644
+--- a/gst-libs/gst/gl/gstglwindow.c
++++ b/gst-libs/gst/gl/gstglwindow.c
+@@ -78,12 +78,6 @@
+ #define GST_CAT_DEFAULT gst_gl_window_debug
+ GST_DEBUG_CATEGORY (GST_CAT_DEFAULT);
+ 
+-#define gst_gl_window_parent_class parent_class
+-G_DEFINE_ABSTRACT_TYPE (GstGLWindow, gst_gl_window, GST_TYPE_OBJECT);
+-
+-#define GST_GL_WINDOW_GET_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_WINDOW, GstGLWindowPrivate))
+-
+ static void gst_gl_window_default_draw (GstGLWindow * window);
+ static void gst_gl_window_default_run (GstGLWindow * window);
+ static void gst_gl_window_default_quit (GstGLWindow * window);
+@@ -105,6 +99,10 @@ struct _GstGLWindowPrivate
+   GCond sync_message_cond;
+ };
+ 
++#define gst_gl_window_parent_class parent_class
++G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GstGLWindow, gst_gl_window,
++    GST_TYPE_OBJECT);
++
+ static void gst_gl_window_finalize (GObject * object);
+ 
+ typedef struct _GstGLDummyWindow
+@@ -163,7 +161,7 @@ _init_debug (void)
+ static void
+ gst_gl_window_init (GstGLWindow * window)
+ {
+-  GstGLWindowPrivate *priv = GST_GL_WINDOW_GET_PRIVATE (window);
++  GstGLWindowPrivate *priv = gst_gl_window_get_instance_private (window);
+   window->priv = priv;
+ 
+   g_mutex_init (&window->lock);
+@@ -181,8 +179,6 @@ gst_gl_window_init (GstGLWindow * window)
+ static void
+ gst_gl_window_class_init (GstGLWindowClass * klass)
+ {
+-  g_type_class_add_private (klass, sizeof (GstGLWindowPrivate));
+-
+   klass->open = GST_DEBUG_FUNCPTR (gst_gl_window_default_open);
+   klass->close = GST_DEBUG_FUNCPTR (gst_gl_window_default_close);
+   klass->run = GST_DEBUG_FUNCPTR (gst_gl_window_default_run);
+diff --git a/gst-libs/gst/gl/win32/gstglcontext_wgl.c b/gst-libs/gst/gl/win32/gstglcontext_wgl.c
+index 47b576c0b..ec4a8ebab 100644
+--- a/gst-libs/gst/gl/win32/gstglcontext_wgl.c
++++ b/gst-libs/gst/gl/win32/gstglcontext_wgl.c
+@@ -44,9 +44,8 @@ struct _GstGLContextWGLPrivate
+ #define GST_CAT_DEFAULT gst_gl_context_debug
+ 
+ #define gst_gl_context_wgl_parent_class parent_class
+-G_DEFINE_TYPE (GstGLContextWGL, gst_gl_context_wgl, GST_TYPE_GL_CONTEXT);
+-#define GST_GL_CONTEXT_WGL_GET_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_CONTEXT_WGL, GstGLContextWGLPrivate))
++G_DEFINE_TYPE_PRIVATE (GstGLContextWGL, gst_gl_context_wgl,
++    GST_TYPE_GL_CONTEXT);
+ 
+ static guintptr gst_gl_context_wgl_get_gl_context (GstGLContext * context);
+ static void gst_gl_context_wgl_swap_buffers (GstGLContext * context);
+@@ -66,8 +65,6 @@ gst_gl_context_wgl_class_init (GstGLContextWGLClass * klass)
+ {
+   GstGLContextClass *context_class = (GstGLContextClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLContextWGLPrivate));
+-
+   context_class->get_gl_context =
+       GST_DEBUG_FUNCPTR (gst_gl_context_wgl_get_gl_context);
+   context_class->choose_format =
+@@ -90,7 +87,7 @@ gst_gl_context_wgl_class_init (GstGLContextWGLClass * klass)
+ static void
+ gst_gl_context_wgl_init (GstGLContextWGL * context_wgl)
+ {
+-  context_wgl->priv = GST_GL_CONTEXT_WGL_GET_PRIVATE (context_wgl);
++  context_wgl->priv = gst_gl_context_wgl_get_instance_private (context_wgl);
+ 
+   context_wgl->priv->context_api = GST_GL_API_OPENGL | GST_GL_API_OPENGL3;
+ }
+diff --git a/gst-libs/gst/gl/win32/gstglwindow_win32.c b/gst-libs/gst/gl/win32/gstglwindow_win32.c
+index 324954e58..bbaa7b083 100644
+--- a/gst-libs/gst/gl/win32/gstglwindow_win32.c
++++ b/gst-libs/gst/gl/win32/gstglwindow_win32.c
+@@ -31,9 +31,6 @@ LRESULT CALLBACK window_proc (HWND hWnd, UINT uMsg, WPARAM wParam,
+ LRESULT FAR PASCAL sub_class_proc (HWND hWnd, UINT uMsg, WPARAM wParam,
+     LPARAM lParam);
+ 
+-#define GST_GL_WINDOW_WIN32_GET_PRIVATE(o)  \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_WINDOW_WIN32, GstGLWindowWin32Private))
+-
+ enum
+ {
+   PROP_0
+@@ -52,7 +49,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+   GST_DEBUG_CATEGORY_GET (GST_CAT_DEFAULT, "glwindow");
+ #define gst_gl_window_win32_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstGLWindowWin32, gst_gl_window_win32,
+-    GST_TYPE_GL_WINDOW, DEBUG_INIT);
++    GST_TYPE_GL_WINDOW, G_ADD_PRIVATE (GstGLWindowWin32) DEBUG_INIT);
+ 
+ static void gst_gl_window_win32_set_window_handle (GstGLWindow * window,
+     guintptr handle);
+@@ -70,8 +67,6 @@ gst_gl_window_win32_class_init (GstGLWindowWin32Class * klass)
+ {
+   GstGLWindowClass *window_class = (GstGLWindowClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLWindowWin32Private));
+-
+   window_class->set_window_handle =
+       GST_DEBUG_FUNCPTR (gst_gl_window_win32_set_window_handle);
+   window_class->draw = GST_DEBUG_FUNCPTR (gst_gl_window_win32_draw);
+@@ -87,7 +82,7 @@ gst_gl_window_win32_class_init (GstGLWindowWin32Class * klass)
+ static void
+ gst_gl_window_win32_init (GstGLWindowWin32 * window)
+ {
+-  window->priv = GST_GL_WINDOW_WIN32_GET_PRIVATE (window);
++  window->priv = gst_gl_window_win32_get_instance_private (window);
+ }
+ 
+ GstGLWindowWin32 *
+diff --git a/gst-libs/gst/gl/x11/gstglcontext_glx.c b/gst-libs/gst/gl/x11/gstglcontext_glx.c
+index 877e5c6d8..3da346784 100644
+--- a/gst-libs/gst/gl/x11/gstglcontext_glx.c
++++ b/gst-libs/gst/gl/x11/gstglcontext_glx.c
+@@ -41,12 +41,6 @@
+ 
+ #define GST_CAT_DEFAULT gst_gl_context_debug
+ 
+-#define gst_gl_context_glx_parent_class parent_class
+-G_DEFINE_TYPE (GstGLContextGLX, gst_gl_context_glx, GST_TYPE_GL_CONTEXT);
+-
+-#define GST_GL_CONTEXT_GLX_GET_PRIVATE(o) \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_CONTEXT_GLX, GstGLContextGLXPrivate))
+-
+ static guintptr gst_gl_context_glx_get_gl_context (GstGLContext * context);
+ static void gst_gl_context_glx_swap_buffers (GstGLContext * context);
+ static gboolean gst_gl_context_glx_activate (GstGLContext * context,
+@@ -74,13 +68,15 @@ struct _GstGLContextGLXPrivate
+       GLXContext, Bool, const int *);
+ };
+ 
++#define gst_gl_context_glx_parent_class parent_class
++G_DEFINE_TYPE_WITH_PRIVATE (GstGLContextGLX, gst_gl_context_glx,
++    GST_TYPE_GL_CONTEXT);
++
+ static void
+ gst_gl_context_glx_class_init (GstGLContextGLXClass * klass)
+ {
+   GstGLContextClass *context_class = (GstGLContextClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLContextGLXPrivate));
+-
+   context_class->get_gl_context =
+       GST_DEBUG_FUNCPTR (gst_gl_context_glx_get_gl_context);
+   context_class->activate = GST_DEBUG_FUNCPTR (gst_gl_context_glx_activate);
+@@ -107,7 +103,7 @@ gst_gl_context_glx_class_init (GstGLContextGLXClass * klass)
+ static void
+ gst_gl_context_glx_init (GstGLContextGLX * context)
+ {
+-  context->priv = GST_GL_CONTEXT_GLX_GET_PRIVATE (context);
++  context->priv = gst_gl_context_glx_get_instance_private (context);
+ }
+ 
+ GstGLContextGLX *
+diff --git a/gst-libs/gst/gl/x11/gstglwindow_x11.c b/gst-libs/gst/gl/x11/gstglwindow_x11.c
+index 9898e0be7..29e5084c5 100644
+--- a/gst-libs/gst/gl/x11/gstglwindow_x11.c
++++ b/gst-libs/gst/gl/x11/gstglwindow_x11.c
+@@ -36,14 +36,8 @@
+ /* for XkbKeycodeToKeysym */
+ #include <X11/XKBlib.h>
+ 
+-#define GST_GL_WINDOW_X11_GET_PRIVATE(o)  \
+-  (G_TYPE_INSTANCE_GET_PRIVATE((o), GST_TYPE_GL_WINDOW_X11, GstGLWindowX11Private))
+-
+ #define GST_CAT_DEFAULT gst_gl_window_debug
+ 
+-#define gst_gl_window_x11_parent_class parent_class
+-G_DEFINE_TYPE (GstGLWindowX11, gst_gl_window_x11, GST_TYPE_GL_WINDOW);
+-
+ G_GNUC_INTERNAL
+     gboolean gst_gl_window_x11_handle_event (GstGLWindowX11 * window_x11,
+     xcb_generic_event_t * event);
+@@ -71,6 +65,10 @@ struct _GstGLWindowX11Private
+   GstVideoRectangle render_rect;
+ };
+ 
++#define gst_gl_window_x11_parent_class parent_class
++G_DEFINE_TYPE_WITH_PRIVATE (GstGLWindowX11, gst_gl_window_x11,
++    GST_TYPE_GL_WINDOW);
++
+ static guintptr gst_gl_window_x11_get_display (GstGLWindow * window);
+ guintptr gst_gl_window_x11_get_gl_context (GstGLWindow * window);
+ gboolean gst_gl_window_x11_activate (GstGLWindow * window, gboolean activate);
+@@ -102,8 +100,6 @@ gst_gl_window_x11_class_init (GstGLWindowX11Class * klass)
+   GObjectClass *obj_class = G_OBJECT_CLASS (klass);
+   GstGLWindowClass *window_class = (GstGLWindowClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGLWindowX11Private));
+-
+   obj_class->finalize = gst_gl_window_x11_finalize;
+ 
+   window_class->get_display = GST_DEBUG_FUNCPTR (gst_gl_window_x11_get_display);
+@@ -126,7 +122,7 @@ gst_gl_window_x11_class_init (GstGLWindowX11Class * klass)
+ static void
+ gst_gl_window_x11_init (GstGLWindowX11 * window)
+ {
+-  window->priv = GST_GL_WINDOW_X11_GET_PRIVATE (window);
++  window->priv = gst_gl_window_x11_get_instance_private (window);
+ }
+ 
+ /* Must be called in the gl thread */

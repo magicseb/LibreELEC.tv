@@ -1,0 +1,48 @@
+--- a/Makefile	2017-07-04 16:45:18.609799849 +0200
++++ b/Makefile	2017-07-04 16:45:37.526662269 +0200
+@@ -1,5 +1,5 @@
+ export DESTDIR ?=
+-export PREFIX ?= /usr/local
++export PREFIX ?= /usr
+ export CROSS_COMPILE =
+ 
+ export INCDIR ?= $(PREFIX)/include/tinyalsa
+@@ -10,9 +10,6 @@
+ .PHONY: all
+ all:
+ 	$(MAKE) -C src
+-	$(MAKE) -C utils
+-	$(MAKE) -C doxygen
+-	$(MAKE) -C examples
+ 
+ .PHONY: clean
+ clean:
+@@ -29,6 +26,3 @@
+ 	install include/tinyalsa/asoundlib.h $(DESTDIR)$(INCDIR)/
+ 	install include/tinyalsa/version.h $(DESTDIR)$(INCDIR)/
+ 	$(MAKE) -C src install
+-	$(MAKE) -C utils install
+-	$(MAKE) -C doxygen install
+-
+--- a/src/Makefile	2017-07-04 16:45:48.920113482 +0200
++++ b/src/Makefile	2017-07-04 16:46:36.517272457 +0200
+@@ -19,7 +19,7 @@
+ OBJECTS = limits.o mixer.o pcm.o
+ 
+ .PHONY: all
+-all: libtinyalsa.a libtinyalsa.so
++all: libtinyalsa.so
+ 
+ pcm.o: pcm.c pcm.h
+ 
+@@ -48,9 +48,8 @@
+ 	rm -f $(OBJECTS)
+ 
+ .PHONY: install
+-install: libtinyalsa.a libtinyalsa.so.1
++install: libtinyalsa.so.1
+ 	install -d $(DESTDIR)$(LIBDIR)/
+-	install libtinyalsa.a $(DESTDIR)$(LIBDIR)/
+ 	install libtinyalsa.so.1.1.1 $(DESTDIR)$(LIBDIR)/
+ 	ln -sf libtinyalsa.so.1.1.1 $(DESTDIR)$(LIBDIR)/libtinyalsa.so.1
+ 	ln -sf libtinyalsa.so.1 $(DESTDIR)$(LIBDIR)/libtinyalsa.so

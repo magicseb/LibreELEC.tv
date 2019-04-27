@@ -1,0 +1,5 @@
+101
+- Added volume control for PulseAudio
+
+100
+- Initial release

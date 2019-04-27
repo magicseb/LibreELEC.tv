@@ -1,0 +1,15 @@
+--- a/libabi/src/httplinux.cpp	2018-06-15 20:52:10.722057208 +0200
++++ b/libabi/src/httplinux.cpp	2018-06-15 21:08:41.850463635 +0200
+@@ -55,10 +55,8 @@
+     strcpy(argv5,"20"); argv[5]=argv5;
+     strcpy(argv6,"-U"); argv[6]=argv6;
+     argv[7]=lagent;
+-    strcpy(argv8,"-o"); argv[8]=argv8;
+-    strcpy(argv9,"/dev/null"); argv[9]=argv9;
+-    argv[10]=lurl;
+-    argv[11]=NULL;
++    argv[8]=lurl;
++    argv[9]=NULL;
+ 
+     err = SYS_posix_launch(argv,0,pipe_fd[1],0,SYS_posix_envp());
+ 

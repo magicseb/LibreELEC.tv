@@ -1,0 +1,5 @@
+100
+- reworked build opts
+- updated to transmission 2.94
+- updated translations
+- added configuration options

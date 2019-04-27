@@ -1,0 +1,13 @@
+[Unit]
+Description=Overlay directory
+After=storage.mount
+After=systemd-tmpfiles-setup.service
+
+[Mount]
+What=none
+Where=/tmp/overlay
+Type=overlay
+Options=lowerdir=/usr/share/retroarch/overlay,upperdir=/storage/.config/retroarch/overlay,workdir=/storage/.tmp/overlay-workdir
+
+[Install]
+WantedBy=kodi.target

@@ -1,0 +1,14 @@
+--- a/CMakeLists.txt	2019-01-12 18:33:12.000000000 +0100
++++ b/CMakeLists.txt	2019-01-17 07:33:38.333897022 +0100
+@@ -52,6 +52,11 @@
+     install_symlink(libmali.so ${CMAKE_INSTALL_LIBDIR}/libMali.so)
+     install_symlink(libmali.so ${CMAKE_INSTALL_LIBDIR}/libEGL.so)
+     install_symlink(libmali.so ${CMAKE_INSTALL_LIBDIR}/libEGL.so.1)
++    install_symlink(libmali.so ${CMAKE_INSTALL_LIBDIR}/libEGL.so.1.4)
++    install_symlink(libmali.so ${CMAKE_INSTALL_LIBDIR}/libGLESv1_CM.so.1.1)
++    install_symlink(libmali.so ${CMAKE_INSTALL_LIBDIR}/libGLESv1_CM.so.1)
++    install_symlink(libmali.so ${CMAKE_INSTALL_LIBDIR}/libGLESv1_CM.so)
++    install_symlink(libmali.so ${CMAKE_INSTALL_LIBDIR}/libGLESv2.so.2.0)
+     install_symlink(libmali.so ${CMAKE_INSTALL_LIBDIR}/libGLESv2.so)
+     install_symlink(libmali.so ${CMAKE_INSTALL_LIBDIR}/libGLESv2.so.2)
+     install_symlink(libmali.so ${CMAKE_INSTALL_LIBDIR}/libgbm.so)

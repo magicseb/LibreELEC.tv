@@ -1,0 +1,24 @@
+From 6cc0f90f8608af7cc290a7993400f78df3f0d706 Mon Sep 17 00:00:00 2001
+From: Alfrix <alfredomonclus@gmail.com>
+Date: Fri, 19 Oct 2018 12:30:16 -0300
+Subject: [PATCH] Power management only has one setting and only in android...
+
+---
+ menu/menu_displaylist.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/menu/menu_displaylist.c b/menu/menu_displaylist.c
+index dd85bc88ab..aabfc77822 100644
+--- a/menu/menu_displaylist.c
++++ b/menu/menu_displaylist.c
+@@ -6948,8 +6948,10 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type, menu_displaylist
+                MENU_ENUM_LABEL_ONSCREEN_DISPLAY_SETTINGS,   PARSE_ACTION, false);
+          ret = menu_displaylist_parse_settings_enum(menu, info,
+                MENU_ENUM_LABEL_USER_INTERFACE_SETTINGS,   PARSE_ACTION, false);
++#ifdef ANDROID
+          ret = menu_displaylist_parse_settings_enum(menu, info,
+                MENU_ENUM_LABEL_POWER_MANAGEMENT_SETTINGS,   PARSE_ACTION, false);
++#endif
+          ret = menu_displaylist_parse_settings_enum(menu, info,
+                MENU_ENUM_LABEL_RETRO_ACHIEVEMENTS_SETTINGS,  PARSE_ACTION, false);
+          ret = menu_displaylist_parse_settings_enum(menu, info,

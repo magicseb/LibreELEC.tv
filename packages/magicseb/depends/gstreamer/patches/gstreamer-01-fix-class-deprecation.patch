@@ -1,0 +1,1566 @@
+From 2db8e3705fba5baf51c33baaeb16dd285c992fae Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tim-Philipp=20M=C3=BCller?= <tim@centricular.com>
+Date: Sat, 23 Jun 2018 17:01:09 +0200
+Subject: [PATCH] Update for g_type_class_add_private() deprecation in recent
+ GLib
+
+https://gitlab.gnome.org/GNOME/glib/merge_requests/7
+---
+ gst/gstallocator.c                            | 10 ++----
+ gst/gstbin.c                                  | 11 +++----
+ gst/gstbufferpool.c                           |  9 ++----
+ gst/gstbus.c                                  |  6 ++--
+ gst/gstclock.c                                |  7 ++--
+ gst/gstcontrolbinding.c                       | 18 ++++-------
+ gst/gstdevice.c                               |  7 ++--
+ gst/gstdevicemonitor.c                        |  8 ++---
+ gst/gstdeviceprovider.c                       | 16 ++++++++--
+ gst/gstghostpad.c                             | 14 +++-----
+ gst/gstpad.c                                  | 10 ++----
+ gst/gstpipeline.c                             | 10 ++----
+ gst/gstplugin.c                               |  7 ++--
+ gst/gstregistry.c                             |  8 ++---
+ gst/gststreamcollection.c                     |  9 ++----
+ gst/gststreams.c                              | 10 ++----
+ gst/gstsystemclock.c                          | 10 ++----
+ gst/gsttask.c                                 | 10 ++----
+ gst/gsttracer.c                               |  6 ++--
+ libs/gst/base/gstaggregator.c                 | 27 ++++++++++------
+ libs/gst/base/gstbaseparse.c                  | 21 +++++++++---
+ libs/gst/base/gstbasesink.c                   | 32 ++++++++++---------
+ libs/gst/base/gstbasesrc.c                    | 21 ++++++++----
+ libs/gst/base/gstbasetransform.c              | 21 ++++++++----
+ libs/gst/base/gstcollectpads.c                | 12 +++----
+ libs/gst/base/gstdataqueue.c                  |  9 ++----
+ libs/gst/check/gsttestclock.c                 |  7 ++--
+ .../gstinterpolationcontrolsource.c           | 19 ++++-------
+ libs/gst/controller/gstlfocontrolsource.c     |  8 ++---
+ libs/gst/controller/gsttriggercontrolsource.c |  9 ++----
+ libs/gst/net/gstnetclientclock.c              | 11 +++----
+ libs/gst/net/gstnettimeprovider.c             |  9 ++----
+ libs/gst/net/gstptpclock.c                    |  9 ++----
+ tests/check/gst/gstdevice.c                   |  2 +-
+ 34 files changed, 174 insertions(+), 229 deletions(-)
+
+diff --git a/gst/gstallocator.c b/gst/gstallocator.c
+index 4b78a334c..20ced4873 100644
+--- a/gst/gstallocator.c
++++ b/gst/gstallocator.c
+@@ -48,9 +48,6 @@
+ GST_DEBUG_CATEGORY_STATIC (gst_allocator_debug);
+ #define GST_CAT_DEFAULT gst_allocator_debug
+ 
+-#define GST_ALLOCATOR_GET_PRIVATE(obj)  \
+-     (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_ALLOCATOR, GstAllocatorPrivate))
+-
+ struct _GstAllocatorPrivate
+ {
+   gpointer dummy;
+@@ -77,13 +74,12 @@ static GstAllocator *_sysmem_allocator;
+ static GRWLock lock;
+ static GHashTable *allocators;
+ 
+-G_DEFINE_ABSTRACT_TYPE (GstAllocator, gst_allocator, GST_TYPE_OBJECT);
++G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GstAllocator, gst_allocator,
++    GST_TYPE_OBJECT);
+ 
+ static void
+ gst_allocator_class_init (GstAllocatorClass * klass)
+ {
+-  g_type_class_add_private (klass, sizeof (GstAllocatorPrivate));
+-
+   GST_DEBUG_CATEGORY_INIT (gst_allocator_debug, "allocator", 0,
+       "allocator debug");
+ }
+@@ -133,7 +129,7 @@ _fallback_mem_is_span (GstMemory * mem1, GstMemory * mem2, gsize * offset)
+ static void
+ gst_allocator_init (GstAllocator * allocator)
+ {
+-  allocator->priv = GST_ALLOCATOR_GET_PRIVATE (allocator);
++  allocator->priv = gst_allocator_get_instance_private (allocator);
+ 
+   allocator->mem_copy = _fallback_mem_copy;
+   allocator->mem_is_span = _fallback_mem_is_span;
+diff --git a/gst/gstbin.c b/gst/gstbin.c
+index 9491b234c..96a0c9d75 100644
+--- a/gst/gstbin.c
++++ b/gst/gstbin.c
+@@ -144,9 +144,6 @@ GST_DEBUG_CATEGORY_STATIC (bin_debug);
+  * a toplevel bin */
+ #define BIN_IS_TOPLEVEL(bin) ((GST_OBJECT_PARENT (bin) == NULL) || bin->priv->asynchandling)
+ 
+-#define GST_BIN_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_BIN, GstBinPrivate))
+-
+ struct _GstBinPrivate
+ {
+   gboolean asynchandling;
+@@ -272,7 +269,9 @@ static guint gst_bin_signals[LAST_SIGNAL] = { 0 };
+ }
+ 
+ #define gst_bin_parent_class parent_class
+-G_DEFINE_TYPE_WITH_CODE (GstBin, gst_bin, GST_TYPE_ELEMENT, _do_init);
++G_DEFINE_TYPE_WITH_CODE (GstBin, gst_bin, GST_TYPE_ELEMENT,
++    G_ADD_PRIVATE (GstBin)
++    _do_init);
+ 
+ static GObject *
+ gst_bin_child_proxy_get_child_by_index (GstChildProxy * child_proxy,
+@@ -340,8 +339,6 @@ gst_bin_class_init (GstBinClass * klass)
+   gobject_class = (GObjectClass *) klass;
+   gstelement_class = (GstElementClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstBinPrivate));
+-
+   gobject_class->set_property = gst_bin_set_property;
+   gobject_class->get_property = gst_bin_get_property;
+ 
+@@ -503,7 +500,7 @@ gst_bin_init (GstBin * bin)
+   gst_bus_set_sync_handler (bus, (GstBusSyncHandler) bin_bus_handler, bin,
+       NULL);
+ 
+-  bin->priv = GST_BIN_GET_PRIVATE (bin);
++  bin->priv = gst_bin_get_instance_private (bin);
+   bin->priv->asynchandling = DEFAULT_ASYNC_HANDLING;
+   bin->priv->structure_cookie = 0;
+   bin->priv->message_forward = DEFAULT_MESSAGE_FORWARD;
+diff --git a/gst/gstbufferpool.c b/gst/gstbufferpool.c
+index 6db0f5d2c..e5c7a5872 100644
+--- a/gst/gstbufferpool.c
++++ b/gst/gstbufferpool.c
+@@ -90,9 +90,6 @@
+ GST_DEBUG_CATEGORY_STATIC (gst_buffer_pool_debug);
+ #define GST_CAT_DEFAULT gst_buffer_pool_debug
+ 
+-#define GST_BUFFER_POOL_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_BUFFER_POOL, GstBufferPoolPrivate))
+-
+ #define GST_BUFFER_POOL_LOCK(pool)   (g_rec_mutex_lock(&pool->priv->rec_lock))
+ #define GST_BUFFER_POOL_UNLOCK(pool) (g_rec_mutex_unlock(&pool->priv->rec_lock))
+ 
+@@ -120,7 +117,7 @@ struct _GstBufferPoolPrivate
+ 
+ static void gst_buffer_pool_finalize (GObject * object);
+ 
+-G_DEFINE_TYPE (GstBufferPool, gst_buffer_pool, GST_TYPE_OBJECT);
++G_DEFINE_TYPE_WITH_PRIVATE (GstBufferPool, gst_buffer_pool, GST_TYPE_OBJECT);
+ 
+ static gboolean default_start (GstBufferPool * pool);
+ static gboolean default_stop (GstBufferPool * pool);
+@@ -139,8 +136,6 @@ gst_buffer_pool_class_init (GstBufferPoolClass * klass)
+ {
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstBufferPoolPrivate));
+-
+   gobject_class->finalize = gst_buffer_pool_finalize;
+ 
+   klass->start = default_start;
+@@ -161,7 +156,7 @@ gst_buffer_pool_init (GstBufferPool * pool)
+ {
+   GstBufferPoolPrivate *priv;
+ 
+-  priv = pool->priv = GST_BUFFER_POOL_GET_PRIVATE (pool);
++  priv = pool->priv = gst_buffer_pool_get_instance_private (pool);
+ 
+   g_rec_mutex_init (&priv->rec_lock);
+ 
+diff --git a/gst/gstbus.c b/gst/gstbus.c
+index 81f2fb97d..effe84722 100644
+--- a/gst/gstbus.c
++++ b/gst/gstbus.c
+@@ -129,7 +129,7 @@ struct _GstBusPrivate
+ };
+ 
+ #define gst_bus_parent_class parent_class
+-G_DEFINE_TYPE (GstBus, gst_bus, GST_TYPE_OBJECT);
++G_DEFINE_TYPE_WITH_PRIVATE (GstBus, gst_bus, GST_TYPE_OBJECT);
+ 
+ static void
+ gst_bus_set_property (GObject * object,
+@@ -217,14 +217,12 @@ gst_bus_class_init (GstBusClass * klass)
+       G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED,
+       G_STRUCT_OFFSET (GstBusClass, message), NULL, NULL,
+       g_cclosure_marshal_generic, G_TYPE_NONE, 1, GST_TYPE_MESSAGE);
+-
+-  g_type_class_add_private (klass, sizeof (GstBusPrivate));
+ }
+ 
+ static void
+ gst_bus_init (GstBus * bus)
+ {
+-  bus->priv = G_TYPE_INSTANCE_GET_PRIVATE (bus, GST_TYPE_BUS, GstBusPrivate);
++  bus->priv = gst_bus_get_instance_private (bus);
+   bus->priv->enable_async = DEFAULT_ENABLE_ASYNC;
+   g_mutex_init (&bus->priv->queue_lock);
+   bus->priv->queue = gst_atomic_queue_new (32);
+diff --git a/gst/gstclock.c b/gst/gstclock.c
+index 35d518620..aa1ed5ca4 100644
+--- a/gst/gstclock.c
++++ b/gst/gstclock.c
+@@ -668,7 +668,7 @@ gst_clock_id_unschedule (GstClockID id)
+  * GstClock abstract base class implementation
+  */
+ #define gst_clock_parent_class parent_class
+-G_DEFINE_ABSTRACT_TYPE (GstClock, gst_clock, GST_TYPE_OBJECT);
++G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GstClock, gst_clock, GST_TYPE_OBJECT);
+ 
+ static void
+ gst_clock_class_init (GstClockClass * klass)
+@@ -713,8 +713,6 @@ gst_clock_class_init (GstClockClass * klass)
+       g_signal_new ("synced", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
+       0, NULL, NULL,
+       g_cclosure_marshal_generic, G_TYPE_NONE, 1, G_TYPE_BOOLEAN);
+-
+-  g_type_class_add_private (klass, sizeof (GstClockPrivate));
+ }
+ 
+ static void
+@@ -722,8 +720,7 @@ gst_clock_init (GstClock * clock)
+ {
+   GstClockPrivate *priv;
+ 
+-  clock->priv = priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (clock, GST_TYPE_CLOCK, GstClockPrivate);
++  clock->priv = priv = gst_clock_get_instance_private (clock);
+ 
+   priv->last_time = 0;
+ 
+diff --git a/gst/gstcontrolbinding.c b/gst/gstcontrolbinding.c
+index 0d73948f6..bed5e0115 100644
+--- a/gst/gstcontrolbinding.c
++++ b/gst/gstcontrolbinding.c
+@@ -53,6 +53,11 @@
+ 
+ #include <math.h>
+ 
++struct _GstControlBindingPrivate
++{
++  GWeakRef object;
++};
++
+ #define GST_CAT_DEFAULT control_binding_debug
+ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+ 
+@@ -70,12 +75,7 @@ static void gst_control_binding_dispose (GObject * object);
+ static void gst_control_binding_finalize (GObject * object);
+ 
+ G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GstControlBinding, gst_control_binding,
+-    GST_TYPE_OBJECT, _do_init);
+-
+-struct _GstControlBindingPrivate
+-{
+-  GWeakRef object;
+-};
++    GST_TYPE_OBJECT, G_ADD_PRIVATE (GstControlBinding) _do_init);
+ 
+ enum
+ {
+@@ -92,8 +92,6 @@ gst_control_binding_class_init (GstControlBindingClass * klass)
+ {
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstControlBindingPrivate));
+-
+   gobject_class->constructor = gst_control_binding_constructor;
+   gobject_class->set_property = gst_control_binding_set_property;
+   gobject_class->get_property = gst_control_binding_get_property;
+@@ -116,9 +114,7 @@ gst_control_binding_class_init (GstControlBindingClass * klass)
+ static void
+ gst_control_binding_init (GstControlBinding * binding)
+ {
+-  binding->ABI.abi.priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (binding, GST_TYPE_CONTROL_BINDING,
+-      GstControlBindingPrivate);
++  binding->ABI.abi.priv = gst_control_binding_get_instance_private (binding);
+   g_weak_ref_init (&binding->ABI.abi.priv->object, NULL);
+ }
+ 
+diff --git a/gst/gstdevice.c b/gst/gstdevice.c
+index 8a467528e..786acfb5f 100644
+--- a/gst/gstdevice.c
++++ b/gst/gstdevice.c
+@@ -68,7 +68,7 @@ struct _GstDevicePrivate
+ 
+ static guint signals[LAST_SIGNAL];
+ 
+-G_DEFINE_ABSTRACT_TYPE (GstDevice, gst_device, GST_TYPE_OBJECT);
++G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GstDevice, gst_device, GST_TYPE_OBJECT);
+ 
+ static void gst_device_get_property (GObject * object, guint property_id,
+     GValue * value, GParamSpec * pspec);
+@@ -82,8 +82,6 @@ gst_device_class_init (GstDeviceClass * klass)
+ {
+   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstDevicePrivate));
+-
+   object_class->get_property = gst_device_get_property;
+   object_class->set_property = gst_device_set_property;
+   object_class->finalize = gst_device_finalize;
+@@ -112,8 +110,7 @@ gst_device_class_init (GstDeviceClass * klass)
+ static void
+ gst_device_init (GstDevice * device)
+ {
+-  device->priv = G_TYPE_INSTANCE_GET_PRIVATE (device, GST_TYPE_DEVICE,
+-      GstDevicePrivate);
++  device->priv = gst_device_get_instance_private (device);
+ }
+ 
+ static void
+diff --git a/gst/gstdevicemonitor.c b/gst/gstdevicemonitor.c
+index e0b59ec3d..bbe492cb8 100644
+--- a/gst/gstdevicemonitor.c
++++ b/gst/gstdevicemonitor.c
+@@ -121,7 +121,8 @@ enum
+   PROP_SHOW_ALL = 1,
+ };
+ 
+-G_DEFINE_TYPE (GstDeviceMonitor, gst_device_monitor, GST_TYPE_OBJECT);
++G_DEFINE_TYPE_WITH_PRIVATE (GstDeviceMonitor, gst_device_monitor,
++    GST_TYPE_OBJECT);
+ 
+ static void gst_device_monitor_dispose (GObject * object);
+ 
+@@ -182,8 +183,6 @@ gst_device_monitor_class_init (GstDeviceMonitorClass * klass)
+ {
+   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstDeviceMonitorPrivate));
+-
+   object_class->get_property = gst_device_monitor_get_property;
+   object_class->set_property = gst_device_monitor_set_property;
+   object_class->dispose = gst_device_monitor_dispose;
+@@ -280,8 +279,7 @@ bus_sync_message (GstBus * bus, GstMessage * message,
+ static void
+ gst_device_monitor_init (GstDeviceMonitor * self)
+ {
+-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
+-      GST_TYPE_DEVICE_MONITOR, GstDeviceMonitorPrivate);
++  self->priv = gst_device_monitor_get_instance_private (self);
+ 
+   self->priv->show_all = DEFAULT_SHOW_ALL;
+ 
+diff --git a/gst/gstdeviceprovider.c b/gst/gstdeviceprovider.c
+index a3d1b63ee..22b5a9b15 100644
+--- a/gst/gstdeviceprovider.c
++++ b/gst/gstdeviceprovider.c
+@@ -79,6 +79,7 @@ static void gst_device_provider_dispose (GObject * object);
+ static void gst_device_provider_finalize (GObject * object);
+ 
+ static gpointer gst_device_provider_parent_class = NULL;
++static gint private_offset = 0;
+ 
+ GType
+ gst_device_provider_get_type (void)
+@@ -103,6 +104,9 @@ gst_device_provider_get_type (void)
+     _type = g_type_register_static (GST_TYPE_OBJECT, "GstDeviceProvider",
+         &element_info, G_TYPE_FLAG_ABSTRACT);
+ 
++    private_offset =
++        g_type_add_instance_private (_type, sizeof (GstDeviceProviderPrivate));
++
+     __gst_deviceproviderclass_factory =
+         g_quark_from_static_string ("GST_DEVICEPROVIDERCLASS_FACTORY");
+     g_once_init_leave (&gst_device_provider_type, _type);
+@@ -110,6 +114,12 @@ gst_device_provider_get_type (void)
+   return gst_device_provider_type;
+ }
+ 
++static inline gpointer
++gst_device_provider_get_instance_private (GstDeviceProvider * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static void
+ gst_device_provider_base_class_init (gpointer g_class)
+ {
+@@ -133,7 +143,8 @@ gst_device_provider_class_init (GstDeviceProviderClass * klass)
+ 
+   gst_device_provider_parent_class = g_type_class_peek_parent (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstDeviceProviderPrivate));
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
+ 
+   gobject_class->dispose = gst_device_provider_dispose;
+   gobject_class->finalize = gst_device_provider_finalize;
+@@ -152,8 +163,7 @@ gst_device_provider_class_init (GstDeviceProviderClass * klass)
+ static void
+ gst_device_provider_init (GstDeviceProvider * provider)
+ {
+-  provider->priv = G_TYPE_INSTANCE_GET_PRIVATE (provider,
+-      GST_TYPE_DEVICE_PROVIDER, GstDeviceProviderPrivate);
++  provider->priv = gst_device_provider_get_instance_private (provider);
+ 
+   g_mutex_init (&provider->priv->start_lock);
+ 
+diff --git a/gst/gstghostpad.c b/gst/gstghostpad.c
+index 90cae38a3..ffbe6504e 100644
+--- a/gst/gstghostpad.c
++++ b/gst/gstghostpad.c
+@@ -69,7 +69,7 @@ struct _GstProxyPadPrivate
+   GstPad *internal;
+ };
+ 
+-G_DEFINE_TYPE (GstProxyPad, gst_proxy_pad, GST_TYPE_PAD);
++G_DEFINE_TYPE_WITH_PRIVATE (GstProxyPad, gst_proxy_pad, GST_TYPE_PAD);
+ 
+ static GstPad *gst_proxy_pad_get_target (GstPad * pad);
+ 
+@@ -231,8 +231,6 @@ gst_proxy_pad_get_internal (GstProxyPad * pad)
+ static void
+ gst_proxy_pad_class_init (GstProxyPadClass * klass)
+ {
+-  g_type_class_add_private (klass, sizeof (GstProxyPadPrivate));
+-
+   /* Register common function pointer descriptions */
+   GST_DEBUG_REGISTER_FUNCPTR (gst_proxy_pad_iterate_internal_links_default);
+   GST_DEBUG_REGISTER_FUNCPTR (gst_proxy_pad_chain_default);
+@@ -245,8 +243,7 @@ gst_proxy_pad_init (GstProxyPad * ppad)
+ {
+   GstPad *pad = (GstPad *) ppad;
+ 
+-  GST_PROXY_PAD_PRIVATE (ppad) = G_TYPE_INSTANCE_GET_PRIVATE (ppad,
+-      GST_TYPE_PROXY_PAD, GstProxyPadPrivate);
++  GST_PROXY_PAD_PRIVATE (ppad) = gst_proxy_pad_get_instance_private (ppad);
+ 
+   gst_pad_set_iterate_internal_links_function (pad,
+       gst_proxy_pad_iterate_internal_links_default);
+@@ -270,7 +267,7 @@ struct _GstGhostPadPrivate
+   gboolean constructed;
+ };
+ 
+-G_DEFINE_TYPE (GstGhostPad, gst_ghost_pad, GST_TYPE_PROXY_PAD);
++G_DEFINE_TYPE_WITH_PRIVATE (GstGhostPad, gst_ghost_pad, GST_TYPE_PROXY_PAD);
+ 
+ static void gst_ghost_pad_dispose (GObject * object);
+ 
+@@ -461,8 +458,6 @@ gst_ghost_pad_class_init (GstGhostPadClass * klass)
+ {
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstGhostPadPrivate));
+-
+   gobject_class->dispose = gst_ghost_pad_dispose;
+ 
+   GST_DEBUG_REGISTER_FUNCPTR (gst_ghost_pad_activate_pull_default);
+@@ -472,8 +467,7 @@ gst_ghost_pad_class_init (GstGhostPadClass * klass)
+ static void
+ gst_ghost_pad_init (GstGhostPad * pad)
+ {
+-  GST_GHOST_PAD_PRIVATE (pad) = G_TYPE_INSTANCE_GET_PRIVATE (pad,
+-      GST_TYPE_GHOST_PAD, GstGhostPadPrivate);
++  GST_GHOST_PAD_PRIVATE (pad) = gst_ghost_pad_get_instance_private (pad);
+ 
+   gst_pad_set_activatemode_function (GST_PAD_CAST (pad),
+       gst_ghost_pad_activate_mode_default);
+diff --git a/gst/gstpad.c b/gst/gstpad.c
+index 1297afcfa..5007c4c0e 100644
+--- a/gst/gstpad.c
++++ b/gst/gstpad.c
+@@ -121,9 +121,6 @@ enum
+       /* FILL ME */
+ };
+ 
+-#define GST_PAD_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_PAD, GstPadPrivate))
+-
+ #define _PAD_PROBE_TYPE_ALL_BOTH_AND_FLUSH (GST_PAD_PROBE_TYPE_ALL_BOTH | GST_PAD_PROBE_TYPE_EVENT_FLUSH)
+ 
+ /* we have a pending and an active event on the pad. On source pads only the
+@@ -320,7 +317,8 @@ gst_pad_link_get_name (GstPadLinkReturn ret)
+ }
+ 
+ #define gst_pad_parent_class parent_class
+-G_DEFINE_TYPE_WITH_CODE (GstPad, gst_pad, GST_TYPE_OBJECT, _do_init);
++G_DEFINE_TYPE_WITH_CODE (GstPad, gst_pad, GST_TYPE_OBJECT,
++    G_ADD_PRIVATE (GstPad) _do_init);
+ 
+ static void
+ gst_pad_class_init (GstPadClass * klass)
+@@ -331,8 +329,6 @@ gst_pad_class_init (GstPadClass * klass)
+   gobject_class = G_OBJECT_CLASS (klass);
+   gstobject_class = GST_OBJECT_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstPadPrivate));
+-
+   gobject_class->dispose = gst_pad_dispose;
+   gobject_class->finalize = gst_pad_finalize;
+   gobject_class->set_property = gst_pad_set_property;
+@@ -402,7 +398,7 @@ gst_pad_class_init (GstPadClass * klass)
+ static void
+ gst_pad_init (GstPad * pad)
+ {
+-  pad->priv = GST_PAD_GET_PRIVATE (pad);
++  pad->priv = gst_pad_get_instance_private (pad);
+ 
+   GST_PAD_DIRECTION (pad) = GST_PAD_UNKNOWN;
+ 
+diff --git a/gst/gstpipeline.c b/gst/gstpipeline.c
+index 07b4cced1..ca9091b35 100644
+--- a/gst/gstpipeline.c
++++ b/gst/gstpipeline.c
+@@ -105,9 +105,6 @@ enum
+   PROP_LATENCY
+ };
+ 
+-#define GST_PIPELINE_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_PIPELINE, GstPipelinePrivate))
+-
+ struct _GstPipelinePrivate
+ {
+   /* with LOCK */
+@@ -144,7 +141,8 @@ static gboolean gst_pipeline_do_latency (GstBin * bin);
+ }
+ 
+ #define gst_pipeline_parent_class parent_class
+-G_DEFINE_TYPE_WITH_CODE (GstPipeline, gst_pipeline, GST_TYPE_BIN, _do_init);
++G_DEFINE_TYPE_WITH_CODE (GstPipeline, gst_pipeline, GST_TYPE_BIN,
++    G_ADD_PRIVATE (GstPipeline) _do_init);
+ 
+ static void
+ gst_pipeline_class_init (GstPipelineClass * klass)
+@@ -153,8 +151,6 @@ gst_pipeline_class_init (GstPipelineClass * klass)
+   GstElementClass *gstelement_class = GST_ELEMENT_CLASS (klass);
+   GstBinClass *gstbin_class = GST_BIN_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstPipelinePrivate));
+-
+   gobject_class->set_property = gst_pipeline_set_property;
+   gobject_class->get_property = gst_pipeline_get_property;
+ 
+@@ -217,7 +213,7 @@ gst_pipeline_init (GstPipeline * pipeline)
+ {
+   GstBus *bus;
+ 
+-  pipeline->priv = GST_PIPELINE_GET_PRIVATE (pipeline);
++  pipeline->priv = gst_pipeline_get_instance_private (pipeline);
+ 
+   /* set default property values */
+   pipeline->priv->auto_flush_bus = DEFAULT_AUTO_FLUSH_BUS;
+diff --git a/gst/gstplugin.c b/gst/gstplugin.c
+index 6838afd6a..129f60c33 100644
+--- a/gst/gstplugin.c
++++ b/gst/gstplugin.c
+@@ -109,13 +109,12 @@ static void gst_plugin_desc_copy (GstPluginDesc * dest,
+ 
+ static void gst_plugin_ext_dep_free (GstPluginDep * dep);
+ 
+-G_DEFINE_TYPE (GstPlugin, gst_plugin, GST_TYPE_OBJECT);
++G_DEFINE_TYPE_WITH_PRIVATE (GstPlugin, gst_plugin, GST_TYPE_OBJECT);
+ 
+ static void
+ gst_plugin_init (GstPlugin * plugin)
+ {
+-  plugin->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (plugin, GST_TYPE_PLUGIN, GstPluginPrivate);
++  plugin->priv = gst_plugin_get_instance_private (plugin);
+ }
+ 
+ static void
+@@ -154,8 +153,6 @@ static void
+ gst_plugin_class_init (GstPluginClass * klass)
+ {
+   G_OBJECT_CLASS (klass)->finalize = gst_plugin_finalize;
+-
+-  g_type_class_add_private (klass, sizeof (GstPluginPrivate));
+ }
+ 
+ GQuark
+diff --git a/gst/gstregistry.c b/gst/gstregistry.c
+index bada33e01..32153ff87 100644
+--- a/gst/gstregistry.c
++++ b/gst/gstregistry.c
+@@ -196,7 +196,7 @@ static GstPlugin *gst_registry_lookup_bn_locked (GstRegistry * registry,
+     const char *basename);
+ 
+ #define gst_registry_parent_class parent_class
+-G_DEFINE_TYPE (GstRegistry, gst_registry, GST_TYPE_OBJECT);
++G_DEFINE_TYPE_WITH_PRIVATE (GstRegistry, gst_registry, GST_TYPE_OBJECT);
+ 
+ static void
+ gst_registry_class_init (GstRegistryClass * klass)
+@@ -205,8 +205,6 @@ gst_registry_class_init (GstRegistryClass * klass)
+ 
+   gobject_class = (GObjectClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstRegistryPrivate));
+-
+   /**
+    * GstRegistry::plugin-added:
+    * @registry: the registry that emitted the signal
+@@ -239,9 +237,7 @@ gst_registry_class_init (GstRegistryClass * klass)
+ static void
+ gst_registry_init (GstRegistry * registry)
+ {
+-  registry->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (registry, GST_TYPE_REGISTRY,
+-      GstRegistryPrivate);
++  registry->priv = gst_registry_get_instance_private (registry);
+   registry->priv->feature_hash = g_hash_table_new (g_str_hash, g_str_equal);
+   registry->priv->basename_hash = g_hash_table_new (g_str_hash, g_str_equal);
+ }
+diff --git a/gst/gststreamcollection.c b/gst/gststreamcollection.c
+index c8f94fbee..ec12e4a46 100644
+--- a/gst/gststreamcollection.c
++++ b/gst/gststreamcollection.c
+@@ -41,9 +41,6 @@
+ GST_DEBUG_CATEGORY_STATIC (stream_collection_debug);
+ #define GST_CAT_DEFAULT stream_collection_debug
+ 
+-#define GST_STREAM_COLLECTION_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_STREAM_COLLECTION, GstStreamCollectionPrivate))
+-
+ struct _GstStreamCollectionPrivate
+ {
+   /* Maybe switch this to a GArray if performance is
+@@ -87,7 +84,7 @@ proxy_stream_notify_cb (GstStream * stream, GParamSpec * pspec,
+ 
+ #define gst_stream_collection_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstStreamCollection, gst_stream_collection,
+-    GST_TYPE_OBJECT, _do_init);
++    GST_TYPE_OBJECT, G_ADD_PRIVATE (GstStreamCollection) _do_init);
+ 
+ static void
+ gst_stream_collection_class_init (GstStreamCollectionClass * klass)
+@@ -96,8 +93,6 @@ gst_stream_collection_class_init (GstStreamCollectionClass * klass)
+ 
+   gobject_class = (GObjectClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstStreamCollectionPrivate));
+-
+   gobject_class->set_property = gst_stream_collection_set_property;
+   gobject_class->get_property = gst_stream_collection_get_property;
+ 
+@@ -134,7 +129,7 @@ gst_stream_collection_class_init (GstStreamCollectionClass * klass)
+ static void
+ gst_stream_collection_init (GstStreamCollection * collection)
+ {
+-  collection->priv = GST_STREAM_COLLECTION_GET_PRIVATE (collection);
++  collection->priv = gst_stream_collection_get_instance_private (collection);
+   collection->priv->streams = g_queue_new ();
+ }
+ 
+diff --git a/gst/gststreams.c b/gst/gststreams.c
+index f2dd5bcb4..503ce220f 100644
+--- a/gst/gststreams.c
++++ b/gst/gststreams.c
+@@ -55,9 +55,6 @@
+ GST_DEBUG_CATEGORY_STATIC (streams_debug);
+ #define GST_CAT_DEFAULT streams_debug
+ 
+-#define GST_STREAM_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_STREAM, GstStreamPrivate))
+-
+ struct _GstStreamPrivate
+ {
+   GstStreamFlags flags;
+@@ -104,7 +101,8 @@ static void gst_stream_get_property (GObject * object, guint prop_id,
+ }
+ 
+ #define gst_stream_parent_class parent_class
+-G_DEFINE_TYPE_WITH_CODE (GstStream, gst_stream, GST_TYPE_OBJECT, _do_init);
++G_DEFINE_TYPE_WITH_CODE (GstStream, gst_stream, GST_TYPE_OBJECT,
++    G_ADD_PRIVATE (GstStream) _do_init);
+ 
+ static void
+ gst_stream_class_init (GstStreamClass * klass)
+@@ -113,8 +111,6 @@ gst_stream_class_init (GstStreamClass * klass)
+ 
+   gobject_class = (GObjectClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstStreamPrivate));
+-
+   gobject_class->set_property = gst_stream_set_property;
+   gobject_class->get_property = gst_stream_get_property;
+ 
+@@ -182,7 +178,7 @@ gst_stream_class_init (GstStreamClass * klass)
+ static void
+ gst_stream_init (GstStream * stream)
+ {
+-  stream->priv = GST_STREAM_GET_PRIVATE (stream);
++  stream->priv = gst_stream_get_instance_private (stream);
+   stream->priv->type = GST_STREAM_TYPE_UNKNOWN;
+ }
+ 
+diff --git a/gst/gstsystemclock.c b/gst/gstsystemclock.c
+index 02f56b11e..508ef21de 100644
+--- a/gst/gstsystemclock.c
++++ b/gst/gstsystemclock.c
+@@ -95,10 +95,6 @@ struct _GstSystemClockPrivate
+ #endif
+ };
+ 
+-#define GST_SYSTEM_CLOCK_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_SYSTEM_CLOCK, \
+-        GstSystemClockPrivate))
+-
+ #ifdef HAVE_POSIX_TIMERS
+ # ifdef HAVE_MONOTONIC_CLOCK
+ #  define DEFAULT_CLOCK_TYPE GST_CLOCK_TYPE_MONOTONIC
+@@ -146,7 +142,7 @@ static GMutex _gst_sysclock_mutex;
+ /* static guint gst_system_clock_signals[LAST_SIGNAL] = { 0 }; */
+ 
+ #define gst_system_clock_parent_class parent_class
+-G_DEFINE_TYPE (GstSystemClock, gst_system_clock, GST_TYPE_CLOCK);
++G_DEFINE_TYPE_WITH_PRIVATE (GstSystemClock, gst_system_clock, GST_TYPE_CLOCK);
+ 
+ static void
+ gst_system_clock_class_init (GstSystemClockClass * klass)
+@@ -157,8 +153,6 @@ gst_system_clock_class_init (GstSystemClockClass * klass)
+   gobject_class = (GObjectClass *) klass;
+   gstclock_class = (GstClockClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstSystemClockPrivate));
+-
+   gobject_class->dispose = gst_system_clock_dispose;
+   gobject_class->set_property = gst_system_clock_set_property;
+   gobject_class->get_property = gst_system_clock_get_property;
+@@ -187,7 +181,7 @@ gst_system_clock_init (GstSystemClock * clock)
+       GST_CLOCK_FLAG_CAN_DO_PERIODIC_SYNC |
+       GST_CLOCK_FLAG_CAN_DO_PERIODIC_ASYNC);
+ 
+-  clock->priv = priv = GST_SYSTEM_CLOCK_GET_PRIVATE (clock);
++  clock->priv = priv = gst_system_clock_get_instance_private (clock);
+ 
+   priv->clock_type = DEFAULT_CLOCK_TYPE;
+   priv->timer = gst_poll_new_timer ();
+diff --git a/gst/gsttask.c b/gst/gsttask.c
+index 30959f8cd..30f25fef8 100644
+--- a/gst/gsttask.c
++++ b/gst/gsttask.c
+@@ -89,9 +89,6 @@ GST_DEBUG_CATEGORY_STATIC (task_debug);
+ #define SET_TASK_STATE(t,s) (g_atomic_int_set (&GST_TASK_STATE(t), (s)))
+ #define GET_TASK_STATE(t)   ((GstTaskState) g_atomic_int_get (&GST_TASK_STATE(t)))
+ 
+-#define GST_TASK_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_TASK, GstTaskPrivate))
+-
+ struct _GstTaskPrivate
+ {
+   /* callbacks for managing the thread of this task */
+@@ -153,7 +150,8 @@ static GMutex pool_lock;
+   GST_DEBUG_CATEGORY_INIT (task_debug, "task", 0, "Processing tasks"); \
+ }
+ 
+-G_DEFINE_TYPE_WITH_CODE (GstTask, gst_task, GST_TYPE_OBJECT, _do_init);
++G_DEFINE_TYPE_WITH_CODE (GstTask, gst_task, GST_TYPE_OBJECT,
++    G_ADD_PRIVATE (GstTask) _do_init);
+ 
+ static void
+ init_klass_pool (GstTaskClass * klass)
+@@ -177,8 +175,6 @@ gst_task_class_init (GstTaskClass * klass)
+ 
+   gobject_class = (GObjectClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstTaskPrivate));
+-
+   gobject_class->finalize = gst_task_finalize;
+ 
+   init_klass_pool (klass);
+@@ -191,7 +187,7 @@ gst_task_init (GstTask * task)
+ 
+   klass = GST_TASK_GET_CLASS (task);
+ 
+-  task->priv = GST_TASK_GET_PRIVATE (task);
++  task->priv = gst_task_get_instance_private (task);
+   task->running = FALSE;
+   task->thread = NULL;
+   task->lock = NULL;
+diff --git a/gst/gsttracer.c b/gst/gsttracer.c
+index 958007f62..eaeddbd53 100644
+--- a/gst/gsttracer.c
++++ b/gst/gsttracer.c
+@@ -65,7 +65,7 @@ struct _GstTracerPrivate
+ };
+ 
+ #define gst_tracer_parent_class parent_class
+-G_DEFINE_ABSTRACT_TYPE (GstTracer, gst_tracer, GST_TYPE_OBJECT);
++G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GstTracer, gst_tracer, GST_TYPE_OBJECT);
+ 
+ static void
+ gst_tracer_dispose (GObject * object)
+@@ -88,14 +88,12 @@ gst_tracer_class_init (GstTracerClass * klass)
+       NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+ 
+   g_object_class_install_properties (gobject_class, PROP_LAST, properties);
+-  g_type_class_add_private (klass, sizeof (GstTracerPrivate));
+ }
+ 
+ static void
+ gst_tracer_init (GstTracer * tracer)
+ {
+-  tracer->priv = G_TYPE_INSTANCE_GET_PRIVATE (tracer, GST_TYPE_TRACER,
+-      GstTracerPrivate);
++  tracer->priv = gst_tracer_get_instance_private (tracer);
+ }
+ 
+ static void
+diff --git a/libs/gst/base/gstaggregator.c b/libs/gst/base/gstaggregator.c
+index d057b877e..f3c691810 100644
+--- a/libs/gst/base/gstaggregator.c
++++ b/libs/gst/base/gstaggregator.c
+@@ -300,6 +300,7 @@ gst_aggregator_pad_flush (GstAggregatorPad * aggpad, GstAggregator * agg)
+  * GstAggregator implementation  *
+  *************************************/
+ static GstElementClass *aggregator_parent_class = NULL;
++static gint aggregator_private_offset = 0;
+ 
+ /* All members are protected by the object lock unless otherwise noted */
+ 
+@@ -2287,11 +2288,13 @@ gst_aggregator_class_init (GstAggregatorClass * klass)
+   GstElementClass *gstelement_class = (GstElementClass *) klass;
+ 
+   aggregator_parent_class = g_type_class_peek_parent (klass);
+-  g_type_class_add_private (klass, sizeof (GstAggregatorPrivate));
+ 
+   GST_DEBUG_CATEGORY_INIT (aggregator_debug, "aggregator",
+       GST_DEBUG_FG_MAGENTA, "GstAggregator");
+ 
++  if (aggregator_private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &aggregator_private_offset);
++
+   klass->finish_buffer = gst_aggregator_default_finish_buffer;
+ 
+   klass->sink_event = gst_aggregator_default_sink_event;
+@@ -2338,6 +2341,12 @@ gst_aggregator_class_init (GstAggregatorClass * klass)
+           DEFAULT_START_TIME, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+ }
+ 
++static inline gpointer
++gst_aggregator_get_instance_private (GstAggregator * self)
++{
++  return (G_STRUCT_MEMBER_P (self, aggregator_private_offset));
++}
++
+ static void
+ gst_aggregator_init (GstAggregator * self, GstAggregatorClass * klass)
+ {
+@@ -2346,9 +2355,7 @@ gst_aggregator_init (GstAggregator * self, GstAggregatorClass * klass)
+ 
+   g_return_if_fail (klass->aggregate != NULL);
+ 
+-  self->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (self, GST_TYPE_AGGREGATOR,
+-      GstAggregatorPrivate);
++  self->priv = gst_aggregator_get_instance_private (self);
+ 
+   priv = self->priv;
+ 
+@@ -2408,6 +2415,10 @@ gst_aggregator_get_type (void)
+ 
+     _type = g_type_register_static (GST_TYPE_ELEMENT,
+         "GstAggregator", &info, G_TYPE_FLAG_ABSTRACT);
++
++    aggregator_private_offset =
++        g_type_add_instance_private (_type, sizeof (GstAggregatorPrivate));
++
+     g_once_init_leave (&type, _type);
+   }
+   return type;
+@@ -2741,7 +2752,7 @@ gst_aggregator_pad_activate_mode_func (GstPad * pad,
+ /***********************************
+  * GstAggregatorPad implementation  *
+  ************************************/
+-G_DEFINE_TYPE (GstAggregatorPad, gst_aggregator_pad, GST_TYPE_PAD);
++G_DEFINE_TYPE_WITH_PRIVATE (GstAggregatorPad, gst_aggregator_pad, GST_TYPE_PAD);
+ 
+ static void
+ gst_aggregator_pad_constructed (GObject * object)
+@@ -2787,8 +2798,6 @@ gst_aggregator_pad_class_init (GstAggregatorPadClass * klass)
+ {
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstAggregatorPadPrivate));
+-
+   gobject_class->constructed = gst_aggregator_pad_constructed;
+   gobject_class->finalize = gst_aggregator_pad_finalize;
+   gobject_class->dispose = gst_aggregator_pad_dispose;
+@@ -2797,9 +2806,7 @@ gst_aggregator_pad_class_init (GstAggregatorPadClass * klass)
+ static void
+ gst_aggregator_pad_init (GstAggregatorPad * pad)
+ {
+-  pad->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (pad, GST_TYPE_AGGREGATOR_PAD,
+-      GstAggregatorPadPrivate);
++  pad->priv = gst_aggregator_pad_get_instance_private (pad);
+ 
+   g_queue_init (&pad->priv->data);
+   g_cond_init (&pad->priv->event_cond);
+diff --git a/libs/gst/base/gstbaseparse.c b/libs/gst/base/gstbaseparse.c
+index 2028c998f..1830796d4 100644
+--- a/libs/gst/base/gstbaseparse.c
++++ b/libs/gst/base/gstbaseparse.c
+@@ -207,9 +207,6 @@ static const GstFormat fmtlist[] = {
+   GST_FORMAT_UNDEFINED
+ };
+ 
+-#define GST_BASE_PARSE_GET_PRIVATE(obj)  \
+-    (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_BASE_PARSE, GstBaseParsePrivate))
+-
+ struct _GstBaseParsePrivate
+ {
+   GstPadMode pad_mode;
+@@ -371,6 +368,7 @@ enum
+   g_mutex_unlock (&parse->priv->index_lock);
+ 
+ static GstElementClass *parent_class = NULL;
++static gint base_parse_private_offset = 0;
+ 
+ static void gst_base_parse_class_init (GstBaseParseClass * klass);
+ static void gst_base_parse_init (GstBaseParse * parse,
+@@ -397,11 +395,21 @@ gst_base_parse_get_type (void)
+ 
+     _type = g_type_register_static (GST_TYPE_ELEMENT,
+         "GstBaseParse", &base_parse_info, G_TYPE_FLAG_ABSTRACT);
++
++    base_parse_private_offset =
++        g_type_add_instance_private (_type, sizeof (GstBaseParsePrivate));
++
+     g_once_init_leave (&base_parse_type, _type);
+   }
+   return (GType) base_parse_type;
+ }
+ 
++static inline GstBaseParsePrivate *
++gst_base_parse_get_instance_private (GstBaseParse * self)
++{
++  return (G_STRUCT_MEMBER_P (self, base_parse_private_offset));
++}
++
+ static void gst_base_parse_finalize (GObject * object);
+ 
+ static GstStateChangeReturn gst_base_parse_change_state (GstElement * element,
+@@ -531,7 +539,10 @@ gst_base_parse_class_init (GstBaseParseClass * klass)
+   GstElementClass *gstelement_class;
+ 
+   gobject_class = G_OBJECT_CLASS (klass);
+-  g_type_class_add_private (klass, sizeof (GstBaseParsePrivate));
++
++  if (base_parse_private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &base_parse_private_offset);
++
+   parent_class = g_type_class_peek_parent (klass);
+ 
+   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_base_parse_finalize);
+@@ -581,7 +592,7 @@ gst_base_parse_init (GstBaseParse * parse, GstBaseParseClass * bclass)
+ 
+   GST_DEBUG_OBJECT (parse, "gst_base_parse_init");
+ 
+-  parse->priv = GST_BASE_PARSE_GET_PRIVATE (parse);
++  parse->priv = gst_base_parse_get_instance_private (parse);
+ 
+   pad_template =
+       gst_element_class_get_pad_template (GST_ELEMENT_CLASS (bclass), "sink");
+diff --git a/libs/gst/base/gstbasesink.c b/libs/gst/base/gstbasesink.c
+index 03ac7125e..e772b9ad0 100644
+--- a/libs/gst/base/gstbasesink.c
++++ b/libs/gst/base/gstbasesink.c
+@@ -152,9 +152,6 @@
+ GST_DEBUG_CATEGORY_STATIC (gst_base_sink_debug);
+ #define GST_CAT_DEFAULT gst_base_sink_debug
+ 
+-#define GST_BASE_SINK_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_BASE_SINK, GstBaseSinkPrivate))
+-
+ #define GST_FLOW_STEP GST_FLOW_CUSTOM_ERROR
+ 
+ typedef struct
+@@ -309,6 +306,7 @@ enum
+ };
+ 
+ static GstElementClass *parent_class = NULL;
++static gint private_offset = 0;
+ 
+ static void gst_base_sink_class_init (GstBaseSinkClass * klass);
+ static void gst_base_sink_init (GstBaseSink * trans, gpointer g_class);
+@@ -335,11 +333,21 @@ gst_base_sink_get_type (void)
+ 
+     _type = g_type_register_static (GST_TYPE_ELEMENT,
+         "GstBaseSink", &base_sink_info, G_TYPE_FLAG_ABSTRACT);
++
++    private_offset =
++        g_type_add_instance_private (_type, sizeof (GstBaseSinkPrivate));
++
+     g_once_init_leave (&base_sink_type, _type);
+   }
+   return base_sink_type;
+ }
+ 
++static inline GstBaseSinkPrivate *
++gst_base_sink_get_instance_private (GstBaseSink * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static void gst_base_sink_set_property (GObject * object, guint prop_id,
+     const GValue * value, GParamSpec * pspec);
+ static void gst_base_sink_get_property (GObject * object, guint prop_id,
+@@ -407,11 +415,12 @@ gst_base_sink_class_init (GstBaseSinkClass * klass)
+   gobject_class = G_OBJECT_CLASS (klass);
+   gstelement_class = GST_ELEMENT_CLASS (klass);
+ 
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
++
+   GST_DEBUG_CATEGORY_INIT (gst_base_sink_debug, "basesink", 0,
+       "basesink element");
+ 
+-  g_type_class_add_private (klass, sizeof (GstBaseSinkPrivate));
+-
+   parent_class = g_type_class_peek_parent (klass);
+ 
+   gobject_class->finalize = gst_base_sink_finalize;
+@@ -622,7 +631,7 @@ gst_base_sink_init (GstBaseSink * basesink, gpointer g_class)
+   GstPadTemplate *pad_template;
+   GstBaseSinkPrivate *priv;
+ 
+-  basesink->priv = priv = GST_BASE_SINK_GET_PRIVATE (basesink);
++  basesink->priv = priv = gst_base_sink_get_instance_private (basesink);
+ 
+   pad_template =
+       gst_element_class_get_pad_template (GST_ELEMENT_CLASS (g_class), "sink");
+@@ -734,14 +743,10 @@ void
+ gst_base_sink_set_drop_out_of_segment (GstBaseSink * sink,
+     gboolean drop_out_of_segment)
+ {
+-  GstBaseSinkPrivate *priv;
+-
+   g_return_if_fail (GST_IS_BASE_SINK (sink));
+ 
+-  priv = GST_BASE_SINK_GET_PRIVATE (sink);
+-
+   GST_OBJECT_LOCK (sink);
+-  priv->drop_out_of_segment = drop_out_of_segment;
++  sink->priv->drop_out_of_segment = drop_out_of_segment;
+   GST_OBJECT_UNLOCK (sink);
+ 
+ }
+@@ -761,15 +766,12 @@ gst_base_sink_set_drop_out_of_segment (GstBaseSink * sink,
+ gboolean
+ gst_base_sink_get_drop_out_of_segment (GstBaseSink * sink)
+ {
+-  GstBaseSinkPrivate *priv;
+   gboolean res;
+ 
+   g_return_val_if_fail (GST_IS_BASE_SINK (sink), FALSE);
+ 
+-  priv = GST_BASE_SINK_GET_PRIVATE (sink);
+-
+   GST_OBJECT_LOCK (sink);
+-  res = priv->drop_out_of_segment;
++  res = sink->priv->drop_out_of_segment;
+   GST_OBJECT_UNLOCK (sink);
+ 
+   return res;
+diff --git a/libs/gst/base/gstbasesrc.c b/libs/gst/base/gstbasesrc.c
+index fd046bf41..fd46bd5ac 100644
+--- a/libs/gst/base/gstbasesrc.c
++++ b/libs/gst/base/gstbasesrc.c
+@@ -201,9 +201,6 @@ enum
+   PROP_DO_TIMESTAMP
+ };
+ 
+-#define GST_BASE_SRC_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_BASE_SRC, GstBaseSrcPrivate))
+-
+ /* The basesrc implementation need to respect the following locking order:
+  *   1. STREAM_LOCK
+  *   2. LIVE_LOCK
+@@ -270,6 +267,7 @@ struct _GstBaseSrcPrivate
+     ((src)->priv->pending_bufferlist != NULL)
+ 
+ static GstElementClass *parent_class = NULL;
++static gint private_offset = 0;
+ 
+ static void gst_base_src_class_init (GstBaseSrcClass * klass);
+ static void gst_base_src_init (GstBaseSrc * src, gpointer g_class);
+@@ -297,11 +295,21 @@ gst_base_src_get_type (void)
+ 
+     _type = g_type_register_static (GST_TYPE_ELEMENT,
+         "GstBaseSrc", &base_src_info, G_TYPE_FLAG_ABSTRACT);
++
++    private_offset =
++        g_type_add_instance_private (_type, sizeof (GstBaseSrcPrivate));
++
+     g_once_init_leave (&base_src_type, _type);
+   }
+   return base_src_type;
+ }
+ 
++static inline GstBaseSrcPrivate *
++gst_base_src_get_instance_private (GstBaseSrc * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static GstCaps *gst_base_src_default_get_caps (GstBaseSrc * bsrc,
+     GstCaps * filter);
+ static GstCaps *gst_base_src_default_fixate (GstBaseSrc * src, GstCaps * caps);
+@@ -365,9 +373,10 @@ gst_base_src_class_init (GstBaseSrcClass * klass)
+   gobject_class = G_OBJECT_CLASS (klass);
+   gstelement_class = GST_ELEMENT_CLASS (klass);
+ 
+-  GST_DEBUG_CATEGORY_INIT (gst_base_src_debug, "basesrc", 0, "basesrc element");
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
+ 
+-  g_type_class_add_private (klass, sizeof (GstBaseSrcPrivate));
++  GST_DEBUG_CATEGORY_INIT (gst_base_src_debug, "basesrc", 0, "basesrc element");
+ 
+   parent_class = g_type_class_peek_parent (klass);
+ 
+@@ -426,7 +435,7 @@ gst_base_src_init (GstBaseSrc * basesrc, gpointer g_class)
+   GstPad *pad;
+   GstPadTemplate *pad_template;
+ 
+-  basesrc->priv = GST_BASE_SRC_GET_PRIVATE (basesrc);
++  basesrc->priv = gst_base_src_get_instance_private (basesrc);
+ 
+   basesrc->is_live = FALSE;
+   g_mutex_init (&basesrc->live_lock);
+diff --git a/libs/gst/base/gstbasetransform.c b/libs/gst/base/gstbasetransform.c
+index 185fde849..921526927 100644
+--- a/libs/gst/base/gstbasetransform.c
++++ b/libs/gst/base/gstbasetransform.c
+@@ -163,9 +163,6 @@ enum
+   PROP_QOS
+ };
+ 
+-#define GST_BASE_TRANSFORM_GET_PRIVATE(obj)  \
+-    (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_BASE_TRANSFORM, GstBaseTransformPrivate))
+-
+ struct _GstBaseTransformPrivate
+ {
+   /* Set by sub-class */
+@@ -207,6 +204,7 @@ struct _GstBaseTransformPrivate
+ 
+ 
+ static GstElementClass *parent_class = NULL;
++static gint private_offset = 0;
+ 
+ static void gst_base_transform_class_init (GstBaseTransformClass * klass);
+ static void gst_base_transform_init (GstBaseTransform * trans,
+@@ -239,11 +237,21 @@ gst_base_transform_get_type (void)
+ 
+     _type = g_type_register_static (GST_TYPE_ELEMENT,
+         "GstBaseTransform", &base_transform_info, G_TYPE_FLAG_ABSTRACT);
++
++    private_offset =
++        g_type_add_instance_private (_type, sizeof (GstBaseTransformPrivate));
++
+     g_once_init_leave (&base_transform_type, _type);
+   }
+   return base_transform_type;
+ }
+ 
++static inline GstBaseTransformPrivate *
++gst_base_transform_get_instance_private (GstBaseTransform * self)
++{
++  return (G_STRUCT_MEMBER_P (self, private_offset));
++}
++
+ static void gst_base_transform_finalize (GObject * object);
+ static void gst_base_transform_set_property (GObject * object, guint prop_id,
+     const GValue * value, GParamSpec * pspec);
+@@ -316,13 +324,14 @@ gst_base_transform_class_init (GstBaseTransformClass * klass)
+ 
+   gobject_class = G_OBJECT_CLASS (klass);
+ 
++  if (private_offset != 0)
++    g_type_class_adjust_private_offset (klass, &private_offset);
++
+   GST_DEBUG_CATEGORY_INIT (gst_base_transform_debug, "basetransform", 0,
+       "basetransform element");
+ 
+   GST_DEBUG ("gst_base_transform_class_init");
+ 
+-  g_type_class_add_private (klass, sizeof (GstBaseTransformPrivate));
+-
+   parent_class = g_type_class_peek_parent (klass);
+ 
+   gobject_class->set_property = gst_base_transform_set_property;
+@@ -371,7 +380,7 @@ gst_base_transform_init (GstBaseTransform * trans,
+ 
+   GST_DEBUG ("gst_base_transform_init");
+ 
+-  priv = trans->priv = GST_BASE_TRANSFORM_GET_PRIVATE (trans);
++  priv = trans->priv = gst_base_transform_get_instance_private (trans);
+ 
+   pad_template =
+       gst_element_class_get_pad_template (GST_ELEMENT_CLASS (bclass), "sink");
+diff --git a/libs/gst/base/gstcollectpads.c b/libs/gst/base/gstcollectpads.c
+index e27dce00d..0c412aad3 100644
+--- a/libs/gst/base/gstcollectpads.c
++++ b/libs/gst/base/gstcollectpads.c
+@@ -78,9 +78,6 @@
+ GST_DEBUG_CATEGORY_STATIC (collect_pads_debug);
+ #define GST_CAT_DEFAULT collect_pads_debug
+ 
+-#define parent_class gst_collect_pads_parent_class
+-G_DEFINE_TYPE (GstCollectPads, gst_collect_pads, GST_TYPE_OBJECT);
+-
+ struct _GstCollectDataPrivate
+ {
+   /* refcounting for struct, and destroy callback */
+@@ -130,6 +127,9 @@ struct _GstCollectPadsPrivate
+   gboolean pending_flush_stop;
+ };
+ 
++#define parent_class gst_collect_pads_parent_class
++G_DEFINE_TYPE_WITH_PRIVATE (GstCollectPads, gst_collect_pads, GST_TYPE_OBJECT);
++
+ static void gst_collect_pads_clear (GstCollectPads * pads,
+     GstCollectData * data);
+ static GstFlowReturn gst_collect_pads_chain (GstPad * pad, GstObject * parent,
+@@ -203,8 +203,6 @@ gst_collect_pads_class_init (GstCollectPadsClass * klass)
+ {
+   GObjectClass *gobject_class = (GObjectClass *) klass;
+ 
+-  g_type_class_add_private (klass, sizeof (GstCollectPadsPrivate));
+-
+   GST_DEBUG_CATEGORY_INIT (collect_pads_debug, "collectpads", 0,
+       "GstCollectPads");
+ 
+@@ -214,9 +212,7 @@ gst_collect_pads_class_init (GstCollectPadsClass * klass)
+ static void
+ gst_collect_pads_init (GstCollectPads * pads)
+ {
+-  pads->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (pads, GST_TYPE_COLLECT_PADS,
+-      GstCollectPadsPrivate);
++  pads->priv = gst_collect_pads_get_instance_private (pads);
+ 
+   pads->data = NULL;
+   pads->priv->cookie = 0;
+diff --git a/libs/gst/base/gstdataqueue.c b/libs/gst/base/gstdataqueue.c
+index 7fc3be1d8..7e4d71e1a 100644
+--- a/libs/gst/base/gstdataqueue.c
++++ b/libs/gst/base/gstdataqueue.c
+@@ -129,15 +129,14 @@ static guint gst_data_queue_signals[LAST_SIGNAL] = { 0 };
+ }
+ 
+ #define parent_class gst_data_queue_parent_class
+-G_DEFINE_TYPE_WITH_CODE (GstDataQueue, gst_data_queue, G_TYPE_OBJECT, _do_init);
++G_DEFINE_TYPE_WITH_CODE (GstDataQueue, gst_data_queue, G_TYPE_OBJECT,
++    G_ADD_PRIVATE (GstDataQueue) _do_init);
+ 
+ static void
+ gst_data_queue_class_init (GstDataQueueClass * klass)
+ {
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstDataQueuePrivate));
+-
+   gobject_class->set_property = gst_data_queue_set_property;
+   gobject_class->get_property = gst_data_queue_get_property;
+ 
+@@ -191,9 +190,7 @@ gst_data_queue_class_init (GstDataQueueClass * klass)
+ static void
+ gst_data_queue_init (GstDataQueue * queue)
+ {
+-  queue->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (queue, GST_TYPE_DATA_QUEUE,
+-      GstDataQueuePrivate);
++  queue->priv = gst_data_queue_get_instance_private (queue);
+ 
+   queue->priv->cur_level.visible = 0;   /* no content */
+   queue->priv->cur_level.bytes = 0;     /* no content */
+diff --git a/libs/gst/check/gsttestclock.c b/libs/gst/check/gsttestclock.c
+index 14ac669bb..13258c3fa 100644
+--- a/libs/gst/check/gsttestclock.c
++++ b/libs/gst/check/gsttestclock.c
+@@ -218,7 +218,7 @@ G_STMT_START { \
+ } G_STMT_END
+ 
+ G_DEFINE_TYPE_WITH_CODE (GstTestClock, gst_test_clock,
+-    GST_TYPE_CLOCK, _do_init);
++    GST_TYPE_CLOCK, G_ADD_PRIVATE (GstTestClock) _do_init);
+ 
+ static GstObjectClass *parent_class = NULL;
+ 
+@@ -261,8 +261,6 @@ gst_test_clock_class_init (GstTestClockClass * klass)
+ 
+   parent_class = g_type_class_peek_parent (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstTestClockPrivate));
+-
+   gobject_class->constructed = GST_DEBUG_FUNCPTR (gst_test_clock_constructed);
+   gobject_class->dispose = GST_DEBUG_FUNCPTR (gst_test_clock_dispose);
+   gobject_class->finalize = GST_DEBUG_FUNCPTR (gst_test_clock_finalize);
+@@ -304,8 +302,7 @@ gst_test_clock_init (GstTestClock * test_clock)
+ {
+   GstTestClockPrivate *priv;
+ 
+-  test_clock->priv = G_TYPE_INSTANCE_GET_PRIVATE (test_clock,
+-      GST_TYPE_TEST_CLOCK, GstTestClockPrivate);
++  test_clock->priv = gst_test_clock_get_instance_private (test_clock);
+ 
+   priv = GST_TEST_CLOCK_GET_PRIVATE (test_clock);
+ 
+diff --git a/libs/gst/controller/gstinterpolationcontrolsource.c b/libs/gst/controller/gstinterpolationcontrolsource.c
+index a54a5d10d..77b813259 100644
+--- a/libs/gst/controller/gstinterpolationcontrolsource.c
++++ b/libs/gst/controller/gstinterpolationcontrolsource.c
+@@ -621,19 +621,20 @@ enum
+   PROP_MODE = 1
+ };
+ 
++struct _GstInterpolationControlSourcePrivate
++{
++  GstInterpolationMode interpolation_mode;
++};
++
+ #define _do_init \
+   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "interpolation control source", 0, \
+     "timeline value interpolating control source")
+ 
+ G_DEFINE_TYPE_WITH_CODE (GstInterpolationControlSource,
+     gst_interpolation_control_source, GST_TYPE_TIMED_VALUE_CONTROL_SOURCE,
++    G_ADD_PRIVATE (GstInterpolationControlSource)
+     _do_init);
+ 
+-struct _GstInterpolationControlSourcePrivate
+-{
+-  GstInterpolationMode interpolation_mode;
+-};
+-
+ /**
+  * gst_interpolation_control_source_new:
+  *
+@@ -680,9 +681,7 @@ static gboolean
+ static void
+ gst_interpolation_control_source_init (GstInterpolationControlSource * self)
+ {
+-  self->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (self, GST_TYPE_INTERPOLATION_CONTROL_SOURCE,
+-      GstInterpolationControlSourcePrivate);
++  self->priv = gst_interpolation_control_source_get_instance_private (self);
+   gst_interpolation_control_source_set_interpolation_mode (self,
+       GST_INTERPOLATION_MODE_NONE);
+ }
+@@ -727,10 +726,6 @@ gst_interpolation_control_source_class_init (GstInterpolationControlSourceClass
+     * klass)
+ {
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+-  //GstControlSourceClass *csource_class = GST_CONTROL_SOURCE_CLASS (klass);
+-
+-  g_type_class_add_private (klass,
+-      sizeof (GstInterpolationControlSourcePrivate));
+ 
+   gobject_class->set_property = gst_interpolation_control_source_set_property;
+   gobject_class->get_property = gst_interpolation_control_source_get_property;
+diff --git a/libs/gst/controller/gstlfocontrolsource.c b/libs/gst/controller/gstlfocontrolsource.c
+index 4419a1972..2cea4f80d 100644
+--- a/libs/gst/controller/gstlfocontrolsource.c
++++ b/libs/gst/controller/gstlfocontrolsource.c
+@@ -377,7 +377,7 @@ enum
+ 
+ #define gst_lfo_control_source_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstLFOControlSource, gst_lfo_control_source,
+-    GST_TYPE_CONTROL_SOURCE, _do_init);
++    GST_TYPE_CONTROL_SOURCE, G_ADD_PRIVATE (GstLFOControlSource) _do_init);
+ 
+ static void
+ gst_lfo_control_source_reset (GstLFOControlSource * self)
+@@ -428,9 +428,7 @@ gst_lfo_control_source_set_waveform (GstLFOControlSource * self,
+ static void
+ gst_lfo_control_source_init (GstLFOControlSource * self)
+ {
+-  self->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (self, GST_TYPE_LFO_CONTROL_SOURCE,
+-      GstLFOControlSourcePrivate);
++  self->priv = gst_lfo_control_source_get_instance_private (self);
+   self->priv->waveform = gst_lfo_control_source_set_waveform (self,
+       GST_LFO_WAVEFORM_SINE);
+   self->priv->frequency = 1.0;
+@@ -530,8 +528,6 @@ gst_lfo_control_source_class_init (GstLFOControlSourceClass * klass)
+ {
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstLFOControlSourcePrivate));
+-
+   gobject_class->finalize = gst_lfo_control_source_finalize;
+   gobject_class->set_property = gst_lfo_control_source_set_property;
+   gobject_class->get_property = gst_lfo_control_source_get_property;
+diff --git a/libs/gst/controller/gsttriggercontrolsource.c b/libs/gst/controller/gsttriggercontrolsource.c
+index aafa8de26..6415c0eb4 100644
+--- a/libs/gst/controller/gsttriggercontrolsource.c
++++ b/libs/gst/controller/gsttriggercontrolsource.c
+@@ -176,7 +176,8 @@ enum
+     "timeline value trigger control source")
+ 
+ G_DEFINE_TYPE_WITH_CODE (GstTriggerControlSource, gst_trigger_control_source,
+-    GST_TYPE_TIMED_VALUE_CONTROL_SOURCE, _do_init);
++    GST_TYPE_TIMED_VALUE_CONTROL_SOURCE, G_ADD_PRIVATE (GstTriggerControlSource)
++    _do_init);
+ 
+ /**
+  * gst_trigger_control_source_new:
+@@ -202,9 +203,7 @@ gst_trigger_control_source_init (GstTriggerControlSource * self)
+ {
+   GstControlSource *csource = (GstControlSource *) self;
+ 
+-  self->priv =
+-      G_TYPE_INSTANCE_GET_PRIVATE (self, GST_TYPE_TRIGGER_CONTROL_SOURCE,
+-      GstTriggerControlSourcePrivate);
++  self->priv = gst_trigger_control_source_get_instance_private (self);
+ 
+   csource->get_value = (GstControlSourceGetValue) interpolate_trigger_get;
+   csource->get_value_array = (GstControlSourceGetValueArray)
+@@ -250,8 +249,6 @@ gst_trigger_control_source_class_init (GstTriggerControlSourceClass * klass)
+ {
+   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstTriggerControlSourcePrivate));
+-
+   gobject_class->set_property = gst_trigger_control_source_set_property;
+   gobject_class->get_property = gst_trigger_control_source_get_property;
+ 
+diff --git a/libs/gst/net/gstnetclientclock.c b/libs/gst/net/gstnetclientclock.c
+index 102ba1924..e0a04d295 100644
+--- a/libs/gst/net/gstnetclientclock.c
++++ b/libs/gst/net/gstnetclientclock.c
+@@ -163,6 +163,7 @@ struct _GstNetClientInternalClockClass
+ 
+ #define _do_init \
+   GST_DEBUG_CATEGORY_INIT (ncc_debug, "netclock", 0, "Network client clock");
++
+ G_DEFINE_TYPE_WITH_CODE (GstNetClientInternalClock,
+     gst_net_client_internal_clock, GST_TYPE_SYSTEM_CLOCK, _do_init);
+ 
+@@ -967,9 +968,6 @@ gst_net_client_internal_clock_stop (GstNetClientInternalClock * self)
+   GST_INFO_OBJECT (self, "stopped");
+ }
+ 
+-#define GST_NET_CLIENT_CLOCK_GET_PRIVATE(obj)  \
+-  (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_NET_CLIENT_CLOCK, GstNetClientClockPrivate))
+-
+ struct _GstNetClientClockPrivate
+ {
+   GstClock *internal_clock;
+@@ -990,7 +988,8 @@ struct _GstNetClientClockPrivate
+   gulong synced_id;
+ };
+ 
+-G_DEFINE_TYPE (GstNetClientClock, gst_net_client_clock, GST_TYPE_SYSTEM_CLOCK);
++G_DEFINE_TYPE_WITH_PRIVATE (GstNetClientClock, gst_net_client_clock,
++    GST_TYPE_SYSTEM_CLOCK);
+ 
+ static void gst_net_client_clock_finalize (GObject * object);
+ static void gst_net_client_clock_set_property (GObject * object, guint prop_id,
+@@ -1010,8 +1009,6 @@ gst_net_client_clock_class_init (GstNetClientClockClass * klass)
+   gobject_class = G_OBJECT_CLASS (klass);
+   clock_class = GST_CLOCK_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstNetClientClockPrivate));
+-
+   gobject_class->finalize = gst_net_client_clock_finalize;
+   gobject_class->get_property = gst_net_client_clock_get_property;
+   gobject_class->set_property = gst_net_client_clock_set_property;
+@@ -1084,7 +1081,7 @@ gst_net_client_clock_init (GstNetClientClock * self)
+   GstNetClientClockPrivate *priv;
+   GstClock *clock;
+ 
+-  self->priv = priv = GST_NET_CLIENT_CLOCK_GET_PRIVATE (self);
++  self->priv = priv = gst_net_client_clock_get_instance_private (self);
+ 
+   GST_OBJECT_FLAG_SET (self, GST_CLOCK_FLAG_CAN_SET_MASTER);
+   GST_OBJECT_FLAG_SET (self, GST_CLOCK_FLAG_NEEDS_STARTUP_SYNC);
+diff --git a/libs/gst/net/gstnettimeprovider.c b/libs/gst/net/gstnettimeprovider.c
+index b5432a110..d323bf489 100644
+--- a/libs/gst/net/gstnettimeprovider.c
++++ b/libs/gst/net/gstnettimeprovider.c
+@@ -61,9 +61,6 @@ enum
+   PROP_QOS_DSCP
+ };
+ 
+-#define GST_NET_TIME_PROVIDER_GET_PRIVATE(obj)  \
+-   (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_NET_TIME_PROVIDER, GstNetTimeProviderPrivate))
+-
+ struct _GstNetTimeProviderPrivate
+ {
+   gchar *address;
+@@ -101,7 +98,7 @@ static void gst_net_time_provider_get_property (GObject * object, guint prop_id,
+ 
+ #define gst_net_time_provider_parent_class parent_class
+ G_DEFINE_TYPE_WITH_CODE (GstNetTimeProvider, gst_net_time_provider,
+-    GST_TYPE_OBJECT, _do_init);
++    GST_TYPE_OBJECT, G_ADD_PRIVATE (GstNetTimeProvider) _do_init);
+ 
+ static void
+ gst_net_time_provider_class_init (GstNetTimeProviderClass * klass)
+@@ -112,8 +109,6 @@ gst_net_time_provider_class_init (GstNetTimeProviderClass * klass)
+ 
+   g_assert (sizeof (GstClockTime) == 8);
+ 
+-  g_type_class_add_private (klass, sizeof (GstNetTimeProviderPrivate));
+-
+   gobject_class->finalize = gst_net_time_provider_finalize;
+   gobject_class->set_property = gst_net_time_provider_set_property;
+   gobject_class->get_property = gst_net_time_provider_get_property;
+@@ -145,7 +140,7 @@ gst_net_time_provider_class_init (GstNetTimeProviderClass * klass)
+ static void
+ gst_net_time_provider_init (GstNetTimeProvider * self)
+ {
+-  self->priv = GST_NET_TIME_PROVIDER_GET_PRIVATE (self);
++  self->priv = gst_net_time_provider_get_instance_private (self);
+ 
+   self->priv->port = DEFAULT_PORT;
+   self->priv->address = g_strdup (DEFAULT_ADDRESS);
+diff --git a/libs/gst/net/gstptpclock.c b/libs/gst/net/gstptpclock.c
+index 74c4fcce4..486ee99ce 100644
+--- a/libs/gst/net/gstptpclock.c
++++ b/libs/gst/net/gstptpclock.c
+@@ -2283,9 +2283,6 @@ enum
+   PROP_GRANDMASTER_CLOCK_ID
+ };
+ 
+-#define GST_PTP_CLOCK_GET_PRIVATE(obj)  \
+-  (G_TYPE_INSTANCE_GET_PRIVATE ((obj), GST_TYPE_PTP_CLOCK, GstPtpClockPrivate))
+-
+ struct _GstPtpClockPrivate
+ {
+   guint domain;
+@@ -2294,7 +2291,7 @@ struct _GstPtpClockPrivate
+ };
+ 
+ #define gst_ptp_clock_parent_class parent_class
+-G_DEFINE_TYPE (GstPtpClock, gst_ptp_clock, GST_TYPE_SYSTEM_CLOCK);
++G_DEFINE_TYPE_WITH_PRIVATE (GstPtpClock, gst_ptp_clock, GST_TYPE_SYSTEM_CLOCK);
+ 
+ static void gst_ptp_clock_set_property (GObject * object, guint prop_id,
+     const GValue * value, GParamSpec * pspec);
+@@ -2313,8 +2310,6 @@ gst_ptp_clock_class_init (GstPtpClockClass * klass)
+   gobject_class = G_OBJECT_CLASS (klass);
+   clock_class = GST_CLOCK_CLASS (klass);
+ 
+-  g_type_class_add_private (klass, sizeof (GstPtpClockPrivate));
+-
+   gobject_class->finalize = gst_ptp_clock_finalize;
+   gobject_class->get_property = gst_ptp_clock_get_property;
+   gobject_class->set_property = gst_ptp_clock_set_property;
+@@ -2348,7 +2343,7 @@ gst_ptp_clock_init (GstPtpClock * self)
+ {
+   GstPtpClockPrivate *priv;
+ 
+-  self->priv = priv = GST_PTP_CLOCK_GET_PRIVATE (self);
++  self->priv = priv = gst_ptp_clock_get_instance_private (self);
+ 
+   GST_OBJECT_FLAG_SET (self, GST_CLOCK_FLAG_CAN_SET_MASTER);
+   GST_OBJECT_FLAG_SET (self, GST_CLOCK_FLAG_NEEDS_STARTUP_SYNC);
+diff --git a/tests/check/gst/gstdevice.c b/tests/check/gst/gstdevice.c
+index c59d43bea..2c84cbb10 100644
+--- a/tests/check/gst/gstdevice.c
++++ b/tests/check/gst/gstdevice.c
+@@ -233,7 +233,7 @@ GST_START_TEST (test_device_provider)
+   register_test_device_provider ();
+ 
+   dp = gst_device_provider_factory_get_by_name ("testdeviceprovider");
+-
++  fail_unless (dp != NULL);
+   fail_unless (gst_device_provider_get_devices (dp) == NULL);
+ 
+   devices = g_list_append (NULL, test_device_new ());
