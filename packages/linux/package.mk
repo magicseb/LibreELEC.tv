@@ -11,6 +11,7 @@ PKG_DEPENDS_INIT="toolchain"
 PKG_NEED_UNPACK="$LINUX_DEPENDS"
 PKG_LONGDESC="This package contains a precompiled kernel image and the modules."
 PKG_IS_KERNEL_PKG="yes"
+PKG_STAMP="$KERNEL_TARGET $KERNEL_MAKE_EXTRACMD $KERNEL_UBOOT_EXTRA_TARGET"
 
 PKG_PATCH_DIRS="$LINUX"
 
@@ -30,14 +31,14 @@ case "$LINUX" in
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     ;;
   raspberrypi)
-    PKG_VERSION="709198a03e40bbf035f75772e9162464dc7fc665" # 5.0.2
-    PKG_SHA256="07133de2bf4be2a2926a484ad94bf9ebc72845d0869eae99d266edeb3e83b2c3"
+    PKG_VERSION="75b821b12af48026ca25614cd8968da26f861964" # 5.0.7
+    PKG_SHA256="8448e36fdd7ed4c4433a5a47d7136753dc5b11b7a1c9830889fb82517f22a547"
     PKG_URL="https://github.com/raspberrypi/linux/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     ;;
   *)
-    PKG_VERSION="5.0.2"
-    PKG_SHA256="43bfea3a6b24b4e5f63190409a199bee8cb93dbea01c52ad7f017078ebdf7c9b"
+    PKG_VERSION="5.0.7"
+    PKG_SHA256="16e177662b9fc7255bfc51018513979f6effcbe52e459c543aa83a5b15ef54ec"
     PKG_URL="https://www.kernel.org/pub/linux/kernel/v5.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_PATCH_DIRS="default"
     ;;
@@ -45,9 +46,9 @@ esac
 
 PKG_KERNEL_CFG_FILE=$(kernel_config_path)
 
-if [ -n "$KERNEL_LINARO_TOOLCHAIN" ]; then
-  PKG_DEPENDS_HOST="$PKG_DEPENDS_HOST gcc-linaro-$KERNEL_LINARO_TOOLCHAIN:host"
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gcc-linaro-$KERNEL_LINARO_TOOLCHAIN:host"
+if [ -n "$KERNEL_TOOLCHAIN" ]; then
+  PKG_DEPENDS_HOST="$PKG_DEPENDS_HOST gcc-arm-$KERNEL_TOOLCHAIN:host"
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET gcc-arm-$KERNEL_TOOLCHAIN:host"
   HEADERS_ARCH=$TARGET_ARCH
 fi
 
@@ -185,8 +186,6 @@ make_target() {
       NO_LIBAUDIT=1 \
       NO_LZMA=1 \
       NO_SDT=1 \
-      LDFLAGS="$LDFLAGS -ldw -ldwfl -lebl -lelf -ldl -lz" \
-      EXTRA_PERFLIBS="-lebl" \
       CROSS_COMPILE="$TARGET_PREFIX" \
       JOBS="$CONCURRENCY_MAKE_LEVEL" \
         make $PERF_BUILD_ARGS
@@ -204,6 +203,13 @@ make_target() {
     for extra_target in "$KERNEL_UBOOT_EXTRA_TARGET"; do
       kernel_make $extra_target
     done
+  fi
+
+  # arm64 target does not support creating uImage.
+  # Build Image first, then wrap it using u-boot's mkimage.
+  if [[ "$TARGET_KERNEL_ARCH" == "arm64" && "$KERNEL_TARGET" == uImage* ]]; then
+    KERNEL_UIMAGE_TARGET="$KERNEL_TARGET"
+    KERNEL_TARGET="${KERNEL_TARGET/uImage/Image}"
   fi
 
   # the modules target is required to get a proper Module.symvers
@@ -230,6 +236,19 @@ make_target() {
 
     mv -f arch/$TARGET_KERNEL_ARCH/boot/boot.img arch/$TARGET_KERNEL_ARCH/boot/$KERNEL_TARGET
 
+  fi
+
+  if [ -n "$KERNEL_UIMAGE_TARGET" ] ; then
+    KERNEL_UIMAGE_COMP=${KERNEL_UIMAGE_TARGET:7}
+    KERNEL_UIMAGE_COMP=${KERNEL_UIMAGE_COMP:-none}
+    mkimage -A $TARGET_KERNEL_ARCH \
+            -O linux \
+            -T kernel \
+            -C $KERNEL_UIMAGE_COMP \
+            -a $KERNEL_UIMAGE_LOADADDR \
+            -e $KERNEL_UIMAGE_ENTRYADDR \
+            -d arch/$TARGET_KERNEL_ARCH/boot/$KERNEL_TARGET \
+               arch/$TARGET_KERNEL_ARCH/boot/$KERNEL_UIMAGE_TARGET
   fi
 }
 
