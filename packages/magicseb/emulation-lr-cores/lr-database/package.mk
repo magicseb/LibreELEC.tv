@@ -3,8 +3,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-database"
-PKG_VERSION="9684059ea7acc230f922e40968bc3a2238edcc0d"
-PKG_SHA256="c1c5defaa0f7268ece1c342bf87dcebc82751c7e319cbf4ff979dd36a068a644"
+PKG_VERSION="e15db84f2baee519c08e5b9d3b7154fcd0a016ff"
+PKG_SHA256="b5fd8687173967fb7bf48e75fc074fb2151c6ed41e0aa1f3be9a628899ffc652"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/libretro/libretro-database"
 PKG_URL="https://github.com/libretro/libretro-database/archive/$PKG_VERSION.tar.gz"

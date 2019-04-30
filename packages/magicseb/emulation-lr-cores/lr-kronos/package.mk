@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-kronos"
-PKG_VERSION="b308611ff0b9c0483350aaafbdb67ca080b997e1"
-PKG_SHA256="977d2a5e910d446b4d1de8e1ee757c5d83a09a53086c1a2b8b324f0094772d99"
+PKG_VERSION="9e3fadbb4a0035eee848cda73016a0796399b0a1"
+PKG_SHA256="b3ff04e1848a625f914449db28a3969d02ea0c2478b05c686fb00e209e0ee6e8"
 PKG_ARCH="x86_64"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/FCare/Kronos"
