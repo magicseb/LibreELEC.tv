@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-snes9x2010"
-PKG_VERSION="d0606eb568d1ec13dd2ca8949ae990b86cfb1034"
-PKG_SHA256="7e1ab9521ec4a5173a7a3241b7f2fad5703258f1b0ea3dee47d70d50fbdbe541"
+PKG_VERSION="49883e28667744a7331e8d16d053e0d3360c7b6c"
+PKG_SHA256="8c1ba96a5ebdf245501a312972a86d7cb0dc4d609f71ddba939905439aa1db15"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/snes9x2010"
 PKG_URL="https://github.com/libretro/snes9x2010/archive/$PKG_VERSION.tar.gz"
