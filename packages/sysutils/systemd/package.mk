@@ -3,12 +3,12 @@
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="systemd"
-PKG_VERSION="239"
-PKG_SHA256="8a11b1b07d620f4c06a16e95bba4dd2a97e90efdf2a5ba47ed0a935085787a14"
+PKG_VERSION="242"
+PKG_SHA256="ec22be9a5dd94c9640e6348ed8391d1499af8ca2c2f01109198a414cff6c6cba"
 PKG_LICENSE="LGPL2.1+"
 PKG_SITE="http://www.freedesktop.org/wiki/Software/systemd"
 PKG_URL="https://github.com/systemd/systemd/archive/v$PKG_VERSION.tar.gz"
-PKG_DEPENDS_TARGET="toolchain libcap kmod util-linux entropy"
+PKG_DEPENDS_TARGET="toolchain libcap kmod util-linux entropy libidn2"
 PKG_LONGDESC="A system and session manager for Linux, compatible with SysV and LSB init scripts."
 
 PKG_MESON_OPTS_TARGET="--libdir=/usr/lib \
@@ -31,17 +31,19 @@ PKG_MESON_OPTS_TARGET="--libdir=/usr/lib \
                        -Dlibcryptsetup=false \
                        -Dlibcurl=false \
                        -Dlibidn=false \
-                       -Dlibidn2=false \
+                       -Dlibidn2=true \
                        -Dlibiptc=false \
                        -Dqrencode=false \
                        -Dgcrypt=false \
                        -Dgnutls=false \
+                       -Dopenssl=false \
                        -Delfutils=false \
                        -Dzlib=false \
                        -Dbzip2=false \
                        -Dxz=false \
                        -Dlz4=false \
                        -Dxkbcommon=false \
+                       -Dpcre2=false \
                        -Dglib=false \
                        -Ddbus=false \
                        -Ddefault-dnssec=no \
@@ -60,7 +62,6 @@ PKG_MESON_OPTS_TARGET="--libdir=/usr/lib \
                        -Dnetworkd=false \
                        -Dtimedated=false \
                        -Dtimesyncd=true \
-                       -Dmyhostname=false \
                        -Dfirstboot=false \
                        -Drandomseed=false \
                        -Dbacklight=false \
@@ -77,15 +78,19 @@ PKG_MESON_OPTS_TARGET="--libdir=/usr/lib \
                        -Dsmack=false \
                        -Dgshadow=false \
                        -Didn=false \
+                       -Dnss-myhostname=false \
+                       -Dnss-mymachines=false \
+                       -Dnss-resolve=false \
                        -Dnss-systemd=false \
                        -Dman=false \
                        -Dhtml=false \
                        -Dbashcompletiondir=no \
                        -Dzshcompletiondir=no \
-                       -Dkill-path=/usr/bin/kill \
                        -Dkmod-path=/usr/bin/kmod \
                        -Dmount-path=/usr/bin/mount \
-                       -Dumount-path=/usr/bin/umount"
+                       -Dumount-path=/usr/bin/umount \
+                       -Ddebug-tty=$DEBUG_TTY \
+                       -Dversion-tag=${PKG_VERSION}"
 
 pre_configure_target() {
   export CFLAGS="$CFLAGS -fno-schedule-insns -fno-schedule-insns2 -Wno-format-truncation"
@@ -123,9 +128,6 @@ post_makeinstall_target() {
   safe_remove $INSTALL/usr/lib/udev/rules.d/70-uaccess.rules
   safe_remove $INSTALL/usr/lib/udev/rules.d/71-seat.rules
   safe_remove $INSTALL/usr/lib/udev/rules.d/73-seat-late.rules
-
-  # remove debug-shell.service, we install our own
-  safe_remove $INSTALL/usr/lib/systemd/system/debug-shell.service
 
   # remove getty units, we dont want a console
   safe_remove $INSTALL/usr/lib/systemd/system/autovt@.service
@@ -255,4 +257,5 @@ post_install() {
   enable_service usercache.service
   enable_service kernel-overlays.service
   enable_service hwdb.service
+  enable_service debug-shell.service
 }
