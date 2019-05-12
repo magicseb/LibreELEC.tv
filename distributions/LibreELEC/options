@@ -203,7 +203,7 @@
   ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
 
 # Default size of system partition, in MB, eg. 512
-  SYSTEM_SIZE=512
+  SYSTEM_SIZE=1024
 # Default system partition offset, in sectors, eg. 2048
   SYSTEM_PART_START=8192
 
@@ -292,7 +292,7 @@ LIBRETRO_CORES="lr-2048 lr-atari800 lr-beetle-pce-fast lr-beetle-psx lr-beetle-s
 "Sony - PlayStation.lpl"
 
   RA_PLAYLIST_CORES=""\
-"/tmp/cores/stella_libretro.so;"\
+"/tmp/cores/stella2014_libretro.so;"\
 "/tmp/cores/atari800_libretro.so;"\
 "/tmp/cores/prosystem_libretro.so;"\
 "/tmp/cores/virtualjaguar_libretro.so;"\

@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-mgba"
-PKG_VERSION="1deff07aa1b0d3d4b6b15e875fbeb0cc8eff0926"
-PKG_SHA256="97ddd736e88a11974496310ce313ac34dafc0cec5898d10a4b7021a8ef459318"
+PKG_VERSION="b176516c36fdadb7e068e0624ec5afc5fad7fdec"
+PKG_SHA256="b5ea944a18c43c39ac856151f729dca325a3745f72ed96a0916f37bd01a94d7a"
 PKG_LICENSE="MPL 2.0"
 PKG_SITE="https://github.com/mgba-emu/mgba"
 PKG_URL="https://github.com/mgba-emu/mgba/archive/$PKG_VERSION.tar.gz"
@@ -22,6 +22,7 @@ configure_package() {
 pre_configure_target() {
   PKG_CMAKE_OPTS_TARGET="-DUSE_DEBUGGERS=OFF \
                          -DBUILD_QT=OFF \
+                         -DUSE_SQLITE3=OFF \
                          -DBUILD_SDL=OFF \
                          -DBUILD_LIBRETRO=ON \
                          -DSKIP_LIBRARY=ON \
@@ -33,7 +34,8 @@ pre_configure_target() {
                          -DUSE_ELF=OFF"
 
   if [ "${OPENGLES_SUPPORT}" = "yes" ]; then
-    PKG_CMAKE_OPTS_TARGET+=" -DBUILD_GLES2=ON"
+    PKG_CMAKE_OPTS_TARGET+=" -DBUILD_GLES2=ON \
+                             -DUSE_EPOXY=OFF"
   fi
 }
 

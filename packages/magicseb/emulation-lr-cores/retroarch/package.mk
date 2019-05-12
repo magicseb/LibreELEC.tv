@@ -3,11 +3,11 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="retroarch"
-PKG_VERSION="01284c023156d30be950e01faca6ecd90b98618b" #1.7.6
+PKG_VERSION="af527746bb3a23e0f8fbb0bb1bbd5a138e381db8" #1.7.6
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="https://github.com/libretro/RetroArch.git"
-PKG_DEPENDS_TARGET="toolchain linux glibc systemd dbus openssl expat alsa-lib libpng libusb libass speex tinyalsa fluidsynth-git freetype zlib bzip2 ffmpeg lr-common-overlays lr-core-info lr-database lr-glsl-shaders lr-overlay-borders lr-samples retroarch-assets retroarch-joypad-autoconfig libxkbcommon SDL2-git"
+PKG_DEPENDS_TARGET="toolchain linux glibc systemd dbus openssl expat alsa-lib libpng libusb libass speex tinyalsa fluidsynth-git freetype zlib bzip2 ffmpeg lr-common-overlays lr-core-info lr-database lr-glsl-shaders lr-overlay-borders lr-samples retroarch-assets retroarch-joypad-autoconfig SDL2-git"
 PKG_LONGDESC="Reference frontend for the libretro API."
 GET_HANDLER_SUPPORT="git"
 
@@ -28,9 +28,9 @@ configure_package() {
   fi
 
   # QT Support for WIMP GUI
-  if [ "${PROJECT}" = "Generic" ]; then
-    PKG_DEPENDS_TARGET+=" qt-everywhere"
-  fi
+  #if [ "${PROJECT}" = "Generic" ]; then
+   # PKG_DEPENDS_TARGET+=" qt-everywhere"
+  #fi
 
   # Displayserver Support
   if [ "${DISPLAYSERVER}" = "x11" ]; then
@@ -65,11 +65,11 @@ pre_configure_target() {
                              --enable-freetype"
 
   # QT Support for WIMP GUI
-  if [ "${PROJECT}" = "Generic" ]; then
-    PKG_CONFIGURE_OPTS_TARGET+=" --enable-qt"
-  else
+  #if [ "${PROJECT}" = "Generic" ]; then
+  #  PKG_CONFIGURE_OPTS_TARGET+=" --enable-qt"
+  #else
     PKG_CONFIGURE_OPTS_TARGET+=" --disable-qt"
-  fi
+  #fi
 
   # Displayserver Support
   if [ "${DISPLAYSERVER}" = "x11" ]; then

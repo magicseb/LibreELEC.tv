@@ -248,6 +248,12 @@ configure_package() {
                          $KODI_PLAYER"
 }
 
+post_unpack(){
+  if [ ! "$OEM_EMU" = "no" ]; then
+    cp $PKG_DIR/files/* $PKG_BUILD/addons/skin.estuary/media/
+  fi
+}
+
 pre_configure_target() {
   export LIBS="$LIBS -lncurses"
 }

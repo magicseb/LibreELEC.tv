@@ -90,10 +90,6 @@ pre_configure_target() {
     PKG_CONFIGURE_OPTS_TARGET+=" -opengl es2"
   fi
 
-  # Build with XCB support for X11
-  if [ ${DISPLAYSERVER} = "x11" ]; then
-    PKG_CONFIGURE_OPTS_TARGET+=" -qt-xcb"
-  fi
 }
 
 

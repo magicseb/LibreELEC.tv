@@ -19,7 +19,8 @@ else
   set_refresh_rate_60
 
   # enable kms
-  switch_kms_on
+  chvt 2
+  unset DISPLAY
 
   # Set audio & midi driver
   set_RA_audiodriver
@@ -28,7 +29,8 @@ else
   /usr/bin/retroarch -v "$@" > /var/log/retroarch.log 2>&1
 
   # disable kms
-  switch_kms_off
+  chvt 1
+  export DISPLAY=:0.0
 
   # Switch back to Frontends or unfreeze Kodi & start audio
   pidof emulationstation > /dev/null 2>&1 || pidof pegasus-fe > /dev/null 2>&1 || kodifreeze.sh unfreeze

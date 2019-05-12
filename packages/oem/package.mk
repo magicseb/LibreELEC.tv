@@ -28,7 +28,6 @@ OEM_EMU_COMMON=" \
   lr-gambatte \
   lr-genplus \
   lr-mame2003-plus \
-  lr-mgba \
   lr-mrboom \
   lr-mupen64plus \
   lr-mupen64plus-nx \
@@ -43,29 +42,16 @@ OEM_EMU_COMMON=" \
 
 
 OEM_EMU_GENERIC=" \
-  pegasus-frontend \
-  citra \
-  dolphin \
-  fs-uae \
-  m64p \
-  PCSX2 \
-  vice \
-  yquake2 \
-  lr-beetle-psx \
   lr-beetle-saturn \
   lr-bsnes-mercury-accuracy \
   lr-bsnes-mercury-balanced \
-  lr-citra \
   lr-dolphin \
-  lr-kronos \
   lr-mame2016 \
   lr-mesen \
   lr-parallel-n64 \
   lr-ppsspp"
 
 OEM_EMU_RPI=" \
-  pegasus-frontend \
-  amiberry \
   lr-mame2010 \
   lr-snes9x2010 \
   lr-vice \
