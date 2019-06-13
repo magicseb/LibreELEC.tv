@@ -1,0 +1,5468 @@
+From fa8236d6572e4eaaa90b99d74cecf8d0a92b6a7f Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 6 May 2019 11:58:12 +0200
+Subject: [PATCH] ASoC: hdmi-codec: remove function name debug traces
+
+Remove the debug traces only showing the function name on entry.
+The same can be obtained using ftrace.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+(cherry picked from commit 900e5daf7034cf65ce4072b86f297c42f9042433)
+---
+ sound/soc/codecs/hdmi-codec.c | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 39caf19abb0b..eb31d7eddcbf 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -416,8 +416,6 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 	int ret = 0;
+ 
+-	dev_dbg(dai->dev, "%s()\n", __func__);
+-
+ 	ret = hdmi_codec_new_stream(substream, dai);
+ 	if (ret)
+ 		return ret;
+@@ -457,8 +455,6 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
+ {
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 
+-	dev_dbg(dai->dev, "%s()\n", __func__);
+-
+ 	WARN_ON(hcp->current_stream != substream);
+ 
+ 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
+@@ -527,8 +523,6 @@ static int hdmi_codec_set_fmt(struct snd_soc_dai *dai,
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 	struct hdmi_codec_daifmt cf = { 0 };
+ 
+-	dev_dbg(dai->dev, "%s()\n", __func__);
+-
+ 	if (dai->id == DAI_ID_SPDIF)
+ 		return 0;
+ 
+@@ -597,8 +591,6 @@ static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
+ {
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 
+-	dev_dbg(dai->dev, "%s()\n", __func__);
+-
+ 	if (hcp->hcd.ops->digital_mute)
+ 		return hcp->hcd.ops->digital_mute(dai->dev->parent,
+ 						  hcp->hcd.data, mute);
+@@ -656,8 +648,6 @@ static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
+ 	};
+ 	int ret;
+ 
+-	dev_dbg(dai->dev, "%s()\n", __func__);
+-
+ 	ret =  snd_pcm_add_chmap_ctls(rtd->pcm, SNDRV_PCM_STREAM_PLAYBACK,
+ 				      NULL, drv->playback.channels_max, 0,
+ 				      &hcp->chmap_info);
+@@ -754,8 +744,6 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 	int dai_count, i = 0;
+ 	int ret;
+ 
+-	dev_dbg(dev, "%s()\n", __func__);
+-
+ 	if (!hcd) {
+ 		dev_err(dev, "%s: No platform data\n", __func__);
+ 		return -EINVAL;
+
+From c58acd8e45def5c8b5f277bdf6444df63832e701 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 6 May 2019 11:58:13 +0200
+Subject: [PATCH] ASoC: hdmi-codec: remove reference to the current substream
+
+If the hdmi-codec is on a codec-to-codec link, the substream pointer
+it receives is completely made up by snd_soc_dai_link_event().
+The pointer will be different between startup() and shutdown().
+
+The hdmi-codec complains when this happens even if it is not really a
+problem. The current_substream pointer is not used for anything useful
+apart from getting the exclusive ownership of the device.
+
+Remove current_substream pointer and replace the exclusive locking
+mechanism with a simple variable and some atomic operations.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+(cherry picked from commit 3fcf94ef4d418668fa66e33ce9aabb05689b55f6)
+---
+ sound/soc/codecs/hdmi-codec.c | 58 ++++++++++++-------------------------------
+ 1 file changed, 16 insertions(+), 42 deletions(-)
+
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index eb31d7eddcbf..4d32f93f6be6 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -280,11 +280,10 @@ struct hdmi_codec_priv {
+ 	struct hdmi_codec_pdata hcd;
+ 	struct snd_soc_dai_driver *daidrv;
+ 	struct hdmi_codec_daifmt daifmt[2];
+-	struct mutex current_stream_lock;
+-	struct snd_pcm_substream *current_stream;
+ 	uint8_t eld[MAX_ELD_BYTES];
+ 	struct snd_pcm_chmap *chmap_info;
+ 	unsigned int chmap_idx;
++	unsigned long busy;
+ };
+ 
+ static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+@@ -392,42 +391,22 @@ static int hdmi_codec_chmap_ctl_get(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-static int hdmi_codec_new_stream(struct snd_pcm_substream *substream,
+-				 struct snd_soc_dai *dai)
+-{
+-	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+-	int ret = 0;
+-
+-	mutex_lock(&hcp->current_stream_lock);
+-	if (!hcp->current_stream) {
+-		hcp->current_stream = substream;
+-	} else if (hcp->current_stream != substream) {
+-		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
+-		ret = -EINVAL;
+-	}
+-	mutex_unlock(&hcp->current_stream_lock);
+-
+-	return ret;
+-}
+-
+ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 			      struct snd_soc_dai *dai)
+ {
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 	int ret = 0;
+ 
+-	ret = hdmi_codec_new_stream(substream, dai);
+-	if (ret)
+-		return ret;
++	ret = test_and_set_bit(0, &hcp->busy);
++	if (ret) {
++		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
++		return -EINVAL;
++	}
+ 
+ 	if (hcp->hcd.ops->audio_startup) {
+ 		ret = hcp->hcd.ops->audio_startup(dai->dev->parent, hcp->hcd.data);
+-		if (ret) {
+-			mutex_lock(&hcp->current_stream_lock);
+-			hcp->current_stream = NULL;
+-			mutex_unlock(&hcp->current_stream_lock);
+-			return ret;
+-		}
++		if (ret)
++			goto err;
+ 	}
+ 
+ 	if (hcp->hcd.ops->get_eld) {
+@@ -437,17 +416,18 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 		if (!ret) {
+ 			ret = snd_pcm_hw_constraint_eld(substream->runtime,
+ 							hcp->eld);
+-			if (ret) {
+-				mutex_lock(&hcp->current_stream_lock);
+-				hcp->current_stream = NULL;
+-				mutex_unlock(&hcp->current_stream_lock);
+-				return ret;
+-			}
++			if (ret)
++				goto err;
+ 		}
+ 		/* Select chmap supported */
+ 		hdmi_codec_eld_chmap(hcp);
+ 	}
+ 	return 0;
++
++err:
++	/* Release the exclusive lock on error */
++	clear_bit(0, &hcp->busy);
++	return ret;
+ }
+ 
+ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
+@@ -455,14 +435,10 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
+ {
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 
+-	WARN_ON(hcp->current_stream != substream);
+-
+ 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
+ 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
+ 
+-	mutex_lock(&hcp->current_stream_lock);
+-	hcp->current_stream = NULL;
+-	mutex_unlock(&hcp->current_stream_lock);
++	clear_bit(0, &hcp->busy);
+ }
+ 
+ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+@@ -761,8 +737,6 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	hcp->hcd = *hcd;
+-	mutex_init(&hcp->current_stream_lock);
+-
+ 	hcp->daidrv = devm_kcalloc(dev, dai_count, sizeof(*hcp->daidrv),
+ 				   GFP_KERNEL);
+ 	if (!hcp->daidrv)
+
+From f759dd79b520b54bae1ea8f7fb7e3054573e318f Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 6 May 2019 11:58:14 +0200
+Subject: [PATCH] ASoC: hdmi-codec: remove reference to the dai drivers in the
+ private data
+
+Keeping the a pointer to the dai drivers is not necessary. It is not used
+by the hdmi_codec after the probe.
+
+Even if it was used, the 'struct snd_soc_dai_driver' can accessed through
+the 'struct snd_soc_dai' so keeping the pointer in the private data
+structure is not useful.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+(cherry picked from commit 1de005d47d90343666c5cc50a50929e05e52baac)
+---
+ sound/soc/codecs/hdmi-codec.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 4d32f93f6be6..9408e6bc4d3e 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -278,7 +278,6 @@ static const struct hdmi_codec_cea_spk_alloc hdmi_codec_channel_alloc[] = {
+ 
+ struct hdmi_codec_priv {
+ 	struct hdmi_codec_pdata hcd;
+-	struct snd_soc_dai_driver *daidrv;
+ 	struct hdmi_codec_daifmt daifmt[2];
+ 	uint8_t eld[MAX_ELD_BYTES];
+ 	struct snd_pcm_chmap *chmap_info;
+@@ -715,6 +714,7 @@ static const struct snd_soc_component_driver hdmi_driver = {
+ static int hdmi_codec_probe(struct platform_device *pdev)
+ {
+ 	struct hdmi_codec_pdata *hcd = pdev->dev.platform_data;
++	struct snd_soc_dai_driver *daidrv;
+ 	struct device *dev = &pdev->dev;
+ 	struct hdmi_codec_priv *hcp;
+ 	int dai_count, i = 0;
+@@ -737,27 +737,25 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	hcp->hcd = *hcd;
+-	hcp->daidrv = devm_kcalloc(dev, dai_count, sizeof(*hcp->daidrv),
+-				   GFP_KERNEL);
+-	if (!hcp->daidrv)
++	daidrv = devm_kcalloc(dev, dai_count, sizeof(*daidrv), GFP_KERNEL);
++	if (!daidrv)
+ 		return -ENOMEM;
+ 
+ 	if (hcd->i2s) {
+-		hcp->daidrv[i] = hdmi_i2s_dai;
+-		hcp->daidrv[i].playback.channels_max =
+-			hcd->max_i2s_channels;
++		daidrv[i] = hdmi_i2s_dai;
++		daidrv[i].playback.channels_max = hcd->max_i2s_channels;
+ 		i++;
+ 	}
+ 
+ 	if (hcd->spdif) {
+-		hcp->daidrv[i] = hdmi_spdif_dai;
++		daidrv[i] = hdmi_spdif_dai;
+ 		hcp->daifmt[DAI_ID_SPDIF].fmt = HDMI_SPDIF;
+ 	}
+ 
+ 	dev_set_drvdata(dev, hcp);
+ 
+-	ret = devm_snd_soc_register_component(dev, &hdmi_driver, hcp->daidrv,
+-				     dai_count);
++	ret = devm_snd_soc_register_component(dev, &hdmi_driver, daidrv,
++					      dai_count);
+ 	if (ret) {
+ 		dev_err(dev, "%s: snd_soc_register_component() failed (%d)\n",
+ 			__func__, ret);
+
+From 87efee528d1b6baea06f1d38e85a3f1943bed607 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 6 May 2019 11:58:15 +0200
+Subject: [PATCH] ASoC: hdmi-codec: remove ops dependency on the dai id
+
+The dependency on the dai_id can be removed by setting different ops
+for the i2s and spdif dai and storing the dai format information in
+each dai structure. It simplies the code a bit.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+(cherry picked from commit 0cf4610b9f297e570da4d98514b310f076ecc8ab)
+---
+ sound/soc/codecs/hdmi-codec.c | 100 ++++++++++++++++++++++++++++--------------
+ 1 file changed, 67 insertions(+), 33 deletions(-)
+
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 9408e6bc4d3e..90a892766625 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -278,7 +278,6 @@ static const struct hdmi_codec_cea_spk_alloc hdmi_codec_channel_alloc[] = {
+ 
+ struct hdmi_codec_priv {
+ 	struct hdmi_codec_pdata hcd;
+-	struct hdmi_codec_daifmt daifmt[2];
+ 	uint8_t eld[MAX_ELD_BYTES];
+ 	struct snd_pcm_chmap *chmap_info;
+ 	unsigned int chmap_idx;
+@@ -445,6 +444,7 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
++	struct hdmi_codec_daifmt *cf = dai->playback_dma_data;
+ 	struct hdmi_codec_params hp = {
+ 		.iec = {
+ 			.status = { 0 },
+@@ -489,28 +489,27 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+ 	hp.channels = params_channels(params);
+ 
+ 	return hcp->hcd.ops->hw_params(dai->dev->parent, hcp->hcd.data,
+-				       &hcp->daifmt[dai->id], &hp);
++				       cf, &hp);
+ }
+ 
+-static int hdmi_codec_set_fmt(struct snd_soc_dai *dai,
+-			      unsigned int fmt)
++static int hdmi_codec_i2s_set_fmt(struct snd_soc_dai *dai,
++				  unsigned int fmt)
+ {
+-	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+-	struct hdmi_codec_daifmt cf = { 0 };
++	struct hdmi_codec_daifmt *cf = dai->playback_dma_data;
+ 
+-	if (dai->id == DAI_ID_SPDIF)
+-		return 0;
++	/* Reset daifmt */
++	memset(cf, 0, sizeof(*cf));
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+-		cf.bit_clk_master = 1;
+-		cf.frame_clk_master = 1;
++		cf->bit_clk_master = 1;
++		cf->frame_clk_master = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFM:
+-		cf.frame_clk_master = 1;
++		cf->frame_clk_master = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFS:
+-		cf.bit_clk_master = 1;
++		cf->bit_clk_master = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		break;
+@@ -522,43 +521,41 @@ static int hdmi_codec_set_fmt(struct snd_soc_dai *dai,
+ 	case SND_SOC_DAIFMT_NB_NF:
+ 		break;
+ 	case SND_SOC_DAIFMT_NB_IF:
+-		cf.frame_clk_inv = 1;
++		cf->frame_clk_inv = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_NF:
+-		cf.bit_clk_inv = 1;
++		cf->bit_clk_inv = 1;
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_IF:
+-		cf.frame_clk_inv = 1;
+-		cf.bit_clk_inv = 1;
++		cf->frame_clk_inv = 1;
++		cf->bit_clk_inv = 1;
+ 		break;
+ 	}
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		cf.fmt = HDMI_I2S;
++		cf->fmt = HDMI_I2S;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_A:
+-		cf.fmt = HDMI_DSP_A;
++		cf->fmt = HDMI_DSP_A;
+ 		break;
+ 	case SND_SOC_DAIFMT_DSP_B:
+-		cf.fmt = HDMI_DSP_B;
++		cf->fmt = HDMI_DSP_B;
+ 		break;
+ 	case SND_SOC_DAIFMT_RIGHT_J:
+-		cf.fmt = HDMI_RIGHT_J;
++		cf->fmt = HDMI_RIGHT_J;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-		cf.fmt = HDMI_LEFT_J;
++		cf->fmt = HDMI_LEFT_J;
+ 		break;
+ 	case SND_SOC_DAIFMT_AC97:
+-		cf.fmt = HDMI_AC97;
++		cf->fmt = HDMI_AC97;
+ 		break;
+ 	default:
+ 		dev_err(dai->dev, "Invalid DAI interface format\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	hcp->daifmt[dai->id] = cf;
+-
+ 	return 0;
+ }
+ 
+@@ -573,14 +570,20 @@ static int hdmi_codec_digital_mute(struct snd_soc_dai *dai, int mute)
+ 	return 0;
+ }
+ 
+-static const struct snd_soc_dai_ops hdmi_dai_ops = {
++static const struct snd_soc_dai_ops hdmi_codec_i2s_dai_ops = {
+ 	.startup	= hdmi_codec_startup,
+ 	.shutdown	= hdmi_codec_shutdown,
+ 	.hw_params	= hdmi_codec_hw_params,
+-	.set_fmt	= hdmi_codec_set_fmt,
++	.set_fmt	= hdmi_codec_i2s_set_fmt,
+ 	.digital_mute	= hdmi_codec_digital_mute,
+ };
+ 
++static const struct snd_soc_dai_ops hdmi_codec_spdif_dai_ops = {
++	.startup	= hdmi_codec_startup,
++	.shutdown	= hdmi_codec_shutdown,
++	.hw_params	= hdmi_codec_hw_params,
++	.digital_mute	= hdmi_codec_digital_mute,
++};
+ 
+ #define HDMI_RATES	(SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |\
+ 			 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 |\
+@@ -648,20 +651,52 @@ static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
+ static int hdmi_dai_probe(struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_dapm_context *dapm;
++	struct hdmi_codec_daifmt *daifmt;
+ 	struct snd_soc_dapm_route route = {
+ 		.sink = "TX",
+ 		.source = dai->driver->playback.stream_name,
+ 	};
++	int ret;
+ 
+ 	dapm = snd_soc_component_get_dapm(dai->component);
++	ret = snd_soc_dapm_add_routes(dapm, &route, 1);
++	if (ret)
++		return ret;
++
++	daifmt = kzalloc(sizeof(*daifmt), GFP_KERNEL);
++	if (!daifmt)
++		return -ENOMEM;
+ 
+-	return snd_soc_dapm_add_routes(dapm, &route, 1);
++	dai->playback_dma_data = daifmt;
++	return 0;
++}
++
++static int hdmi_dai_spdif_probe(struct snd_soc_dai *dai)
++{
++	struct hdmi_codec_daifmt *cf = dai->playback_dma_data;
++	int ret;
++
++	ret = hdmi_dai_probe(dai);
++	if (ret)
++		return ret;
++
++	cf = dai->playback_dma_data;
++	cf->fmt = HDMI_SPDIF;
++
++	return 0;
++}
++
++static int hdmi_codec_dai_remove(struct snd_soc_dai *dai)
++{
++	kfree(dai->playback_dma_data);
++	return 0;
+ }
+ 
+ static const struct snd_soc_dai_driver hdmi_i2s_dai = {
+ 	.name = "i2s-hifi",
+ 	.id = DAI_ID_I2S,
+ 	.probe = hdmi_dai_probe,
++	.remove = hdmi_codec_dai_remove,
+ 	.playback = {
+ 		.stream_name = "I2S Playback",
+ 		.channels_min = 2,
+@@ -670,14 +705,15 @@ static const struct snd_soc_dai_driver hdmi_i2s_dai = {
+ 		.formats = I2S_FORMATS,
+ 		.sig_bits = 24,
+ 	},
+-	.ops = &hdmi_dai_ops,
++	.ops = &hdmi_codec_i2s_dai_ops,
+ 	.pcm_new = hdmi_codec_pcm_new,
+ };
+ 
+ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
+ 	.name = "spdif-hifi",
+ 	.id = DAI_ID_SPDIF,
+-	.probe = hdmi_dai_probe,
++	.probe = hdmi_dai_spdif_probe,
++	.remove = hdmi_codec_dai_remove,
+ 	.playback = {
+ 		.stream_name = "SPDIF Playback",
+ 		.channels_min = 2,
+@@ -685,7 +721,7 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
+ 		.rates = HDMI_RATES,
+ 		.formats = SPDIF_FORMATS,
+ 	},
+-	.ops = &hdmi_dai_ops,
++	.ops = &hdmi_codec_spdif_dai_ops,
+ 	.pcm_new = hdmi_codec_pcm_new,
+ };
+ 
+@@ -747,10 +783,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		i++;
+ 	}
+ 
+-	if (hcd->spdif) {
++	if (hcd->spdif)
+ 		daidrv[i] = hdmi_spdif_dai;
+-		hcp->daifmt[DAI_ID_SPDIF].fmt = HDMI_SPDIF;
+-	}
+ 
+ 	dev_set_drvdata(dev, hcp);
+ 
+
+From 37c3514757c9e9d43d6edc965be72dec1b64ec39 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 13 May 2019 10:18:47 +0200
+Subject: [PATCH] ASoC: hdmi-codec: re-introduce mutex locking
+
+Replace the bit atomic operations by a mutex to ensure only one dai
+at a time is active on the hdmi codec.
+
+This is a follow up on change:
+3fcf94ef4d41 ("ASoC: hdmi-codec: remove reference to the current substream")
+
+Suggested-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+(cherry picked from commit eb1ecadb7f67dde94ef0efd3ddaed5cb6c9a65ed)
+---
+ sound/soc/codecs/hdmi-codec.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 90a892766625..6a0cc8d7e141 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -281,7 +281,7 @@ struct hdmi_codec_priv {
+ 	uint8_t eld[MAX_ELD_BYTES];
+ 	struct snd_pcm_chmap *chmap_info;
+ 	unsigned int chmap_idx;
+-	unsigned long busy;
++	struct mutex lock;
+ };
+ 
+ static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+@@ -395,8 +395,8 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 	struct hdmi_codec_priv *hcp = snd_soc_dai_get_drvdata(dai);
+ 	int ret = 0;
+ 
+-	ret = test_and_set_bit(0, &hcp->busy);
+-	if (ret) {
++	ret = mutex_trylock(&hcp->lock);
++	if (!ret) {
+ 		dev_err(dai->dev, "Only one simultaneous stream supported!\n");
+ 		return -EINVAL;
+ 	}
+@@ -424,7 +424,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream *substream,
+ 
+ err:
+ 	/* Release the exclusive lock on error */
+-	clear_bit(0, &hcp->busy);
++	mutex_unlock(&hcp->lock);
+ 	return ret;
+ }
+ 
+@@ -436,7 +436,7 @@ static void hdmi_codec_shutdown(struct snd_pcm_substream *substream,
+ 	hcp->chmap_idx = HDMI_CODEC_CHMAP_IDX_UNKNOWN;
+ 	hcp->hcd.ops->audio_shutdown(dai->dev->parent, hcp->hcd.data);
+ 
+-	clear_bit(0, &hcp->busy);
++	mutex_unlock(&hcp->lock);
+ }
+ 
+ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+@@ -773,6 +773,8 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	hcp->hcd = *hcd;
++	mutex_init(&hcp->lock);
++
+ 	daidrv = devm_kcalloc(dev, dai_count, sizeof(*daidrv), GFP_KERNEL);
+ 	if (!daidrv)
+ 		return -ENOMEM;
+
+From 457c4fad18b7f3c3d21dbc171db105a0c772c711 Mon Sep 17 00:00:00 2001
+From: Caesar Wang <caesar.wang@rock-chips.com>
+Date: Tue, 9 Apr 2019 13:47:07 -0700
+Subject: [PATCH] ARM: dts: rockchip: fix PWM clock found on RK3288 Socs
+
+We use the new PWM IP on RK3288, but the PWM's clock indeed incorrect.
+
+Signed-off-by: Caesar Wang <caesar.wang@rock-chips.com>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 6773af2684b7bc1b7b2d9ef874599cccaba2559e)
+---
+ arch/arm/boot/dts/rk3288.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index aa017abf4f42..171231a0cd9b 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -682,7 +682,7 @@
+ 		#pwm-cells = <3>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pwm0_pin>;
+-		clocks = <&cru PCLK_PWM>;
++		clocks = <&cru PCLK_RKPWM>;
+ 		clock-names = "pwm";
+ 		status = "disabled";
+ 	};
+@@ -693,7 +693,7 @@
+ 		#pwm-cells = <3>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pwm1_pin>;
+-		clocks = <&cru PCLK_PWM>;
++		clocks = <&cru PCLK_RKPWM>;
+ 		clock-names = "pwm";
+ 		status = "disabled";
+ 	};
+@@ -704,7 +704,7 @@
+ 		#pwm-cells = <3>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pwm2_pin>;
+-		clocks = <&cru PCLK_PWM>;
++		clocks = <&cru PCLK_RKPWM>;
+ 		clock-names = "pwm";
+ 		status = "disabled";
+ 	};
+@@ -715,7 +715,7 @@
+ 		#pwm-cells = <2>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pwm3_pin>;
+-		clocks = <&cru PCLK_PWM>;
++		clocks = <&cru PCLK_RKPWM>;
+ 		clock-names = "pwm";
+ 		status = "disabled";
+ 	};
+
+From a53c5655b10476dd92c5d897fba6923d86b81410 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Fri, 3 May 2019 16:48:14 -0700
+Subject: [PATCH] ARM: dts: rockchip: Remove bogus 'i2s_clk_out' from
+ rk3288-veyron-mickey
+
+The rk3288-veyron-mickey device tree overrides the default "i2s" clock
+settings to add the clock for "i2s_clk_out".
+
+That clock is only present in the bindings downstream Chrome OS 3.14
+tree.  Upstream the i2s port bindings doesn't specify that as a
+possible clock.
+
+Let's remove it.
+
+NOTE: for other rk3288-veyron devices this clock is consumed by
+'maxim,max98090'.  Presumably if this clock is needed for mickey it'll
+need to be consumed by something similar.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit d190bfaaa2a1575e7998d8487ed26cdf9e74b42b)
+---
+ arch/arm/boot/dts/rk3288-veyron-mickey.dts | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-mickey.dts b/arch/arm/boot/dts/rk3288-veyron-mickey.dts
+index e852594417b5..f9c4ece3c0d3 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-mickey.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-mickey.dts
+@@ -142,8 +142,6 @@
+ 
+ &i2s {
+ 	status = "okay";
+-	clock-names = "i2s_hclk", "i2s_clk", "i2s_clk_out";
+-	clocks = <&cru HCLK_I2S0>, <&cru SCLK_I2S0>, <&cru SCLK_I2S0_OUT>;
+ };
+ 
+ &rk808 {
+
+From 7248d9787964516fa3a39ac874cf6e036a5ed4a3 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Fri, 3 May 2019 16:45:37 -0700
+Subject: [PATCH] ARM: dts: rockchip: Make rk3288-veyron-mickey's emmc work
+ again
+
+When I try to boot rk3288-veyron-mickey I totally fail to make the
+eMMC work.  Specifically my logs (on Chrome OS 4.19):
+
+  mmc_host mmc1: card is non-removable.
+  mmc_host mmc1: Bus speed (slot 0) = 400000Hz (slot req 400000Hz, actual 400000HZ div = 0)
+  mmc_host mmc1: Bus speed (slot 0) = 50000000Hz (slot req 52000000Hz, actual 50000000HZ div = 0)
+  mmc1: switch to bus width 8 failed
+  mmc1: switch to bus width 4 failed
+  mmc1: new high speed MMC card at address 0001
+  mmcblk1: mmc1:0001 HAG2e 14.7 GiB
+  mmcblk1boot0: mmc1:0001 HAG2e partition 1 4.00 MiB
+  mmcblk1boot1: mmc1:0001 HAG2e partition 2 4.00 MiB
+  mmcblk1rpmb: mmc1:0001 HAG2e partition 3 4.00 MiB, chardev (243:0)
+  mmc_host mmc1: Bus speed (slot 0) = 400000Hz (slot req 400000Hz, actual 400000HZ div = 0)
+  mmc_host mmc1: Bus speed (slot 0) = 50000000Hz (slot req 52000000Hz, actual 50000000HZ div = 0)
+  mmc1: switch to bus width 8 failed
+  mmc1: switch to bus width 4 failed
+  mmc1: tried to HW reset card, got error -110
+  mmcblk1: error -110 requesting status
+  mmcblk1: recovery failed!
+  print_req_error: I/O error, dev mmcblk1, sector 0
+  ...
+
+When I remove the '/delete-property/mmc-hs200-1_8v' then everything is
+hunky dory.
+
+That line comes from the original submission of the mickey dts
+upstream, so presumably at the time the HS200 was failing and just
+enumerating things as a high speed device was fine.  ...or maybe it's
+just that some mickey devices work when enumerating at "high speed",
+just not mine?
+
+In any case, hs200 seems good now.  Let's turn it on.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 99fa066710f75f18f4d9a5bc5f6a711968a581d5)
+---
+ arch/arm/boot/dts/rk3288-veyron-mickey.dts | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-mickey.dts b/arch/arm/boot/dts/rk3288-veyron-mickey.dts
+index f9c4ece3c0d3..52f6abc22291 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-mickey.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-mickey.dts
+@@ -128,10 +128,6 @@
+ 	};
+ };
+ 
+-&emmc {
+-	/delete-property/mmc-hs200-1_8v;
+-};
+-
+ &i2c2 {
+ 	status = "disabled";
+ };
+
+From 300b013e507ec05f020f48c96852a643e662ebd9 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Fri, 3 May 2019 16:41:42 -0700
+Subject: [PATCH] ARM: dts: rockchip: Make rk3288-veyron-minnie run at hs200
+
+As some point hs200 was failing on rk3288-veyron-minnie.  See commit
+984926781122 ("ARM: dts: rockchip: temporarily remove emmc hs200 speed
+from rk3288 minnie").  Although I didn't track down exactly when it
+started working, it seems to work OK now, so let's turn it back on.
+
+To test this, I booted from SD card and then used this script to
+stress the enumeration process after fixing a memory leak [1]:
+  cd /sys/bus/platform/drivers/dwmmc_rockchip
+  for i in $(seq 1 3000); do
+    echo "========================" $i
+    echo ff0f0000.dwmmc > unbind
+    sleep .5
+    echo ff0f0000.dwmmc > bind
+    while true; do
+      if [ -e /dev/mmcblk2 ]; then
+        break;
+      fi
+      sleep .1
+    done
+  done
+
+It worked fine.
+
+[1] https://lkml.kernel.org/r/20190503233526.226272-1-dianders@chromium.org
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 1c0479023412ab7834f2e98b796eb0d8c627cd62)
+---
+ arch/arm/boot/dts/rk3288-veyron-minnie.dts | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-minnie.dts b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+index 468a1818545d..ce57881625ec 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-minnie.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+@@ -90,10 +90,6 @@
+ 	pwm-off-delay-ms = <200>;
+ };
+ 
+-&emmc {
+-	/delete-property/mmc-hs200-1_8v;
+-};
+-
+ &gpio_keys {
+ 	pinctrl-0 = <&pwr_key_l &ap_lid_int_l &volum_down_l &volum_up_l>;
+ 
+
+From 0326148ebfc5d78adf6d74eff9291d3d5368fba9 Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Thu, 16 May 2019 09:29:40 -0700
+Subject: [PATCH] ARM: dts: rockchip: raise CPU trip point temperature for
+ veyron to 100 degC
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This value matches what is used by the downstream Chrome OS 3.14
+kernel, the 'official' kernel for veyron devices. Keep the temperature
+for 'speedy' at 90°C, as in the downstream kernel.
+
+Increase the temperature for a hardware shutdown to 125°C, which
+matches the downstream configuration and gives the system a chance
+to shut down orderly at the criticial trip point.
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 83be81e3b0b6eb5df2fba66baa7a25f7e7dc9775)
+---
+ arch/arm/boot/dts/rk3288-veyron-speedy.dts | 4 ++++
+ arch/arm/boot/dts/rk3288-veyron.dtsi       | 5 +++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-speedy.dts b/arch/arm/boot/dts/rk3288-veyron-speedy.dts
+index 2ac8748a3a0c..b07a07e81551 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-speedy.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-speedy.dts
+@@ -64,6 +64,10 @@
+ 	temperature = <70000>;
+ };
+ 
++&cpu_crit {
++	temperature = <90000>;
++};
++
+ &edp {
+ 	/delete-property/pinctrl-names;
+ 	/delete-property/pinctrl-0;
+diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
+index 1252522392c7..e81f1a0cac83 100644
+--- a/arch/arm/boot/dts/rk3288-veyron.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
+@@ -123,6 +123,10 @@
+ 	cpu0-supply = <&vdd_cpu>;
+ };
+ 
++&cpu_crit {
++	temperature = <100000>;
++};
++
+ /* rk3288-c used in Veyron Chrome-devices has slightly changed OPPs */
+ &cpu_opp_table {
+ 	/delete-node/ opp-312000000;
+@@ -394,6 +398,7 @@
+ 
+ 	rockchip,hw-tshut-mode = <1>; /* tshut mode 0:CRU 1:GPIO */
+ 	rockchip,hw-tshut-polarity = <1>; /* tshut polarity 0:LOW 1:HIGH */
++	rockchip,hw-tshut-temp = <125000>;
+ };
+ 
+ &uart0 {
+
+From 15776271bb62686b8552728bd77a21171cd3f9b8 Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Thu, 16 May 2019 09:29:41 -0700
+Subject: [PATCH] ARM: dts: rockchip: raise GPU trip point temperatures for
+ veyron
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The values match those used by the downstream Chrome OS 3.14
+kernel, the 'official' kernel for veyron devices. Keep the critical
+trip point for speedy at 90°C as in the downstream configuration.
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 0f637e2565d175eeff664991be9a6d0753d0e484)
+---
+ arch/arm/boot/dts/rk3288-veyron-speedy.dts | 4 ++++
+ arch/arm/boot/dts/rk3288-veyron.dtsi       | 8 ++++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-speedy.dts b/arch/arm/boot/dts/rk3288-veyron-speedy.dts
+index b07a07e81551..aae37c535444 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-speedy.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-speedy.dts
+@@ -75,6 +75,10 @@
+ 	force-hpd;
+ };
+ 
++&gpu_crit {
++	temperature = <90000>;
++};
++
+ &panel {
+ 	power-supply= <&panel_regulator>;
+ };
+diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
+index e81f1a0cac83..90c8312d01ff 100644
+--- a/arch/arm/boot/dts/rk3288-veyron.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
+@@ -166,6 +166,14 @@
+ 	status = "okay";
+ };
+ 
++&gpu_alert0 {
++	temperature = <72500>;
++};
++
++&gpu_crit {
++	temperature = <100000>;
++};
++
+ &hdmi {
+ 	ddc-i2c-bus = <&i2c5>;
+ 	status = "okay";
+
+From da8e4ad23d1bd20889c162268923a56d6f8fcbe3 Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Thu, 16 May 2019 09:29:42 -0700
+Subject: [PATCH] ARM: dts: raise GPU trip point temperature for speedy to 80
+ degC
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Raise the temperature of the GPU thermal trip point for speedy
+to 80°C. This is the value used by the downstream Chrome OS 3.14
+kernel, the 'official' kernel for speedy.
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit fa31ba8f1719149658f3cfc1e230c04b12c72efa)
+---
+ arch/arm/boot/dts/rk3288-veyron-speedy.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-speedy.dts b/arch/arm/boot/dts/rk3288-veyron-speedy.dts
+index aae37c535444..9a87017347ea 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-speedy.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-speedy.dts
+@@ -75,6 +75,10 @@
+ 	force-hpd;
+ };
+ 
++&gpu_alert0 {
++	temperature = <80000>;
++};
++
+ &gpu_crit {
+ 	temperature = <90000>;
+ };
+
+From a60cf61b444dfd73364da10cc06d9ad73d99c7f0 Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Date: Fri, 10 May 2019 02:03:14 +0900
+Subject: [PATCH] arm64: dts: rockchip: add PCIe nodes on rk3399-rockpro64
+
+This patch adds PCIe, PCIe phy and pinctrl (for PERST#) nodes for
+RockPro64 board.
+
+Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit bba821f5479eaab474b2ec1e230ec8b532089722)
+---
+ arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dts | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dts b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dts
+index 20ec7d1c25d7..eb5594062006 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dts
+@@ -513,6 +513,20 @@
+ 	gpio1830-supply = <&vcc_3v0>;
+ };
+ 
++&pcie0 {
++	ep-gpios = <&gpio2 RK_PD4 GPIO_ACTIVE_HIGH>;
++	num-lanes = <4>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pcie_perst>;
++	vpcie12v-supply = <&vcc12v_dcin>;
++	vpcie3v3-supply = <&vcc3v3_pcie>;
++	status = "okay";
++};
++
++&pcie_phy {
++	status = "okay";
++};
++
+ &pmu_io_domains {
+ 	pmu1830-supply = <&vcc_3v0>;
+ 	status = "okay";
+@@ -542,6 +556,10 @@
+ 	};
+ 
+ 	pcie {
++		pcie_perst: pcie-perst {
++			rockchip,pins = <2 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
+ 		pcie_pwr_en: pcie-pwr-en {
+ 			rockchip,pins = <1 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
+ 		};
+
+From b718c63859c8b67adbc1eb6ca3af7d1d5c4abea2 Mon Sep 17 00:00:00 2001
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Date: Fri, 17 May 2019 09:36:24 +0530
+Subject: [PATCH] arm64: dts: rockchip: Enable SPI0 and SPI4 on Rock960
+
+Enable SPI0 and SPI4 exposed on the Low and High speed expansion
+connectors of Rock960.
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 7b305b0fb05e0c91da4b1ef2fed12a8b5291c55b)
+---
+ arch/arm64/boot/dts/rockchip/rk3399-rock960.dts | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
+index 12285c51cceb..c624b4e73129 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
+@@ -114,6 +114,16 @@
+ 	};
+ };
+ 
++&spi0 {
++	/* On Low speed expansion (LS-SPI0) */
++	status = "okay";
++};
++
++&spi4 {
++	/* On High speed expansion (HS-SPI1) */
++	status = "okay";
++};
++
+ &usbdrd_dwc3_0 {
+ 	dr_mode = "otg";
+ };
+
+From 0784b526d6015d26e58b9f737210f989b469063d Mon Sep 17 00:00:00 2001
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Date: Fri, 17 May 2019 09:36:25 +0530
+Subject: [PATCH] arm64: dts: rockchip: Enable SPI1 on Ficus
+
+Enable SPI1 exposed on both Low and High speed expansion connectors
+of Ficus. SPI1 has 3 different chip selects wired as below:
+
+CS0 - Serial Flash (unpopulated)
+CS1 - Low Speed expansion
+CS2 - High Speed expansion
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 0ee198ab08fe1b7cca93a81ad658954534963cb0)
+---
+ arch/arm64/boot/dts/rockchip/rk3399-ficus.dts | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts b/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
+index 6b059bd7a04f..ebe2ee77ba1f 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
+@@ -146,6 +146,12 @@
+ 	};
+ };
+ 
++&spi1 {
++	/* On both Low speed and High speed expansion */
++	cs-gpios = <0>, <&gpio4 RK_PA6 0>, <&gpio4 RK_PA7 0>;
++	status = "okay";
++};
++
+ &usbdrd_dwc3_0 {
+ 	dr_mode = "host";
+ };
+
+From 862863401f3603a5b622377e8813829d58f4d968 Mon Sep 17 00:00:00 2001
+From: Wen Yang <wen.yang99@zte.com.cn>
+Date: Fri, 26 Apr 2019 15:08:08 +0800
+Subject: [PATCH] ARM: rockchip: fix missing of_node_put calls in smp code
+
+The call to of_get_next_child returns a node pointer with refcount
+incremented thus it must be explicitly decremented after the last
+usage.
+
+Detected by coccinelle with the following warnings:
+./arch/arm/mach-rockchip/pm.c:269:2-8: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 259, but without a corresponding object release within this function.
+./arch/arm/mach-rockchip/pm.c:275:2-8: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 259, but without a corresponding object release within this function
+./arch/arm/mach-rockchip/platsmp.c:281:2-8: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 272, but without a corresponding object release within this function.
+./arch/arm/mach-rockchip/platsmp.c:285:2-8: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 272, but without a corresponding object release within this function.
+./arch/arm/mach-rockchip/platsmp.c:289:3-9: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 272, but without a corresponding object release within this function.
+./arch/arm/mach-rockchip/platsmp.c:303:3-9: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 294, but without a corresponding object release within this function.
+
+Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Suggested-by: Heiko Stuebner <heiko@sntech.de>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Heiko Stuebner <heiko@sntech.de>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-rockchip@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit c2af88f1a0cdf4cbe94b51fd93e52a3f55606a13)
+---
+ arch/arm/mach-rockchip/platsmp.c | 12 ++++++++++--
+ arch/arm/mach-rockchip/pm.c      |  2 ++
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-rockchip/platsmp.c b/arch/arm/mach-rockchip/platsmp.c
+index 4675d9202000..afd15147fdd4 100644
+--- a/arch/arm/mach-rockchip/platsmp.c
++++ b/arch/arm/mach-rockchip/platsmp.c
+@@ -278,19 +278,25 @@ static void __init rockchip_smp_prepare_cpus(unsigned int max_cpus)
+ 	sram_base_addr = of_iomap(node, 0);
+ 	if (!sram_base_addr) {
+ 		pr_err("%s: could not map sram registers\n", __func__);
++		of_node_put(node);
+ 		return;
+ 	}
+ 
+-	if (has_pmu && rockchip_smp_prepare_pmu())
++	if (has_pmu && rockchip_smp_prepare_pmu()) {
++		of_node_put(node);
+ 		return;
++	}
+ 
+ 	if (read_cpuid_part() == ARM_CPU_PART_CORTEX_A9) {
+-		if (rockchip_smp_prepare_sram(node))
++		if (rockchip_smp_prepare_sram(node)) {
++			of_node_put(node);
+ 			return;
++		}
+ 
+ 		/* enable the SCU power domain */
+ 		pmu_set_power_domain(PMU_PWRDN_SCU, true);
+ 
++		of_node_put(node);
+ 		node = of_find_compatible_node(NULL, NULL, "arm,cortex-a9-scu");
+ 		if (!node) {
+ 			pr_err("%s: missing scu\n", __func__);
+@@ -300,6 +306,7 @@ static void __init rockchip_smp_prepare_cpus(unsigned int max_cpus)
+ 		scu_base_addr = of_iomap(node, 0);
+ 		if (!scu_base_addr) {
+ 			pr_err("%s: could not map scu registers\n", __func__);
++			of_node_put(node);
+ 			return;
+ 		}
+ 
+@@ -318,6 +325,7 @@ static void __init rockchip_smp_prepare_cpus(unsigned int max_cpus)
+ 		asm ("mrc p15, 1, %0, c9, c0, 2\n" : "=r" (l2ctlr));
+ 		ncores = ((l2ctlr >> 24) & 0x3) + 1;
+ 	}
++	of_node_put(node);
+ 
+ 	/* Make sure that all cores except the first are really off */
+ 	for (i = 1; i < ncores; i++)
+diff --git a/arch/arm/mach-rockchip/pm.c b/arch/arm/mach-rockchip/pm.c
+index 065b09e6f1eb..4a4f914c34cf 100644
+--- a/arch/arm/mach-rockchip/pm.c
++++ b/arch/arm/mach-rockchip/pm.c
+@@ -266,12 +266,14 @@ static int __init rk3288_suspend_init(struct device_node *np)
+ 	rk3288_bootram_base = of_iomap(sram_np, 0);
+ 	if (!rk3288_bootram_base) {
+ 		pr_err("%s: could not map bootram base\n", __func__);
++		of_node_put(sram_np);
+ 		return -ENOMEM;
+ 	}
+ 
+ 	ret = of_address_to_resource(sram_np, 0, &res);
+ 	if (ret) {
+ 		pr_err("%s: could not get bootram phy addr\n", __func__);
++		of_node_put(sram_np);
+ 		return ret;
+ 	}
+ 	rk3288_bootram_phy = res.start;
+
+From b5f627fd6ca46062e3702880d0ef8a2ba86d9c61 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Tue, 7 May 2019 13:49:35 -0700
+Subject: [PATCH] clk: rockchip: Use clk_hw_get_rate() in MMC phase calculation
+
+When calculating the MMC phase we can just use clk_hw_get_rate()
+instead of clk_get_rate().  This avoids recalculating the rate.
+
+Suggested-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 527f54fddff67641156e637de2c69cab4a79d7c3)
+---
+ drivers/clk/rockchip/clk-mmc-phase.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/rockchip/clk-mmc-phase.c b/drivers/clk/rockchip/clk-mmc-phase.c
+index 026a26bb702d..07526f64dbfd 100644
+--- a/drivers/clk/rockchip/clk-mmc-phase.c
++++ b/drivers/clk/rockchip/clk-mmc-phase.c
+@@ -55,7 +55,7 @@ static unsigned long rockchip_mmc_recalc(struct clk_hw *hw,
+ static int rockchip_mmc_get_phase(struct clk_hw *hw)
+ {
+ 	struct rockchip_mmc_clock *mmc_clock = to_mmc_clock(hw);
+-	unsigned long rate = clk_get_rate(hw->clk);
++	unsigned long rate = clk_hw_get_rate(hw);
+ 	u32 raw_value;
+ 	u16 degrees;
+ 	u32 delay_num = 0;
+@@ -86,7 +86,7 @@ static int rockchip_mmc_get_phase(struct clk_hw *hw)
+ static int rockchip_mmc_set_phase(struct clk_hw *hw, int degrees)
+ {
+ 	struct rockchip_mmc_clock *mmc_clock = to_mmc_clock(hw);
+-	unsigned long rate = clk_get_rate(hw->clk);
++	unsigned long rate = clk_hw_get_rate(hw);
+ 	u8 nineties, remainder;
+ 	u8 delay_num;
+ 	u32 raw_value;
+
+From c143aa27858fda22a032acc3e05c6b80c9b64c9c Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Fri, 3 May 2019 14:22:08 -0700
+Subject: [PATCH] clk: rockchip: Don't yell about bad mmc phases when getting
+
+At boot time, my rk3288-veyron devices yell with 8 lines that look
+like this:
+  [    0.000000] rockchip_mmc_get_phase: invalid clk rate
+
+This is because the clock framework at clk_register() time tries to
+get the phase but we don't have a parent yet.
+
+While the errors appear to be harmless they are still ugly and, in
+general, we don't want yells like this in the log unless they are
+important.
+
+There's no real reason to be yelling here.  We can still return
+-EINVAL to indicate that the phase makes no sense without a parent.
+If someone really tries to do tuning and the clock is reported as 0
+then we'll see the yells in rockchip_mmc_set_phase().
+
+Fixes: 4bf59902b500 ("clk: rockchip: Prevent calculating mmc phase if clock rate is zero")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 6943b839721ad4a31ad2bacf6e71b21f2dfe3134)
+---
+ drivers/clk/rockchip/clk-mmc-phase.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/clk/rockchip/clk-mmc-phase.c b/drivers/clk/rockchip/clk-mmc-phase.c
+index 07526f64dbfd..17662217d1bb 100644
+--- a/drivers/clk/rockchip/clk-mmc-phase.c
++++ b/drivers/clk/rockchip/clk-mmc-phase.c
+@@ -61,10 +61,8 @@ static int rockchip_mmc_get_phase(struct clk_hw *hw)
+ 	u32 delay_num = 0;
+ 
+ 	/* See the comment for rockchip_mmc_set_phase below */
+-	if (!rate) {
+-		pr_err("%s: invalid clk rate\n", __func__);
++	if (!rate)
+ 		return -EINVAL;
+-	}
+ 
+ 	raw_value = readl(mmc_clock->reg) >> (mmc_clock->shift);
+ 
+
+From d9c46eeb837f8a0d63dcf0fc64e78e4e8490b512 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Tue, 7 May 2019 13:57:42 -0700
+Subject: [PATCH] clk: rockchip: Slightly more accurate math in
+ rockchip_mmc_get_phase()
+
+There's a bit of math in rockchip_mmc_get_phase() to calculate the
+"fine delay".  This math boils down to:
+
+ PSECS_PER_SEC = 1000000000000.
+ ROCKCHIP_MMC_DELAY_ELEMENT_PSEC = 60
+ card_clk * ROCKCHIP_MMC_DELAY_ELEMENT_PSEC * 360 * x / PSECS_PER_SEC
+
+...but we do it in pieces to avoid overflowing 32-bits.  Right now we
+overdo it a little bit, though, and end up getting less accurate math
+than we could.  Right now we do:
+
+ DIV_ROUND_CLOSEST((card_clk / 1000000) *
+                   (ROCKCHIP_MMC_DELAY_ELEMENT_PSEC / 10) *
+                   (360 / 10) *
+		   delay_num,
+		   PSECS_PER_SEC / 1000000 / 10 / 10)
+
+This is non-ideal because:
+A) The pins on Rockchip SoCs are rated to go at most 150 MHz, so the
+   max card clock is 150 MHz.  Even ignoring this the maximum SD card
+   clock (for SDR104) would be 208 MHz.  This means you can decrease
+   your division by 100x and still not overflow:
+     hex(208000000 / 10000 * 6 * 36 * 0xff) == 0x44497200
+B) On many Rockchip SoCs we end up with a card clock that is actually
+   148500000 because we parent off the 297 MHz PLL.  That means the
+   math we're actually doing today is less than ideal.  Specifically:
+   148500000 / 1000000 = 148
+
+Let's fix the math to be slightly more accurate.
+
+NOTE: no known problems are fixed by this.  It was found simply by
+code inspection.  If you want to see the difference between the old
+and the new on a 148.5 MHz clock, this python can help:
+
+  old = [x for x in
+         (int(round(148 * 6 * 36 * x / 10000.)) for x in range(256))
+	 if x < 90]
+  new = [x for x in
+         (int(round(1485 * 6 * 36 * x / 100000.)) for x in range(256))
+	 if x < 90]
+
+The only differences are:
+  delay_num=17 54=>55
+  delay_num=22 70=>71
+  delay_num=27 86=>87
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 1e2d08a837ec0d7b8d01539cf7e50d465a2e74bc)
+---
+ drivers/clk/rockchip/clk-mmc-phase.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/clk/rockchip/clk-mmc-phase.c b/drivers/clk/rockchip/clk-mmc-phase.c
+index 17662217d1bb..baa73285b953 100644
+--- a/drivers/clk/rockchip/clk-mmc-phase.c
++++ b/drivers/clk/rockchip/clk-mmc-phase.c
+@@ -69,13 +69,13 @@ static int rockchip_mmc_get_phase(struct clk_hw *hw)
+ 	degrees = (raw_value & ROCKCHIP_MMC_DEGREE_MASK) * 90;
+ 
+ 	if (raw_value & ROCKCHIP_MMC_DELAY_SEL) {
+-		/* degrees/delaynum * 10000 */
++		/* degrees/delaynum * 1000000 */
+ 		unsigned long factor = (ROCKCHIP_MMC_DELAY_ELEMENT_PSEC / 10) *
+-					36 * (rate / 1000000);
++					36 * (rate / 10000);
+ 
+ 		delay_num = (raw_value & ROCKCHIP_MMC_DELAYNUM_MASK);
+ 		delay_num >>= ROCKCHIP_MMC_DELAYNUM_OFFSET;
+-		degrees += DIV_ROUND_CLOSEST(delay_num * factor, 10000);
++		degrees += DIV_ROUND_CLOSEST(delay_num * factor, 1000000);
+ 	}
+ 
+ 	return degrees % 360;
+
+From 11a65316b691aa8a15f8f231ba07ee622c21ff67 Mon Sep 17 00:00:00 2001
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+Date: Thu, 16 May 2019 12:44:36 +0000
+Subject: [PATCH] clk: rockchip: add 1.464GHz cpu-clock rate to rk3228
+
+Add missing 1.464GHz clock rate to rk3228_cpuclk_rates[], which gets
+referenced in the operating points but wasn't defined till now.
+
+Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit f14b3c91ec5f013a8be337541fd34a42a31fb074)
+---
+ drivers/clk/rockchip/clk-rk3228.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/clk/rockchip/clk-rk3228.c b/drivers/clk/rockchip/clk-rk3228.c
+index 7af48184b022..b85730565edd 100644
+--- a/drivers/clk/rockchip/clk-rk3228.c
++++ b/drivers/clk/rockchip/clk-rk3228.c
+@@ -109,6 +109,7 @@ static struct rockchip_cpuclk_rate_table rk3228_cpuclk_rates[] __initdata = {
+ 	RK3228_CPUCLK_RATE(1608000000, 1, 7),
+ 	RK3228_CPUCLK_RATE(1512000000, 1, 7),
+ 	RK3228_CPUCLK_RATE(1488000000, 1, 5),
++	RK3228_CPUCLK_RATE(1464000000, 1, 5),
+ 	RK3228_CPUCLK_RATE(1416000000, 1, 5),
+ 	RK3228_CPUCLK_RATE(1392000000, 1, 5),
+ 	RK3228_CPUCLK_RATE(1296000000, 1, 5),
+
+From ffa4771f534951fe17328d8ed1b28ee0a85444c0 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Tue, 21 May 2019 13:32:14 -0700
+Subject: [PATCH] ARM: dts: rockchip: Add pin names for rk3288-veyron-minnie
+
+We can now use the "gpio-line-names" property to provide the names for
+all the pins on a board.  Let's use this to provide the names for all
+the pins on rk3288-veyron-minnie.
+
+In general the names here come straight from the schematic.  That
+means even if the schematic name is weird / doesn't have consistent
+naming conventions / has typos I still haven't made any changes.
+
+The exception here is for two pins: the recovery switch and the write
+protect detection pin.  These two pins need to have standardized names
+since crossystem (a Chrome OS tool) uses these names to query the
+pins.  In downstream kernels crossystem used an out-of-tree driver to
+do this but it has now been moved to the gpiod API and needs the
+standardized names.
+
+It's expected that other rk3288-veyron boards will get similar patches
+shortly.
+
+NOTE: I have sorted the "gpio" section to be next to the "pinctrl"
+section since it seems to logically make the most sense there.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit ca3516b32cd9e483685f6de5c9433d4913879f7e)
+---
+ arch/arm/boot/dts/rk3288-veyron-minnie.dts | 212 +++++++++++++++++++++++++++++
+ 1 file changed, 212 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-minnie.dts b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+index ce57881625ec..a65099b4aef1 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-minnie.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+@@ -184,6 +184,218 @@
+ 	pinctrl-0 = <&vcc50_hdmi_en>;
+ };
+ 
++&gpio0 {
++	gpio-line-names = "PMIC_SLEEP_AP",
++			  "DDRIO_PWROFF",
++			  "DDRIO_RETEN",
++			  "TS3A227E_INT_L",
++			  "PMIC_INT_L",
++			  "PWR_KEY_L",
++			  "AP_LID_INT_L",
++			  "EC_IN_RW",
++
++			  "AC_PRESENT_AP",
++			  /*
++			   * RECOVERY_SW_L is Chrome OS ABI.  Schematics call
++			   * it REC_MODE_L.
++			   */
++			  "RECOVERY_SW_L",
++			  "OTP_OUT",
++			  "HOST1_PWR_EN",
++			  "USBOTG_PWREN_H",
++			  "AP_WARM_RESET_H",
++			  "nFALUT2",
++			  "I2C0_SDA_PMIC",
++
++			  "I2C0_SCL_PMIC",
++			  "SUSPEND_L",
++			  "USB_INT";
++};
++
++&gpio2 {
++	gpio-line-names = "CONFIG0",
++			  "CONFIG1",
++			  "CONFIG2",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "CONFIG3",
++
++			  "PROCHOT#",
++			  "EMMC_RST_L",
++			  "",
++			  "",
++			  "BL_PWR_EN",
++			  "AVDD_1V8_DISP_EN",
++			  "TOUCH_INT",
++			  "TOUCH_RST",
++
++			  "I2C3_SCL_TP",
++			  "I2C3_SDA_TP";
++};
++
++&gpio3 {
++	gpio-line-names = "FLASH0_D0",
++			  "FLASH0_D1",
++			  "FLASH0_D2",
++			  "FLASH0_D3",
++			  "FLASH0_D4",
++			  "FLASH0_D5",
++			  "FLASH0_D6",
++			  "FLASH0_D7",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "FLASH0_CS2/EMMC_CMD",
++			  "",
++			  "FLASH0_DQS/EMMC_CLKO";
++};
++
++&gpio4 {
++	gpio-line-names = "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "UART0_RXD",
++			  "UART0_TXD",
++			  "UART0_CTS",
++			  "UART0_RTS",
++			  "SDIO0_D0",
++			  "SDIO0_D1",
++			  "SDIO0_D2",
++			  "SDIO0_D3",
++
++			  "SDIO0_CMD",
++			  "SDIO0_CLK",
++			  "dev_wake",
++			  "",
++			  "WIFI_ENABLE_H",
++			  "BT_ENABLE_L",
++			  "WIFI_HOST_WAKE",
++			  "BT_HOST_WAKE";
++};
++
++&gpio5 {
++	gpio-line-names = "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "",
++			  "",
++			  "Volum_Up#",
++			  "Volum_Down#",
++			  "SPI0_CLK",
++			  "SPI0_CS0",
++			  "SPI0_TXD",
++			  "SPI0_RXD",
++
++			  "",
++			  "",
++			  "",
++			  "VCC50_HDMI_EN";
++};
++
++&gpio6 {
++	gpio-line-names = "I2S0_SCLK",
++			  "I2S0_LRCK_RX",
++			  "I2S0_LRCK_TX",
++			  "I2S0_SDI",
++			  "I2S0_SDO0",
++			  "HP_DET_H",
++			  "",
++			  "INT_CODEC",
++
++			  "I2S0_CLK",
++			  "I2C2_SDA",
++			  "I2C2_SCL",
++			  "MICDET",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "SDMMC_D0",
++			  "SDMMC_D1",
++			  "SDMMC_D2",
++			  "SDMMC_D3",
++			  "SDMMC_CLK",
++			  "SDMMC_CMD";
++};
++
++&gpio7 {
++	gpio-line-names = "LCDC_BL",
++			  "PWM_LOG",
++			  "BL_EN",
++			  "TRACKPAD_INT",
++			  "TPM_INT_H",
++			  "SDMMC_DET_L",
++			  /*
++			   * AP_FLASH_WP_L is Chrome OS ABI.  Schematics call
++			   * it FW_WP_AP.
++			   */
++			  "AP_FLASH_WP_L",
++			  "EC_INT",
++
++			  "CPU_NMI",
++			  "DVS_OK",
++			  "SDMMC_WP",
++			  "EDP_HPD",
++			  "DVS1",
++			  "nFALUT1",
++			  "LCD_EN",
++			  "DVS2",
++
++			  "VCC5V_GOOD_H",
++			  "I2C4_SDA_TP",
++			  "I2C4_SCL_TP",
++			  "I2C5_SDA_HDMI",
++			  "I2C5_SCL_HDMI",
++			  "5V_DRV",
++			  "UART2_RXD",
++			  "UART2_TXD";
++};
++
++&gpio8 {
++	gpio-line-names = "RAM_ID0",
++			  "RAM_ID1",
++			  "RAM_ID2",
++			  "RAM_ID3",
++			  "I2C1_SDA_TPM",
++			  "I2C1_SCL_TPM",
++			  "SPI2_CLK",
++			  "SPI2_CS0",
++
++			  "SPI2_RXD",
++			  "SPI2_TXD";
++};
++
+ &pinctrl {
+ 	backlight {
+ 		bl_pwr_en: bl_pwr_en {
+
+From b2ceba130cb6500281cdd88a093ed2fd1f109484 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Tue, 21 May 2019 13:32:15 -0700
+Subject: [PATCH] ARM: dts: rockchip: Add pin names for rk3288-veyron-jerry
+
+This is like the same change for rk3288-veyron-minnie.  See that patch
+for more details.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 0ca87bd5baa62e5734800ee63e3a6301c90e8613)
+---
+ arch/arm/boot/dts/rk3288-veyron-jerry.dts | 207 ++++++++++++++++++++++++++++++
+ 1 file changed, 207 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-jerry.dts b/arch/arm/boot/dts/rk3288-veyron-jerry.dts
+index b1613af83d5d..164561f04c1d 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-jerry.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-jerry.dts
+@@ -103,6 +103,213 @@
+ 	pinctrl-0 = <&vcc50_hdmi_en>;
+ };
+ 
++&gpio0 {
++	gpio-line-names = "PMIC_SLEEP_AP",
++			  "DDRIO_PWROFF",
++			  "DDRIO_RETEN",
++			  "TS3A227E_INT_L",
++			  "PMIC_INT_L",
++			  "PWR_KEY_L",
++			  "AP_LID_INT_L",
++			  "EC_IN_RW",
++
++			  "AC_PRESENT_AP",
++			  /*
++			   * RECOVERY_SW_L is Chrome OS ABI.  Schematics call
++			   * it REC_MODE_L.
++			   */
++			  "RECOVERY_SW_L",
++			  "OTP_OUT",
++			  "HOST1_PWR_EN",
++			  "USBOTG_PWREN_H",
++			  "AP_WARM_RESET_H",
++			  "nFAULT2",
++			  "I2C0_SDA_PMIC",
++
++			  "I2C0_SCL_PMIC",
++			  "SUSPEND_L",
++			  "USB_INT";
++};
++
++&gpio2 {
++	gpio-line-names = "CONFIG0",
++			  "CONFIG1",
++			  "CONFIG2",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "CONFIG3",
++
++			  "",
++			  "EMMC_RST_L",
++			  "",
++			  "",
++			  "BL_PWR_EN",
++			  "AVDD_1V8_DISP_EN";
++};
++
++&gpio3 {
++	gpio-line-names = "FLASH0_D0",
++			  "FLASH0_D1",
++			  "FLASH0_D2",
++			  "FLASH0_D3",
++			  "FLASH0_D4",
++			  "FLASH0_D5",
++			  "FLASH0_D6",
++			  "FLASH0_D7",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "FLASH0_CS2/EMMC_CMD",
++			  "",
++			  "FLASH0_DQS/EMMC_CLKO";
++};
++
++&gpio4 {
++	gpio-line-names = "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "UART0_RXD",
++			  "UART0_TXD",
++			  "UART0_CTS",
++			  "UART0_RTS",
++			  "SDIO0_D0",
++			  "SDIO0_D1",
++			  "SDIO0_D2",
++			  "SDIO0_D3",
++
++			  "SDIO0_CMD",
++			  "SDIO0_CLK",
++			  "BT_DEV_WAKE",
++			  "",
++			  "WIFI_ENABLE_H",
++			  "BT_ENABLE_L",
++			  "WIFI_HOST_WAKE",
++			  "BT_HOST_WAKE";
++};
++
++&gpio5 {
++	gpio-line-names = "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "SPI0_CLK",
++			  "SPI0_CS0",
++			  "SPI0_TXD",
++			  "SPI0_RXD",
++
++			  "",
++			  "",
++			  "",
++			  "VCC50_HDMI_EN";
++};
++
++&gpio6 {
++	gpio-line-names = "I2S0_SCLK",
++			  "I2S0_LRCK_RX",
++			  "I2S0_LRCK_TX",
++			  "I2S0_SDI",
++			  "I2S0_SDO0",
++			  "HP_DET_H",
++			  "",
++			  "INT_CODEC",
++
++			  "I2S0_CLK",
++			  "I2C2_SDA",
++			  "I2C2_SCL",
++			  "MICDET",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "SDMMC_D0",
++			  "SDMMC_D1",
++			  "SDMMC_D2",
++			  "SDMMC_D3",
++			  "SDMMC_CLK",
++			  "SDMMC_CMD";
++};
++
++&gpio7 {
++	gpio-line-names = "LCDC_BL",
++			  "PWM_LOG",
++			  "BL_EN",
++			  "TRACKPAD_INT",
++			  "TPM_INT_H",
++			  "SDMMC_DET_L",
++			  /*
++			   * AP_FLASH_WP_L is Chrome OS ABI.  Schematics call
++			   * it FW_WP_AP.
++			   */
++			  "AP_FLASH_WP_L",
++			  "EC_INT",
++
++			  "CPU_NMI",
++			  "DVSOK",
++			  "",
++			  "EDP_HPD",
++			  "DVS1",
++			  "nFAULT1",
++			  "LCD_EN",
++			  "DVS2",
++
++			  "VCC5V_GOOD_H",
++			  "I2C4_SDA_TP",
++			  "I2C4_SCL_TP",
++			  "I2C5_SDA_HDMI",
++			  "I2C5_SCL_HDMI",
++			  "5V_DRV",
++			  "UART2_RXD",
++			  "UART2_TXD";
++};
++
++&gpio8 {
++	gpio-line-names = "RAM_ID0",
++			  "RAM_ID1",
++			  "RAM_ID2",
++			  "RAM_ID3",
++			  "I2C1_SDA_TPM",
++			  "I2C1_SCL_TPM",
++			  "SPI2_CLK",
++			  "SPI2_CS0",
++
++			  "SPI2_RXD",
++			  "SPI2_TXD";
++};
++
+ &pinctrl {
+ 	backlight {
+ 		bl_pwr_en: bl_pwr_en {
+
+From e8024a6d127c84a7028ebfce90c7eccbf29d2e02 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Tue, 21 May 2019 16:49:33 -0700
+Subject: [PATCH] ARM: dts: rockchip: Mark that the rk3288 timer might stop in
+ suspend
+
+This is similar to commit e6186820a745 ("arm64: dts: rockchip: Arch
+counter doesn't tick in system suspend").  Specifically on the rk3288
+it can be seen that the timer stops ticking in suspend if we end up
+running through the "osc_disable" path in rk3288_slp_mode_set().  In
+that path the 24 MHz clock will turn off and the timer stops.
+
+To test this, I ran this on a Chrome OS filesystem:
+  before=$(date); \
+  suspend_stress_test -c1 --suspend_min=30 --suspend_max=31; \
+  echo ${before}; date
+
+...and I found that unless I plug in a device that requests USB wakeup
+to be active that the two calls to "date" would show that fewer than
+30 seconds passed.
+
+NOTE: deep suspend (where the 24 MHz clock gets disabled) isn't
+supported yet on upstream Linux so this was tested on a downstream
+kernel.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 8ef1ba39a9fa53d2205e633bc9b21840a275908e)
+---
+ arch/arm/boot/dts/rk3288.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 171231a0cd9b..1e5260b556b7 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -231,6 +231,7 @@
+ 			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>,
+ 			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+ 		clock-frequency = <24000000>;
++		arm,no-tick-in-suspend;
+ 	};
+ 
+ 	timer: timer@ff810000 {
+
+From 168325574d0da998c3c6ac0b40cd43ef9e70cf0d Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Thu, 16 May 2019 10:25:09 -0700
+Subject: [PATCH] ARM: dts: rockchip: Add #cooling-cells entry for rk3288 GPU
+
+The Mali GPU of the rk3288 can be used as cooling device, add
+a #cooling-cells entry for it.
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit f6dcbb3ad5ce927adbdcc04bde312387f3b68035)
+---
+ arch/arm/boot/dts/rk3288.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 1e5260b556b7..7e9b8c7f6ab7 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -1286,6 +1286,7 @@
+ 		interrupt-names = "job", "mmu", "gpu";
+ 		clocks = <&cru ACLK_GPU>;
+ 		operating-points-v2 = <&gpu_opp_table>;
++		#cooling-cells = <2>; /* min followed by max */
+ 		power-domains = <&power RK3288_PD_GPU>;
+ 		status = "disabled";
+ 	};
+
+From ff37f027de3eca7fee46a2f42b7b96c3d3243ab1 Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Thu, 16 May 2019 10:25:10 -0700
+Subject: [PATCH] ARM: dts: rockchip: Use GPU as cooling device for the GPU
+ thermal zone of the rk3288
+
+Currently the CPUs are used as cooling devices of the rk3288 GPU
+thermal zone. The CPUs are also configured as cooling devices in the
+CPU thermal zone, which indirectly helps with cooling the GPU thermal
+zone, since the CPU and GPU temperatures are correlated on the rk3288.
+
+Configure the ARM Mali Midgard GPU as cooling device for the GPU
+thermal zone instead of the CPUs.
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit ae2b6ba865d8bb59493aaf50cb3d19312a6ff5a4)
+---
+ arch/arm/boot/dts/rk3288.dtsi | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 7e9b8c7f6ab7..fd188bb4fd48 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -552,10 +552,7 @@
+ 				map0 {
+ 					trip = <&gpu_alert0>;
+ 					cooling-device =
+-						<&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++						<&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+ 				};
+ 			};
+ 		};
+
+From 6a4ccf6d23d2ff42f981ca23b0b5143af788dceb Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Mon, 20 May 2019 15:00:49 -0700
+Subject: [PATCH] ARM: dts: rockchip: remove GPU 500 MHz OPP on rk3288
+
+The NPLL is the only safe way to generate 500 MHz for the GPU. The
+downstream Chrome OS 3.14 kernel ('official' kernel for veyron
+devices) re-purposes NPLL to HDMI and hence disables the OPP for
+the GPU (see https://crrev.com/c/1574579). Disable it here as well
+to keep in sync and avoid problems in case someone decides to
+re-purpose NPLL.
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+[moved from veyron to general rk3288, as tying up the NPLL for a
+ not-that-helpful opp (not really fast but will still generate
+ quite a bit of heat) doesn't make so much sense when it will
+ keep us from supporting other display modes  in the future]
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 75481833c6dbab4c29d15452f6b4337c16f5407b)
+---
+ arch/arm/boot/dts/rk3288.dtsi | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index fd188bb4fd48..159d91180cee 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -1307,10 +1307,6 @@
+ 			opp-hz = /bits/ 64 <400000000>;
+ 			opp-microvolt = <1100000>;
+ 		};
+-		opp-500000000 {
+-			opp-hz = /bits/ 64 <500000000>;
+-			opp-microvolt = <1200000>;
+-		};
+ 		opp-600000000 {
+ 			opp-hz = /bits/ 64 <600000000>;
+ 			opp-microvolt = <1250000>;
+
+From 86fda223baf848d8263b2ddbc9a86765d4381500 Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Mon, 20 May 2019 15:00:50 -0700
+Subject: [PATCH] ARM: dts: rockchip: Use the GPU to cool CPU thermal zone of
+ veyron mickey
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+On rk3288 the CPU and GPU temperatures are correlated. Limit the GPU
+frequency on veyron mickey to 400 MHz for CPU temperatures >= 65°C
+and to 300 MHz for CPU temperatures >= 85°C.
+
+This matches the configuration of the downstream Chrome OS 3.14 kernel,
+the 'official' kernel for mickey.
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 11983d8530e3d4e9cdd9e5cb7c23611adaf67c73)
+---
+ arch/arm/boot/dts/rk3288-veyron-mickey.dts | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-mickey.dts b/arch/arm/boot/dts/rk3288-veyron-mickey.dts
+index 52f6abc22291..34797abe3403 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-mickey.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-mickey.dts
+@@ -75,9 +75,7 @@
+ 	cooling-maps {
+ 		/*
+ 		 * After 1st level, throttle the CPU down to as low as 1.4 GHz
+-		 * and don't let the GPU go faster than 400 MHz.  Note that we
+-		 * won't throttle the GPU lower than 400 MHz due to CPU
+-		 * heat--we'll let the GPU do the rest itself.
++		 * and don't let the GPU go faster than 400 MHz.
+ 		 */
+ 		cpu_warm_limit_cpu {
+ 			trip = <&cpu_alert_warm>;
+@@ -86,6 +84,10 @@
+ 					 <&cpu2 THERMAL_NO_LIMIT 4>,
+ 					 <&cpu3 THERMAL_NO_LIMIT 4>;
+ 		};
++		cpu_warm_limit_gpu {
++			trip = <&cpu_alert_warm>;
++			cooling-device = <&gpu 1 1>;
++		};
+ 
+ 		/*
+ 		 * Add some discrete steps to help throttling system deal
+@@ -125,6 +127,12 @@
+ 					 <&cpu2 8 THERMAL_NO_LIMIT>,
+ 					 <&cpu3 8 THERMAL_NO_LIMIT>;
+ 		};
++
++		/* At very hot, don't let GPU go over 300 MHz */
++		cpu_very_hot_limit_gpu {
++			trip = <&cpu_alert_very_hot>;
++			cooling-device = <&gpu 2 2>;
++		};
+ 	};
+ };
+ 
+
+From 8529b204ebe5d53f1d1e8f51c429a3199c9a580d Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Mon, 20 May 2019 15:00:51 -0700
+Subject: [PATCH] ARM: dts: rockchip: Configure the GPU thermal zone for mickey
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+mickey crams a lot of hardware into a tiny package, which requires
+more aggressive thermal throttling than for devices with a larger
+footprint. Configure the GPU thermal zone to throttle the GPU
+progressively at temperatures >= 60°C. Heat dissipated by the
+CPUs also affects the GPU temperature, hence we cap the CPU
+frequency to 1.4 GHz for temperatures above 65°C. Further throttling
+of the CPUs may be performed by the CPU thermal zone.
+
+The configuration matches that of the downstream Chrome OS 3.14
+kernel, the 'official' kernel for mickey.
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit c87efcc3d1dfdf3f5ecb6558521825a21838dc30)
+---
+ arch/arm/boot/dts/rk3288-veyron-mickey.dts | 67 ++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-mickey.dts b/arch/arm/boot/dts/rk3288-veyron-mickey.dts
+index 34797abe3403..945e80801292 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-mickey.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-mickey.dts
+@@ -136,6 +136,73 @@
+ 	};
+ };
+ 
++&gpu_thermal {
++	/delete-node/ trips;
++	/delete-node/ cooling-maps;
++
++	trips {
++		gpu_alert_warmish: gpu_alert_warmish {
++			temperature = <60000>; /* millicelsius */
++			hysteresis = <2000>; /* millicelsius */
++			type = "passive";
++		};
++		gpu_alert_warm: gpu_alert_warm {
++			temperature = <65000>; /* millicelsius */
++			hysteresis = <2000>; /* millicelsius */
++			type = "passive";
++		};
++		gpu_alert_hotter: gpu_alert_hotter {
++			temperature = <84000>; /* millicelsius */
++			hysteresis = <2000>; /* millicelsius */
++			type = "passive";
++		};
++		gpu_alert_very_very_hot: gpu_alert_very_very_hot {
++			temperature = <86000>; /* millicelsius */
++			hysteresis = <2000>; /* millicelsius */
++			type = "passive";
++		};
++		gpu_crit: gpu_crit {
++			temperature = <90000>; /* millicelsius */
++			hysteresis = <2000>; /* millicelsius */
++			type = "critical";
++		};
++	};
++
++	cooling-maps {
++		/* After 1st level throttle the GPU down to as low as 400 MHz */
++		gpu_warmish_limit_gpu {
++			trip = <&gpu_alert_warmish>;
++			cooling-device = <&gpu THERMAL_NO_LIMIT 1>;
++		};
++
++		/*
++		 * Slightly after we throttle the GPU, we'll also make sure that
++		 * the CPU can't go faster than 1.4 GHz.  Note that we won't
++		 * throttle the CPU lower than 1.4 GHz due to GPU heat--we'll
++		 * let the CPU do the rest itself.
++		 */
++		gpu_warm_limit_cpu {
++			trip = <&gpu_alert_warm>;
++			cooling-device = <&cpu0 4 4>,
++					 <&cpu1 4 4>,
++					 <&cpu2 4 4>,
++					 <&cpu3 4 4>;
++		};
++
++		/* When hot, GPU goes down to 300 MHz */
++		gpu_hotter_limit_gpu {
++			trip = <&gpu_alert_hotter>;
++			cooling-device = <&gpu 2 2>;
++		};
++
++		/* When really hot, don't let GPU go _above_ 300 MHz */
++		gpu_very_very_hot_limit_gpu {
++			trip = <&gpu_alert_very_very_hot>;
++			cooling-device = <&gpu 2 THERMAL_NO_LIMIT>;
++		};
++	};
++};
++
+ &i2c2 {
+ 	status = "disabled";
+ };
+
+From 3b946e9b521118f69b23d4c08b0e45c440b61d5b Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Date: Fri, 10 May 2019 11:15:04 -0400
+Subject: [PATCH] media: cec: mark devnode as registered before actually
+ registering it
+
+The cec device node can be used right after it was created, but that
+leaves a race condition where the device was created, but devnode->registered
+was still false. So an ioctl() would result in an error.
+
+So set it to true before calling cdev_device_add() and to false again if
+cdev_device_add returned an error.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+(cherry picked from commit 354cf00339b12da6e685770e9e411ebe05d3e3a3)
+---
+ drivers/media/cec/cec-core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
+index f5d1578e256a..db7adffcdc76 100644
+--- a/drivers/media/cec/cec-core.c
++++ b/drivers/media/cec/cec-core.c
+@@ -128,13 +128,14 @@ static int __must_check cec_devnode_register(struct cec_devnode *devnode,
+ 	devnode->cdev.owner = owner;
+ 	kobject_set_name(&devnode->cdev.kobj, "cec%d", devnode->minor);
+ 
++	devnode->registered = true;
+ 	ret = cdev_device_add(&devnode->cdev, &devnode->dev);
+ 	if (ret) {
++		devnode->registered = false;
+ 		pr_err("%s: cdev_device_add failed\n", __func__);
+ 		goto clr_bit;
+ 	}
+ 
+-	devnode->registered = true;
+ 	return 0;
+ 
+ clr_bit:
+
+From 973eba3c9ad24a8d181f7c3627a17f6a9c3fa813 Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date: Tue, 23 Apr 2019 08:37:39 -0400
+Subject: [PATCH] media: cec: cec_transmit_msg_fh: do sanity checks first
+
+The code that fills in the CEC_MSG_CDC_MESSAGE physical address
+is now done after the sanity checks. It also only does this if the
+message length is >= 4 (i.e. there is room for the physical address).
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+(cherry picked from commit 63d171f85fb15247600bdd38b1dbf72bcba0dc8a)
+---
+ drivers/media/cec/cec-adap.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
+index f1261cc2b6fa..b6102510e203 100644
+--- a/drivers/media/cec/cec-adap.c
++++ b/drivers/media/cec/cec-adap.c
+@@ -740,11 +740,6 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+ 	else
+ 		msg->flags = 0;
+ 
+-	if (msg->len > 1 && msg->msg[1] == CEC_MSG_CDC_MESSAGE) {
+-		msg->msg[2] = adap->phys_addr >> 8;
+-		msg->msg[3] = adap->phys_addr & 0xff;
+-	}
+-
+ 	/* Sanity checks */
+ 	if (msg->len == 0 || msg->len > CEC_MAX_MSG_SIZE) {
+ 		dprintk(1, "%s: invalid length %d\n", __func__, msg->len);
+@@ -765,6 +760,12 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+ 		dprintk(1, "%s: can't reply to poll msg\n", __func__);
+ 		return -EINVAL;
+ 	}
++
++	if (msg->len >= 4 && msg->msg[1] == CEC_MSG_CDC_MESSAGE) {
++		msg->msg[2] = adap->phys_addr >> 8;
++		msg->msg[3] = adap->phys_addr & 0xff;
++	}
++
+ 	if (msg->len == 1) {
+ 		if (cec_msg_destination(msg) == 0xf) {
+ 			dprintk(1, "%s: invalid poll message\n", __func__);
+
+From d9411a3cf1a6ce84350cf4ad664932572b452ef5 Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date: Tue, 23 Apr 2019 08:43:30 -0400
+Subject: [PATCH] media: cec: move check from cec_transmit to
+ cec_transmit_msg_fh
+
+This ensures all the cec_msg checks are done in the same place.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+(cherry picked from commit e76cbec85eac714a93a7945c9c41dcd8819b31c5)
+---
+ drivers/media/cec/cec-adap.c | 5 +++++
+ drivers/media/cec/cec-api.c  | 8 --------
+ 2 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
+index b6102510e203..5b9232b6e663 100644
+--- a/drivers/media/cec/cec-adap.c
++++ b/drivers/media/cec/cec-adap.c
+@@ -761,6 +761,11 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+ 		return -EINVAL;
+ 	}
+ 
++	/* A CDC-Only device can only send CDC messages */
++	if ((adap->log_addrs.flags & CEC_LOG_ADDRS_FL_CDC_ONLY) &&
++	    (msg->len == 1 || msg->msg[1] != CEC_MSG_CDC_MESSAGE))
++		return -EINVAL;
++
+ 	if (msg->len >= 4 && msg->msg[1] == CEC_MSG_CDC_MESSAGE) {
+ 		msg->msg[2] = adap->phys_addr >> 8;
+ 		msg->msg[3] = adap->phys_addr & 0xff;
+diff --git a/drivers/media/cec/cec-api.c b/drivers/media/cec/cec-api.c
+index 156a0d76ab2a..12d676484472 100644
+--- a/drivers/media/cec/cec-api.c
++++ b/drivers/media/cec/cec-api.c
+@@ -198,19 +198,11 @@ static long cec_transmit(struct cec_adapter *adap, struct cec_fh *fh,
+ 	if (copy_from_user(&msg, parg, sizeof(msg)))
+ 		return -EFAULT;
+ 
+-	/* A CDC-Only device can only send CDC messages */
+-	if ((adap->log_addrs.flags & CEC_LOG_ADDRS_FL_CDC_ONLY) &&
+-	    (msg.len == 1 || msg.msg[1] != CEC_MSG_CDC_MESSAGE))
+-		return -EINVAL;
+-
+ 	mutex_lock(&adap->lock);
+ 	if (adap->log_addrs.num_log_addrs == 0)
+ 		err = -EPERM;
+ 	else if (adap->is_configuring)
+ 		err = -ENONET;
+-	else if (!adap->is_configured &&
+-		 (adap->needs_hpd || msg.msg[0] != 0xf0))
+-		err = -ENONET;
+ 	else if (cec_is_busy(adap, fh))
+ 		err = -EBUSY;
+ 	else
+
+From 1f59c07a4674eedb76ae1bc3f4dc4a7725ca534e Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date: Tue, 23 Apr 2019 08:44:59 -0400
+Subject: [PATCH] media: cec: add CEC_MSG_FL_RAW flag and msg_is_raw helper
+ function
+
+This adds the userspace API to send raw unchecked CEC messages.
+This will require root permissions.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+(cherry picked from commit aa50accfda60468fd132573b8f83e158ff45cb3d)
+---
+ drivers/media/cec/cec-priv.h | 5 +++++
+ include/uapi/linux/cec.h     | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/drivers/media/cec/cec-priv.h b/drivers/media/cec/cec-priv.h
+index 804e38f849c7..7bdf855aaecd 100644
+--- a/drivers/media/cec/cec-priv.h
++++ b/drivers/media/cec/cec-priv.h
+@@ -20,6 +20,11 @@
+ /* devnode to cec_adapter */
+ #define to_cec_adapter(node) container_of(node, struct cec_adapter, devnode)
+ 
++static inline bool msg_is_raw(const struct cec_msg *msg)
++{
++	return msg->flags & CEC_MSG_FL_RAW;
++}
++
+ /* cec-core.c */
+ extern int cec_debug;
+ int cec_get_device(struct cec_devnode *devnode);
+diff --git a/include/uapi/linux/cec.h b/include/uapi/linux/cec.h
+index 3094af68b6e7..5704fa0292b5 100644
+--- a/include/uapi/linux/cec.h
++++ b/include/uapi/linux/cec.h
+@@ -144,6 +144,7 @@ static inline void cec_msg_set_reply_to(struct cec_msg *msg,
+ 
+ /* cec_msg flags field */
+ #define CEC_MSG_FL_REPLY_TO_FOLLOWERS	(1 << 0)
++#define CEC_MSG_FL_RAW			(1 << 1)
+ 
+ /* cec_msg tx/rx_status field */
+ #define CEC_TX_STATUS_OK		(1 << 0)
+
+From 97944ebc505003ac8592556d9eb8b035cc892862 Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date: Tue, 23 Apr 2019 08:48:22 -0400
+Subject: [PATCH] media: cec: support CEC_MSG_FL_RAW
+
+If this flag is set, then check for root permissions and skip
+all message checks expect for the core checks (i.e. validate the
+length etc.).
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+(cherry picked from commit 89db242aa3c5fc631ff58faf5a0f7c604c84a9db)
+---
+ drivers/media/cec/cec-adap.c | 107 +++++++++++++++++++++++++------------------
+ 1 file changed, 62 insertions(+), 45 deletions(-)
+
+diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
+index 5b9232b6e663..9a1ec9299aca 100644
+--- a/drivers/media/cec/cec-adap.c
++++ b/drivers/media/cec/cec-adap.c
+@@ -720,6 +720,7 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+ 			struct cec_fh *fh, bool block)
+ {
+ 	struct cec_data *data;
++	bool is_raw = msg_is_raw(msg);
+ 
+ 	msg->rx_ts = 0;
+ 	msg->tx_ts = 0;
+@@ -735,10 +736,10 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+ 		/* Make sure the timeout isn't 0. */
+ 		msg->timeout = 1000;
+ 	}
+-	if (msg->timeout)
+-		msg->flags &= CEC_MSG_FL_REPLY_TO_FOLLOWERS;
+-	else
+-		msg->flags = 0;
++	msg->flags &= CEC_MSG_FL_REPLY_TO_FOLLOWERS | CEC_MSG_FL_RAW;
++
++	if (!msg->timeout)
++		msg->flags &= ~CEC_MSG_FL_REPLY_TO_FOLLOWERS;
+ 
+ 	/* Sanity checks */
+ 	if (msg->len == 0 || msg->len > CEC_MAX_MSG_SIZE) {
+@@ -761,54 +762,70 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+ 		return -EINVAL;
+ 	}
+ 
+-	/* A CDC-Only device can only send CDC messages */
+-	if ((adap->log_addrs.flags & CEC_LOG_ADDRS_FL_CDC_ONLY) &&
+-	    (msg->len == 1 || msg->msg[1] != CEC_MSG_CDC_MESSAGE))
+-		return -EINVAL;
++	if (is_raw) {
++		if (!capable(CAP_SYS_RAWIO))
++			return -EPERM;
++	} else {
++		/* A CDC-Only device can only send CDC messages */
++		if ((adap->log_addrs.flags & CEC_LOG_ADDRS_FL_CDC_ONLY) &&
++		    (msg->len == 1 || msg->msg[1] != CEC_MSG_CDC_MESSAGE)) {
++			dprintk(1, "%s: not a CDC message\n", __func__);
++			return -EINVAL;
++		}
+ 
+-	if (msg->len >= 4 && msg->msg[1] == CEC_MSG_CDC_MESSAGE) {
+-		msg->msg[2] = adap->phys_addr >> 8;
+-		msg->msg[3] = adap->phys_addr & 0xff;
+-	}
++		if (msg->len >= 4 && msg->msg[1] == CEC_MSG_CDC_MESSAGE) {
++			msg->msg[2] = adap->phys_addr >> 8;
++			msg->msg[3] = adap->phys_addr & 0xff;
++		}
+ 
+-	if (msg->len == 1) {
+-		if (cec_msg_destination(msg) == 0xf) {
+-			dprintk(1, "%s: invalid poll message\n", __func__);
++		if (msg->len == 1) {
++			if (cec_msg_destination(msg) == 0xf) {
++				dprintk(1, "%s: invalid poll message\n",
++					__func__);
++				return -EINVAL;
++			}
++			if (cec_has_log_addr(adap, cec_msg_destination(msg))) {
++				/*
++				 * If the destination is a logical address our
++				 * adapter has already claimed, then just NACK
++				 * this. It depends on the hardware what it will
++				 * do with a POLL to itself (some OK this), so
++				 * it is just as easy to handle it here so the
++				 * behavior will be consistent.
++				 */
++				msg->tx_ts = ktime_get_ns();
++				msg->tx_status = CEC_TX_STATUS_NACK |
++					CEC_TX_STATUS_MAX_RETRIES;
++				msg->tx_nack_cnt = 1;
++				msg->sequence = ++adap->sequence;
++				if (!msg->sequence)
++					msg->sequence = ++adap->sequence;
++				return 0;
++			}
++		}
++		if (msg->len > 1 && !cec_msg_is_broadcast(msg) &&
++		    cec_has_log_addr(adap, cec_msg_destination(msg))) {
++			dprintk(1, "%s: destination is the adapter itself\n",
++				__func__);
+ 			return -EINVAL;
+ 		}
+-		if (cec_has_log_addr(adap, cec_msg_destination(msg))) {
+-			/*
+-			 * If the destination is a logical address our adapter
+-			 * has already claimed, then just NACK this.
+-			 * It depends on the hardware what it will do with a
+-			 * POLL to itself (some OK this), so it is just as
+-			 * easy to handle it here so the behavior will be
+-			 * consistent.
+-			 */
+-			msg->tx_ts = ktime_get_ns();
+-			msg->tx_status = CEC_TX_STATUS_NACK |
+-					 CEC_TX_STATUS_MAX_RETRIES;
+-			msg->tx_nack_cnt = 1;
+-			msg->sequence = ++adap->sequence;
+-			if (!msg->sequence)
+-				msg->sequence = ++adap->sequence;
+-			return 0;
++		if (msg->len > 1 && adap->is_configured &&
++		    !cec_has_log_addr(adap, cec_msg_initiator(msg))) {
++			dprintk(1, "%s: initiator has unknown logical address %d\n",
++				__func__, cec_msg_initiator(msg));
++			return -EINVAL;
++		}
++		if (!adap->is_configured && !adap->is_configuring &&
++		    msg->msg[0] != 0xf0) {
++			dprintk(1, "%s: adapter is unconfigured\n", __func__);
++			return -ENONET;
+ 		}
+ 	}
+-	if (msg->len > 1 && !cec_msg_is_broadcast(msg) &&
+-	    cec_has_log_addr(adap, cec_msg_destination(msg))) {
+-		dprintk(1, "%s: destination is the adapter itself\n", __func__);
+-		return -EINVAL;
+-	}
+-	if (msg->len > 1 && adap->is_configured &&
+-	    !cec_has_log_addr(adap, cec_msg_initiator(msg))) {
+-		dprintk(1, "%s: initiator has unknown logical address %d\n",
+-			__func__, cec_msg_initiator(msg));
+-		return -EINVAL;
+-	}
++
+ 	if (!adap->is_configured && !adap->is_configuring) {
+-		if (adap->needs_hpd || msg->msg[0] != 0xf0) {
+-			dprintk(1, "%s: adapter is unconfigured\n", __func__);
++		if (adap->needs_hpd) {
++			dprintk(1, "%s: adapter is unconfigured and needs HPD\n",
++				__func__);
+ 			return -ENONET;
+ 		}
+ 		if (msg->reply) {
+
+From 34ff39e0a2381e42ec7a8b4cbade462fe880baa8 Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date: Tue, 23 Apr 2019 08:14:01 -0400
+Subject: [PATCH] media: cec: allow any initiator for Ping and Image/Text View
+ On
+
+Some displays pull down the HPD when in standby, but CEC is still
+active and the display can be woken up by sending an Image View On
+or Text View On CEC command. The CEC specification doesn't tell you
+what the initiator should be for such a command (without a HPD it's
+unclear if the CEC adapter can claim a logical address).
+
+This patch allows any initiator value when there is no HPD for the
+Image/Text View On commands and for the Ping command.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+(cherry picked from commit b6c96e15682549a5b5cb9d0301f44949a012741a)
+---
+ drivers/media/cec/cec-adap.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
+index 9a1ec9299aca..5827d8c3742a 100644
+--- a/drivers/media/cec/cec-adap.c
++++ b/drivers/media/cec/cec-adap.c
+@@ -809,14 +809,23 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+ 				__func__);
+ 			return -EINVAL;
+ 		}
+-		if (msg->len > 1 && adap->is_configured &&
++		if (adap->is_configured &&
+ 		    !cec_has_log_addr(adap, cec_msg_initiator(msg))) {
+ 			dprintk(1, "%s: initiator has unknown logical address %d\n",
+ 				__func__, cec_msg_initiator(msg));
+ 			return -EINVAL;
+ 		}
++		/*
++		 * Special case: allow Ping and IMAGE/TEXT_VIEW_ON to be
++		 * transmitted to a TV, even if the adapter is unconfigured.
++		 * This makes it possible to detect or wake up displays that
++		 * pull down the HPD when in standby.
++		 */
+ 		if (!adap->is_configured && !adap->is_configuring &&
+-		    msg->msg[0] != 0xf0) {
++		    (msg->len > 2 ||
++		     cec_msg_destination(msg) != CEC_LOG_ADDR_TV ||
++		     (msg->len == 2 && msg->msg[1] != CEC_MSG_IMAGE_VIEW_ON &&
++		      msg->msg[1] != CEC_MSG_TEXT_VIEW_ON))) {
+ 			dprintk(1, "%s: adapter is unconfigured\n", __func__);
+ 			return -ENONET;
+ 		}
+
+From a8acef3ba441627d5237557fee52c55fc6821063 Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Date: Wed, 29 May 2019 04:22:15 -0400
+Subject: [PATCH] media: cec-adap: fix regression in ping sanity check
+
+Commit b6c96e156825 inadvertently also dropped the 'msg->len > 1' test
+from the preceding sanity check. This caused compliance test failures.
+
+Fixes: b6c96e156825 ("media: cec: allow any initiator for Ping and Image/Text View On")
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+(cherry picked from commit 64b42d8eee9b57d1329eeb338c3c30171a14cdbd)
+---
+ drivers/media/cec/cec-adap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
+index 5827d8c3742a..ac3683a7b2ab 100644
+--- a/drivers/media/cec/cec-adap.c
++++ b/drivers/media/cec/cec-adap.c
+@@ -809,7 +809,7 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+ 				__func__);
+ 			return -EINVAL;
+ 		}
+-		if (adap->is_configured &&
++		if (msg->len > 1 && adap->is_configured &&
+ 		    !cec_has_log_addr(adap, cec_msg_initiator(msg))) {
+ 			dprintk(1, "%s: initiator has unknown logical address %d\n",
+ 				__func__, cec_msg_initiator(msg));
+
+From 374ba50dde3ac205045c6a351b7cfb1638c324ec Mon Sep 17 00:00:00 2001
+From: John Keeping <john@metanate.com>
+Date: Mon, 3 Jun 2019 15:34:35 +0100
+Subject: [PATCH] ARM: dts: rockchip: fix pwm-cells for rk3288's pwm3
+
+This is the same as the other PWMs on this SoC and uses 3 cells.
+
+Signed-off-by: John Keeping <john@metanate.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 9dbf05bd8ae5b436b02c9845a350dec11c788a73)
+---
+ arch/arm/boot/dts/rk3288.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 159d91180cee..766d1cf51a5b 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -710,7 +710,7 @@
+ 	pwm3: pwm@ff680030 {
+ 		compatible = "rockchip,rk3288-pwm";
+ 		reg = <0x0 0xff680030 0x0 0x10>;
+-		#pwm-cells = <2>;
++		#pwm-cells = <3>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pwm3_pin>;
+ 		clocks = <&cru PCLK_RKPWM>;
+
+From 30c572f728a92083e8d4230227b7dd371955c638 Mon Sep 17 00:00:00 2001
+From: Helen Koike <helen.koike@collabora.com>
+Date: Mon, 3 Jun 2019 11:22:15 -0300
+Subject: [PATCH] arm64: dts: rockchip: fix isp iommu clocks and power domain
+
+isp iommu requires wrapper variants of the clocks.
+noc variants are always on and using the wrapper variants will activate
+{A,H}CLK_ISP{0,1} due to the hierarchy.
+
+Tested using the pending isp patch set (which is not upstream
+yet). Without this patch, streaming from the isp stalls.
+
+Also add the respective power domain and remove the "disabled" status.
+
+Refer:
+ RK3399 TRM v1.4 Fig. 2-4 RK3399 Clock Architecture Diagram
+ RK3399 TRM v1.4 Fig. 8-1 RK3399 Power Domain Partition
+
+Signed-off-by: Helen Koike <helen.koike@collabora.com>
+Tested-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit c432a29d3fc9ee928caeca2f5cf68b3aebfa6817)
+---
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 196ac9b78076..89594a7276f4 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -1706,11 +1706,11 @@
+ 		reg = <0x0 0xff914000 0x0 0x100>, <0x0 0xff915000 0x0 0x100>;
+ 		interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		interrupt-names = "isp0_mmu";
+-		clocks = <&cru ACLK_ISP0_NOC>, <&cru HCLK_ISP0_NOC>;
++		clocks = <&cru ACLK_ISP0_WRAPPER>, <&cru HCLK_ISP0_WRAPPER>;
+ 		clock-names = "aclk", "iface";
+ 		#iommu-cells = <0>;
++		power-domains = <&power RK3399_PD_ISP0>;
+ 		rockchip,disable-mmu-reset;
+-		status = "disabled";
+ 	};
+ 
+ 	isp1_mmu: iommu@ff924000 {
+@@ -1718,11 +1718,11 @@
+ 		reg = <0x0 0xff924000 0x0 0x100>, <0x0 0xff925000 0x0 0x100>;
+ 		interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH 0>;
+ 		interrupt-names = "isp1_mmu";
+-		clocks = <&cru ACLK_ISP1_NOC>, <&cru HCLK_ISP1_NOC>;
++		clocks = <&cru ACLK_ISP1_WRAPPER>, <&cru HCLK_ISP1_WRAPPER>;
+ 		clock-names = "aclk", "iface";
+ 		#iommu-cells = <0>;
++		power-domains = <&power RK3399_PD_ISP1>;
+ 		rockchip,disable-mmu-reset;
+-		status = "disabled";
+ 	};
+ 
+ 	hdmi_sound: hdmi-sound {
+
+From 83c65f8cda33050b2e04d7ce4e3767fc0acb1b35 Mon Sep 17 00:00:00 2001
+From: Akash Gajjar <akash@openedev.com>
+Date: Wed, 29 May 2019 00:16:58 +0530
+Subject: [PATCH] arm64: dts: rockchip: add WiFi+BT support on ROCK Pi4 board
+
+Rock Pi 4 has a on board AP6256 WiFi/BT Module. enable wifi and bluetooth
+support on Rock Pi 4 board.
+
+Signed-off-by: Akash Gajjar <akash@openedev.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 45fa7c3838715b34ccea661e4b7b261d91668b17)
+---
+ arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts | 97 +++++++++++++++++++++++
+ 1 file changed, 97 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts
+index e030627159c6..55e74f4d5cd0 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts
+@@ -25,6 +25,15 @@
+ 		#clock-cells = <0>;
+ 	};
+ 
++	sdio_pwrseq: sdio-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		clocks = <&rk808 1>;
++		clock-names = "ext_clock";
++		pinctrl-names = "default";
++		pinctrl-0 = <&wifi_enable_h>;
++		reset-gpios = <&gpio0 RK_PB2 GPIO_ACTIVE_LOW>;
++	};
++
+ 	vcc12v_dcin: dc-12v {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc12v_dcin";
+@@ -451,12 +460,46 @@
+ };
+ 
+ &pinctrl {
++	bt {
++		bt_enable_h: bt-enable-h {
++			rockchip,pins = <0 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		bt_host_wake_l: bt-host-wake-l {
++			rockchip,pins = <0 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		bt_wake_l: bt-wake-l {
++			rockchip,pins = <2 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
+ 	pcie {
+ 		pcie_pwr_en: pcie-pwr-en {
+ 			rockchip,pins = <2 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
+ 		};
+ 	};
+ 
++	sdio0 {
++		sdio0_bus4: sdio0-bus4 {
++			rockchip,pins =
++				<2 20 RK_FUNC_1 &pcfg_pull_up_20ma>,
++				<2 21 RK_FUNC_1 &pcfg_pull_up_20ma>,
++				<2 22 RK_FUNC_1 &pcfg_pull_up_20ma>,
++				<2 23 RK_FUNC_1 &pcfg_pull_up_20ma>;
++		};
++
++		sdio0_cmd: sdio0-cmd {
++			rockchip,pins =
++				<2 24 RK_FUNC_1 &pcfg_pull_up_20ma>;
++		};
++
++		sdio0_clk: sdio0-clk {
++			rockchip,pins =
++				<2 25 RK_FUNC_1 &pcfg_pull_none_20ma>;
++		};
++	};
++
+ 	pmic {
+ 		pmic_int_l: pmic-int-l {
+ 			rockchip,pins = <1 RK_PC5 RK_FUNC_GPIO &pcfg_pull_up>;
+@@ -482,6 +525,17 @@
+ 			rockchip,pins = <4 RK_PD1 RK_FUNC_GPIO &pcfg_pull_none>;
+ 		};
+ 	};
++
++	wifi {
++		wifi_enable_h: wifi-enable-h {
++			rockchip,pins =
++				<0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		wifi_host_wake_l: wifi-host-wake-l {
++			rockchip,pins = <0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
+ };
+ 
+ &pwm2 {
+@@ -494,6 +548,32 @@
+ 	vref-supply = <&vcc_1v8>;
+ };
+ 
++&sdio0 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	bus-width = <4>;
++	clock-frequency = <50000000>;
++	cap-sdio-irq;
++	cap-sd-highspeed;
++	keep-power-in-suspend;
++	mmc-pwrseq = <&sdio_pwrseq>;
++	non-removable;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdio0_bus4 &sdio0_cmd &sdio0_clk>;
++	sd-uhs-sdr104;
++	status = "okay";
++
++	brcmf: wifi@1 {
++		compatible = "brcm,bcm4329-fmac";
++		reg = <1>;
++		interrupt-parent = <&gpio0>;
++		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
++		interrupt-names = "host-wake";
++		pinctrl-names = "default";
++		pinctrl-0 = <&wifi_host_wake_l>;
++	};
++};
++
+ &sdmmc {
+ 	bus-width = <4>;
+ 	cap-mmc-highspeed;
+@@ -557,6 +637,23 @@
+ 	};
+ };
+ 
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_xfer &uart0_cts &uart0_rts>;
++	status = "okay";
++
++	bluetooth {
++		compatible = "brcm,bcm43438-bt";
++		clocks = <&rk808 1>;
++		clock-names = "ext_clock";
++		device-wakeup-gpios = <&gpio2 RK_PD3 GPIO_ACTIVE_HIGH>;
++		host-wakeup-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
++		shutdown-gpios = <&gpio0 RK_PB1 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&bt_host_wake_l &bt_wake_l &bt_enable_h>;
++	};
++};
++
+ &uart2 {
+ 	status = "okay";
+ };
+
+From 29cfc5831d2233688cda65cc9d5f47d7c3e2e9d2 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Fri, 24 May 2019 16:33:09 -0700
+Subject: [PATCH] ARM: dts: rockchip: Add pin names for rk3288-veyron jaq,
+ mickey, speedy
+
+This is like commit 0ca87bd5baa6 ("ARM: dts: rockchip: Add pin names
+for rk3288-veyron-jerry") and commit ca3516b32cd9 ("ARM: dts:
+rockchip: Add pin names for rk3288-veyron-minnie") but for 3 more
+veyron boards.
+
+A few notes:
+- While there is most certainly duplication between all the veyron
+  boards, it still feels like it is sane to just have each board have
+  a full list of its pin names.  The format of "gpio-line-names" does
+  not lend itself to one-off overriding and besides it seems sane to
+  more fully match schematic names.  Also note that the extra
+  duplication here is only in source code and is unlikely to ever
+  change (since these boards are shipped).  Duplication in the .dtb
+  files is unavoidable.
+- veyron-jaq and veyron-mighty are very closely related and so I have
+  shared a single list for them both with comments on how they are
+  different.  This is just a typo fix on one of the boards, a possible
+  missing signal on one of the boards (or perhaps I was never given
+  the most recent schematics?) and dealing with the fact that one of
+  the two boards has full sized SD.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit d85b2ad35a2ab320b9c0530992ee532f10a6aeb2)
+---
+ arch/arm/boot/dts/rk3288-veyron-jaq.dts    | 207 +++++++++++++++++++++++++++++
+ arch/arm/boot/dts/rk3288-veyron-mickey.dts | 151 +++++++++++++++++++++
+ arch/arm/boot/dts/rk3288-veyron-speedy.dts | 207 +++++++++++++++++++++++++++++
+ 3 files changed, 565 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-jaq.dts b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
+index e248f55ee8d2..fcd119168cb6 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-jaq.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
+@@ -135,6 +135,213 @@
+ 	pinctrl-0 = <&vcc50_hdmi_en>;
+ };
+ 
++&gpio0 {
++	gpio-line-names = "PMIC_SLEEP_AP",
++			  "DDRIO_PWROFF",
++			  "DDRIO_RETEN",
++			  "TS3A227E_INT_L",
++			  "PMIC_INT_L",
++			  "PWR_KEY_L",
++			  "AP_LID_INT_L",
++			  "EC_IN_RW",
++
++			  "AC_PRESENT_AP",
++			  /*
++			   * RECOVERY_SW_L is Chrome OS ABI.  Schematics call
++			   * it REC_MODE_L.
++			   */
++			  "RECOVERY_SW_L",
++			  "OTP_OUT",
++			  "HOST1_PWR_EN",
++			  "USBOTG_PWREN_H",
++			  "AP_WARM_RESET_H",
++			  "nFALUT2",
++			  "I2C0_SDA_PMIC",
++
++			  "I2C0_SCL_PMIC",
++			  "SUSPEND_L",
++			  "USB_INT";
++};
++
++&gpio2 {
++	gpio-line-names = "CONFIG0",
++			  "CONFIG1",
++			  "CONFIG2",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "CONFIG3",
++
++			  "",
++			  "EMMC_RST_L",
++			  "",
++			  "",
++			  "BL_PWR_EN",
++			  "AVDD_1V8_DISP_EN";
++};
++
++&gpio3 {
++	gpio-line-names = "FLASH0_D0",
++			  "FLASH0_D1",
++			  "FLASH0_D2",
++			  "FLASH0_D3",
++			  "FLASH0_D4",
++			  "FLASH0_D5",
++			  "FLASH0_D6",
++			  "FLASH0_D7",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "FLASH0_CS2/EMMC_CMD",
++			  "",
++			  "FLASH0_DQS/EMMC_CLKO";
++};
++
++&gpio4 {
++	gpio-line-names = "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "UART0_RXD",
++			  "UART0_TXD",
++			  "UART0_CTS",
++			  "UART0_RTS",
++			  "SDIO0_D0",
++			  "SDIO0_D1",
++			  "SDIO0_D2",
++			  "SDIO0_D3",
++
++			  "SDIO0_CMD",
++			  "SDIO0_CLK",
++			  "BT_DEV_WAKE",	/* Maybe missing from mighty? */
++			  "",
++			  "WIFI_ENABLE_H",
++			  "BT_ENABLE_L",
++			  "WIFI_HOST_WAKE",
++			  "BT_HOST_WAKE";
++};
++
++&gpio5 {
++	gpio-line-names = "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "SPI0_CLK",
++			  "SPI0_CS0",
++			  "SPI0_TXD",
++			  "SPI0_RXD",
++
++			  "",
++			  "",
++			  "",
++			  "VCC50_HDMI_EN";
++};
++
++&gpio6 {
++	gpio-line-names = "I2S0_SCLK",
++			  "I2S0_LRCK_RX",
++			  "I2S0_LRCK_TX",
++			  "I2S0_SDI",
++			  "I2S0_SDO0",
++			  "HP_DET_H",
++			  "ALS_INT",
++			  "INT_CODEC",
++
++			  "I2S0_CLK",
++			  "I2C2_SDA",
++			  "I2C2_SCL",
++			  "MICDET",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "SDMMC_D0",
++			  "SDMMC_D1",
++			  "SDMMC_D2",
++			  "SDMMC_D3",
++			  "SDMMC_CLK",
++			  "SDMMC_CMD";
++};
++
++&gpio7 {
++	gpio-line-names = "LCDC_BL",
++			  "PWM_LOG",
++			  "BL_EN",
++			  "TRACKPAD_INT",
++			  "TPM_INT_H",
++			  "SDMMC_DET_L",
++			  /*
++			   * AP_FLASH_WP_L is Chrome OS ABI.  Schematics call
++			   * it FW_WP_AP.
++			   */
++			  "AP_FLASH_WP_L",
++			  "EC_INT",
++
++			  "CPU_NMI",
++			  "DVSOK",
++			  "SDMMC_WP",		/* mighty only */
++			  "EDP_HPD",
++			  "DVS1",
++			  "nFALUT1",		/* nFAULT1 on jaq */
++			  "LCD_EN",
++			  "DVS2",
++
++			  "VCC5V_GOOD_H",
++			  "I2C4_SDA_TP",
++			  "I2C4_SCL_TP",
++			  "I2C5_SDA_HDMI",
++			  "I2C5_SCL_HDMI",
++			  "5V_DRV",
++			  "UART2_RXD",
++			  "UART2_TXD";
++};
++
++&gpio8 {
++	gpio-line-names = "RAM_ID0",
++			  "RAM_ID1",
++			  "RAM_ID2",
++			  "RAM_ID3",
++			  "I2C1_SDA_TPM",
++			  "I2C1_SCL_TPM",
++			  "SPI2_CLK",
++			  "SPI2_CS0",
++
++			  "SPI2_RXD",
++			  "SPI2_TXD";
++};
++
+ &pinctrl {
+ 	backlight {
+ 		bl_pwr_en: bl_pwr_en {
+diff --git a/arch/arm/boot/dts/rk3288-veyron-mickey.dts b/arch/arm/boot/dts/rk3288-veyron-mickey.dts
+index 945e80801292..aa352d40c991 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-mickey.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-mickey.dts
+@@ -252,6 +252,157 @@
+ 	};
+ };
+ 
++&gpio0 {
++	gpio-line-names = "PMIC_SLEEP_AP",
++			  "",
++			  "",
++			  "",
++			  "PMIC_INT_L",
++			  "POWER_BUTTON_L",
++			  "",
++			  "",
++
++			  "",
++			  /*
++			   * RECOVERY_SW_L is Chrome OS ABI.  Schematics call
++			   * it REC_MODE_L.
++			   */
++			  "RECOVERY_SW_L",
++			  "OT_RESET",
++			  "",
++			  "",
++			  "AP_WARM_RESET_H",
++			  "",
++			  "I2C0_SDA_PMIC",
++
++			  "I2C0_SCL_PMIC",
++			  "",
++			  "nFALUT";
++};
++
++&gpio2 {
++	gpio-line-names = "CONFIG0",
++			  "CONFIG1",
++			  "CONFIG2",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "CONFIG3",
++
++			  "",
++			  "EMMC_RST_L";
++};
++
++&gpio3 {
++	gpio-line-names = "FLASH0_D0",
++			  "FLASH0_D1",
++			  "FLASH0_D2",
++			  "FLASH0_D3",
++			  "FLASH0_D4",
++			  "FLASH0_D5",
++			  "FLASH0_D6",
++			  "FLASH0_D7",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "FLASH0_CS2/EMMC_CMD",
++			  "",
++			  "FLASH0_DQS/EMMC_CLKO";
++};
++
++&gpio4 {
++	gpio-line-names = "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "UART0_RXD",
++			  "UART0_TXD",
++			  "UART0_CTS_L",
++			  "UART0_RTS_L",
++			  "SDIO0_D0",
++			  "SDIO0_D1",
++			  "SDIO0_D2",
++			  "SDIO0_D3",
++
++			  "SDIO0_CMD",
++			  "SDIO0_CLK",
++			  "BT_DEV_WAKE",
++			  "",
++			  "WIFI_ENABLE_H",
++			  "BT_ENABLE_L",
++			  "WIFI_HOST_WAKE",
++			  "BT_HOST_WAKE";
++};
++
++&gpio7 {
++	gpio-line-names = "",
++			  "PWM_LOG",
++			  "",
++			  "",
++			  "TPM_INT_H",
++			  "SDMMC_DET_L",
++			  /*
++			   * AP_FLASH_WP_L is Chrome OS ABI.  Schematics call
++			   * it FW_WP_AP.
++			   */
++			  "AP_FLASH_WP_L",
++			  "",
++
++			  "CPU_NMI",
++			  "DVSOK",
++			  "HDMI_WAKE",
++			  "POWER_HDMI_ON",
++			  "DVS1",
++			  "",
++			  "",
++			  "DVS2",
++
++			  "HDMI_CEC",
++			  "",
++			  "",
++			  "I2C5_SDA_HDMI",
++			  "I2C5_SCL_HDMI",
++			  "",
++			  "UART2_RXD",
++			  "UART2_TXD";
++};
++
++&gpio8 {
++	gpio-line-names = "RAM_ID0",
++			  "RAM_ID1",
++			  "RAM_ID2",
++			  "RAM_ID3",
++			  "I2C1_SDA_TPM",
++			  "I2C1_SCL_TPM",
++			  "SPI2_CLK",
++			  "SPI2_CS0",
++
++			  "SPI2_RXD",
++			  "SPI2_TXD";
++};
++
+ &pinctrl {
+ 	hdmi {
+ 		power_hdmi_on: power-hdmi-on {
+diff --git a/arch/arm/boot/dts/rk3288-veyron-speedy.dts b/arch/arm/boot/dts/rk3288-veyron-speedy.dts
+index 9a87017347ea..9b140db04456 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-speedy.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-speedy.dts
+@@ -113,6 +113,213 @@
+ 	pinctrl-0 = <&vcc50_hdmi_en>;
+ };
+ 
++&gpio0 {
++	gpio-line-names = "PMIC_SLEEP_AP",
++			  "DDRIO_PWROFF",
++			  "DDRIO_RETEN",
++			  "TS3A227E_INT_L",
++			  "PMIC_INT_L",
++			  "PWR_KEY_L",
++			  "AP_LID_INT_L",
++			  "EC_IN_RW",
++
++			  "AC_PRESENT_AP",
++			  /*
++			   * RECOVERY_SW_L is Chrome OS ABI.  Schematics call
++			   * it REC_MODE_L.
++			   */
++			  "RECOVERY_SW_L",
++			  "OTP_OUT",
++			  "HOST1_PWR_EN",
++			  "USBOTG_PWREN_H",
++			  "AP_WARM_RESET_H",
++			  "nFALUT2",
++			  "I2C0_SDA_PMIC",
++
++			  "I2C0_SCL_PMIC",
++			  "SUSPEND_L",
++			  "USB_INT";
++};
++
++&gpio2 {
++	gpio-line-names = "CONFIG0",
++			  "CONFIG1",
++			  "CONFIG2",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "CONFIG3",
++
++			  "PWRLIMIT#_CPU",
++			  "EMMC_RST_L",
++			  "",
++			  "",
++			  "BL_PWR_EN",
++			  "AVDD_1V8_DISP_EN";
++};
++
++&gpio3 {
++	gpio-line-names = "FLASH0_D0",
++			  "FLASH0_D1",
++			  "FLASH0_D2",
++			  "FLASH0_D3",
++			  "FLASH0_D4",
++			  "FLASH0_D5",
++			  "FLASH0_D6",
++			  "FLASH0_D7",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "FLASH0_CS2/EMMC_CMD",
++			  "",
++			  "FLASH0_DQS/EMMC_CLKO";
++};
++
++&gpio4 {
++	gpio-line-names = "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "UART0_RXD",
++			  "UART0_TXD",
++			  "UART0_CTS",
++			  "UART0_RTS",
++			  "SDIO0_D0",
++			  "SDIO0_D1",
++			  "SDIO0_D2",
++			  "SDIO0_D3",
++
++			  "SDIO0_CMD",
++			  "SDIO0_CLK",
++			  "BT_DEV_WAKE",
++			  "",
++			  "WIFI_ENABLE_H",
++			  "BT_ENABLE_L",
++			  "WIFI_HOST_WAKE",
++			  "BT_HOST_WAKE";
++};
++
++&gpio5 {
++	gpio-line-names = "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "",
++			  "",
++			  "",
++			  "",
++			  "SPI0_CLK",
++			  "SPI0_CS0",
++			  "SPI0_TXD",
++			  "SPI0_RXD",
++
++			  "",
++			  "",
++			  "",
++			  "VCC50_HDMI_EN";
++};
++
++&gpio6 {
++	gpio-line-names = "I2S0_SCLK",
++			  "I2S0_LRCK_RX",
++			  "I2S0_LRCK_TX",
++			  "I2S0_SDI",
++			  "I2S0_SDO0",
++			  "HP_DET_H",
++			  "ALS_INT",		/* not connected */
++			  "INT_CODEC",
++
++			  "I2S0_CLK",
++			  "I2C2_SDA",
++			  "I2C2_SCL",
++			  "MICDET",
++			  "",
++			  "",
++			  "",
++			  "",
++
++			  "SDMMC_D0",
++			  "SDMMC_D1",
++			  "SDMMC_D2",
++			  "SDMMC_D3",
++			  "SDMMC_CLK",
++			  "SDMMC_CMD";
++};
++
++&gpio7 {
++	gpio-line-names = "LCDC_BL",
++			  "PWM_LOG",
++			  "BL_EN",
++			  "TRACKPAD_INT",
++			  "TPM_INT_H",
++			  "SDMMC_DET_L",
++			  /*
++			   * AP_FLASH_WP_L is Chrome OS ABI.  Schematics call
++			   * it FW_WP_AP.
++			   */
++			  "AP_FLASH_WP_L",
++			  "EC_INT",
++
++			  "CPU_NMI",
++			  "DVS_OK",
++			  "",
++			  "EDP_HOTPLUG",
++			  "DVS1",
++			  "nFALUT1",
++			  "LCD_EN",
++			  "DVS2",
++
++			  "VCC5V_GOOD_H",
++			  "I2C4_SDA_TP",
++			  "I2C4_SCL_TP",
++			  "I2C5_SDA_HDMI",
++			  "I2C5_SCL_HDMI",
++			  "5V_DRV",
++			  "UART2_RXD",
++			  "UART2_TXD";
++};
++
++&gpio8 {
++	gpio-line-names = "RAM_ID0",
++			  "RAM_ID1",
++			  "RAM_ID2",
++			  "RAM_ID3",
++			  "I2C1_SDA_TPM",
++			  "I2C1_SCL_TPM",
++			  "SPI2_CLK",
++			  "SPI2_CS0",
++
++			  "SPI2_RXD",
++			  "SPI2_TXD";
++};
++
+ &pinctrl {
+ 	backlight {
+ 		bl_pwr_en: bl_pwr_en {
+
+From 25e7abe1d7acd0899e93c62e74ade559b7923ed4 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Wed, 15 May 2019 15:18:55 +0200
+Subject: [PATCH] ASoC: dapm: allow muxes to force a disconnect
+
+Let soc_dapm_mux_update_power() accept NULL as 'e' enum.
+
+It makes the code a bit more robust and, more importantly, let the calling
+mux force a disconnect of the output path if necessary.
+
+This is useful if the dapm elements following the mux must be off
+while updating the mux, to avoid glitches or force a (re)configuration.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Tested-by: Neil Armstrong <narmstrong@baylibre.com>
+Tested-by: Kevin Hilman <khilman@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+(cherry picked from commit c3456a4b2142550944f73a87a8f338074508b249)
+---
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 0382a47b30bd..0e3bda80f531 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2244,7 +2244,7 @@ static int soc_dapm_mux_update_power(struct snd_soc_card *card,
+ 	dapm_kcontrol_for_each_path(path, kcontrol) {
+ 		found = 1;
+ 		/* we now need to match the string in the enum to the path */
+-		if (!(strcmp(path->name, e->texts[mux])))
++		if (e && !(strcmp(path->name, e->texts[mux])))
+ 			connect = true;
+ 		else
+ 			connect = false;
+
+From 69d8cdca6223dec2a637f3c0d2f8622c5785c27b Mon Sep 17 00:00:00 2001
+From: Uma Shankar <uma.shankar@intel.com>
+Date: Thu, 16 May 2019 19:40:06 +0530
+Subject: [PATCH] drm: Add HDR source metadata property
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This patch adds a blob property to get HDR metadata
+information from userspace. This will be send as part
+of AVI Infoframe to panel.
+
+It also implements get() and set() functions for HDR output
+metadata property.The blob data is received from userspace and
+saved in connector state, the same is returned as blob in get
+property call to userspace.
+
+v2: Rebase and modified the metadata structure elements
+as per Ville's POC changes.
+
+v3: No Change
+
+v4: Addressed Shashank's review comments
+
+v5: Rebase.
+
+v6: Addressed Brian Starkey's review comments, defined
+new structure with header for dynamic metadata scalability.
+Merge get/set property functions for metadata in this patch.
+
+v7: Addressed Jonas Karlman review comments and defined separate
+structure for infoframe to better align with CTA 861.G spec. Added
+Shashank's RB.
+
+v8: Addressed Ville's review comments. Moved sink metadata structure
+out of uapi headers as suggested by Jonas Karlman.
+
+v9: Rebase and addressed Jonas Karlman review comments.
+
+v10: Addressed Ville's review comments, dropped the metdata_changed
+state variable as its not needed anymore.
+
+Signed-off-by: Uma Shankar <uma.shankar@intel.com>
+Reviewed-by: Shashank Sharma <shashank.sharma@intel.com>
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1558015817-12025-2-git-send-email-uma.shankar@intel.com
+(cherry picked from commit fbb5d0353c62d10c3699ec844d2d015a762952d7)
+---
+ drivers/gpu/drm/drm_atomic_uapi.c | 12 ++++++++++++
+ drivers/gpu/drm/drm_connector.c   |  6 ++++++
+ include/drm/drm_connector.h       | 10 ++++++++++
+ include/drm/drm_mode_config.h     |  7 +++++++
+ include/linux/hdmi.h              | 26 ++++++++++++++++++++++++++
+ include/uapi/drm/drm_mode.h       | 23 +++++++++++++++++++++++
+ 6 files changed, 84 insertions(+)
+
+diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+index f0dbfeb00926..2759a173f6af 100644
+--- a/drivers/gpu/drm/drm_atomic_uapi.c
++++ b/drivers/gpu/drm/drm_atomic_uapi.c
+@@ -687,6 +687,8 @@ static int drm_atomic_connector_set_property(struct drm_connector *connector,
+ {
+ 	struct drm_device *dev = connector->dev;
+ 	struct drm_mode_config *config = &dev->mode_config;
++	bool replaced = false;
++	int ret;
+ 
+ 	if (property == config->prop_crtc_id) {
+ 		struct drm_crtc *crtc = drm_crtc_find(dev, file_priv, val);
+@@ -735,6 +737,13 @@ static int drm_atomic_connector_set_property(struct drm_connector *connector,
+ 		 */
+ 		if (state->link_status != DRM_LINK_STATUS_GOOD)
+ 			state->link_status = val;
++	} else if (property == config->hdr_output_metadata_property) {
++		ret = drm_atomic_replace_property_blob_from_id(dev,
++				&state->hdr_output_metadata,
++				val,
++				sizeof(struct hdr_output_metadata), -1,
++				&replaced);
++		return ret;
+ 	} else if (property == config->aspect_ratio_property) {
+ 		state->picture_aspect_ratio = val;
+ 	} else if (property == config->content_type_property) {
+@@ -823,6 +832,9 @@ drm_atomic_connector_get_property(struct drm_connector *connector,
+ 		*val = state->colorspace;
+ 	} else if (property == connector->scaling_mode_property) {
+ 		*val = state->scaling_mode;
++	} else if (property == config->hdr_output_metadata_property) {
++		*val = state->hdr_output_metadata ?
++			state->hdr_output_metadata->base.id : 0;
+ 	} else if (property == connector->content_protection_property) {
+ 		*val = state->content_protection;
+ 	} else if (property == config->writeback_fb_id_property) {
+diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+index 650040b2390e..e053ae284504 100644
+--- a/drivers/gpu/drm/drm_connector.c
++++ b/drivers/gpu/drm/drm_connector.c
+@@ -1054,6 +1054,12 @@ int drm_connector_create_standard_properties(struct drm_device *dev)
+ 		return -ENOMEM;
+ 	dev->mode_config.non_desktop_property = prop;
+ 
++	prop = drm_property_create(dev, DRM_MODE_PROP_BLOB,
++				   "HDR_OUTPUT_METADATA", 0);
++	if (!prop)
++		return -ENOMEM;
++	dev->mode_config.hdr_output_metadata_property = prop;
++
+ 	return 0;
+ }
+ 
+diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+index c8061992d6cb..eda59a6a858b 100644
+--- a/include/drm/drm_connector.h
++++ b/include/drm/drm_connector.h
+@@ -561,6 +561,12 @@ struct drm_connector_state {
+ 	 * and the connector bpc limitations obtained from edid.
+ 	 */
+ 	u8 max_bpc;
++
++	/**
++	 * @hdr_output_metadata:
++	 * DRM blob property for HDR output metadata
++	 */
++	struct drm_property_blob *hdr_output_metadata;
+ };
+ 
+ /**
+@@ -1201,6 +1207,10 @@ struct drm_connector {
+ 	 * &drm_mode_config.connector_free_work.
+ 	 */
+ 	struct llist_node free_node;
++
++	/* HDR metdata */
++	struct hdr_output_metadata hdr_output_metadata;
++	struct hdr_sink_metadata hdr_sink_metadata;
+ };
+ 
+ #define obj_to_connector(x) container_of(x, struct drm_connector, base)
+diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
+index 7f60e8eb269a..c031b5a9d8d1 100644
+--- a/include/drm/drm_mode_config.h
++++ b/include/drm/drm_mode_config.h
+@@ -836,6 +836,13 @@ struct drm_mode_config {
+ 	 */
+ 	struct drm_property *writeback_out_fence_ptr_property;
+ 
++	/**
++	 * hdr_output_metadata_property: Connector property containing hdr
++	 * metatda. This will be provided by userspace compositors based
++	 * on HDR content
++	 */
++	struct drm_property *hdr_output_metadata_property;
++
+ 	/* dumb ioctl parameters */
+ 	uint32_t preferred_depth, prefer_shadow;
+ 
+diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
+index 927ad6451105..6780476dcbff 100644
+--- a/include/linux/hdmi.h
++++ b/include/linux/hdmi.h
+@@ -152,6 +152,16 @@ enum hdmi_content_type {
+ 	HDMI_CONTENT_TYPE_GAME,
+ };
+ 
++enum hdmi_metadata_type {
++	HDMI_STATIC_METADATA_TYPE1 = 1,
++};
++
++enum hdmi_eotf {
++	HDMI_EOTF_TRADITIONAL_GAMMA_SDR,
++	HDMI_EOTF_TRADITIONAL_GAMMA_HDR,
++	HDMI_EOTF_SMPTE_ST2084,
++};
++
+ struct hdmi_avi_infoframe {
+ 	enum hdmi_infoframe_type type;
+ 	unsigned char version;
+@@ -320,6 +330,22 @@ struct hdmi_vendor_infoframe {
+ 	unsigned int s3d_ext_data;
+ };
+ 
++/* HDR Metadata as per 861.G spec */
++struct hdr_static_metadata {
++	__u8 eotf;
++	__u8 metadata_type;
++	__u16 max_cll;
++	__u16 max_fall;
++	__u16 min_cll;
++};
++
++struct hdr_sink_metadata {
++	__u32 metadata_type;
++	union {
++		struct hdr_static_metadata hdmi_type1;
++	};
++};
++
+ int hdmi_vendor_infoframe_init(struct hdmi_vendor_infoframe *frame);
+ ssize_t hdmi_vendor_infoframe_pack(struct hdmi_vendor_infoframe *frame,
+ 				   void *buffer, size_t size);
+diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
+index 09d72966899a..9927efca12cf 100644
+--- a/include/uapi/drm/drm_mode.h
++++ b/include/uapi/drm/drm_mode.h
+@@ -629,6 +629,29 @@ struct drm_color_lut {
+ 	__u16 reserved;
+ };
+ 
++/* HDR Metadata Infoframe as per 861.G spec */
++struct hdr_metadata_infoframe {
++	__u8 eotf;
++	__u8 metadata_type;
++	struct {
++		__u16 x, y;
++		} display_primaries[3];
++	struct {
++		__u16 x, y;
++		} white_point;
++	__u16 max_display_mastering_luminance;
++	__u16 min_display_mastering_luminance;
++	__u16 max_cll;
++	__u16 max_fall;
++};
++
++struct hdr_output_metadata {
++	__u32 metadata_type;
++	union {
++		struct hdr_metadata_infoframe hdmi_metadata_type1;
++	};
++};
++
+ #define DRM_MODE_PAGE_FLIP_EVENT 0x01
+ #define DRM_MODE_PAGE_FLIP_ASYNC 0x02
+ #define DRM_MODE_PAGE_FLIP_TARGET_ABSOLUTE 0x4
+
+From c25fa3a1d6bf46f14cd215607b669431ddc8a676 Mon Sep 17 00:00:00 2001
+From: Jonas Karlman <jonas@kwiboo.se>
+Date: Thu, 16 May 2019 19:40:07 +0530
+Subject: [PATCH] drm: Add reference counting on HDR metadata blob
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This adds reference count for HDR metadata blob,
+handled as part of duplicate and destroy connector
+state functions.
+
+v2: Removed the hdr_metadata_changed initialization as
+the variable is dropped and not required.
+
+Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+Signed-off-by: Uma Shankar <uma.shankar@intel.com>
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1558015817-12025-3-git-send-email-uma.shankar@intel.com
+(cherry picked from commit c0b0ebb1719984513333f88d0c2a2bb3fdb61474)
+---
+ drivers/gpu/drm/drm_atomic_state_helper.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/drm/drm_atomic_state_helper.c
+index 59ffb6b9c745..e8efbcb7226d 100644
+--- a/drivers/gpu/drm/drm_atomic_state_helper.c
++++ b/drivers/gpu/drm/drm_atomic_state_helper.c
+@@ -369,6 +369,9 @@ __drm_atomic_helper_connector_duplicate_state(struct drm_connector *connector,
+ 		drm_connector_get(connector);
+ 	state->commit = NULL;
+ 
++	if (state->hdr_output_metadata)
++		drm_property_blob_get(state->hdr_output_metadata);
++
+ 	/* Don't copy over a writeback job, they are used only once */
+ 	state->writeback_job = NULL;
+ }
+@@ -416,6 +419,8 @@ __drm_atomic_helper_connector_destroy_state(struct drm_connector_state *state)
+ 
+ 	if (state->writeback_job)
+ 		drm_writeback_cleanup_job(state->writeback_job);
++
++	drm_property_blob_put(state->hdr_output_metadata);
+ }
+ EXPORT_SYMBOL(__drm_atomic_helper_connector_destroy_state);
+ 
+
+From 960d8adc6512cdc34b66bd007d8c208074d7d291 Mon Sep 17 00:00:00 2001
+From: Uma Shankar <uma.shankar@intel.com>
+Date: Thu, 16 May 2019 19:40:08 +0530
+Subject: [PATCH] drm: Parse HDR metadata info from EDID
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+HDR metadata block is introduced in CEA-861.3 spec.
+Parsing the same to get the panel's HDR metadata.
+
+v2: Rebase and added Ville's POC changes to the patch.
+
+v3: No Change
+
+v4: Addressed Shashank's review comments
+
+v5: Addressed Shashank's comment and added his RB.
+
+v6: Addressed Jonas Karlman review comments.
+
+v7: Adressed Ville's review comments and fixed the issue
+with length handling.
+
+v8: Put the length check as per the convention followed in
+existing code, as suggested by Ville.
+
+Signed-off-by: Uma Shankar <uma.shankar@intel.com>
+Reviewed-by: Shashank Sharma <shashank.sharma@intel.com>
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1558015817-12025-4-git-send-email-uma.shankar@intel.com
+(cherry picked from commit e85959d6cbe08521942a6118568a38ac671e8d7f)
+---
+ drivers/gpu/drm/drm_edid.c | 51 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+
+diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+index eb95b1e7d420..1189ef19328c 100644
+--- a/drivers/gpu/drm/drm_edid.c
++++ b/drivers/gpu/drm/drm_edid.c
+@@ -2859,6 +2859,7 @@ add_detailed_modes(struct drm_connector *connector, struct edid *edid,
+ #define VIDEO_BLOCK     0x02
+ #define VENDOR_BLOCK    0x03
+ #define SPEAKER_BLOCK	0x04
++#define HDR_STATIC_METADATA_BLOCK	0x6
+ #define USE_EXTENDED_TAG 0x07
+ #define EXT_VIDEO_CAPABILITY_BLOCK 0x00
+ #define EXT_VIDEO_DATA_BLOCK_420	0x0E
+@@ -3841,6 +3842,54 @@ static void fixup_detailed_cea_mode_clock(struct drm_display_mode *mode)
+ 	mode->clock = clock;
+ }
+ 
++static bool cea_db_is_hdmi_hdr_metadata_block(const u8 *db)
++{
++	if (cea_db_tag(db) != USE_EXTENDED_TAG)
++		return false;
++
++	if (db[1] != HDR_STATIC_METADATA_BLOCK)
++		return false;
++
++	if (cea_db_payload_len(db) < 3)
++		return false;
++
++	return true;
++}
++
++static uint8_t eotf_supported(const u8 *edid_ext)
++{
++	return edid_ext[2] &
++		(BIT(HDMI_EOTF_TRADITIONAL_GAMMA_SDR) |
++		 BIT(HDMI_EOTF_TRADITIONAL_GAMMA_HDR) |
++		 BIT(HDMI_EOTF_SMPTE_ST2084));
++}
++
++static uint8_t hdr_metadata_type(const u8 *edid_ext)
++{
++	return edid_ext[3] &
++		BIT(HDMI_STATIC_METADATA_TYPE1);
++}
++
++static void
++drm_parse_hdr_metadata_block(struct drm_connector *connector, const u8 *db)
++{
++	u16 len;
++
++	len = cea_db_payload_len(db);
++
++	connector->hdr_sink_metadata.hdmi_type1.eotf =
++						eotf_supported(db);
++	connector->hdr_sink_metadata.hdmi_type1.metadata_type =
++						hdr_metadata_type(db);
++
++	if (len >= 4)
++		connector->hdr_sink_metadata.hdmi_type1.max_cll = db[4];
++	if (len >= 5)
++		connector->hdr_sink_metadata.hdmi_type1.max_fall = db[5];
++	if (len >= 6)
++		connector->hdr_sink_metadata.hdmi_type1.min_cll = db[6];
++}
++
+ static void
+ drm_parse_hdmi_vsdb_audio(struct drm_connector *connector, const u8 *db)
+ {
+@@ -4468,6 +4517,8 @@ static void drm_parse_cea_ext(struct drm_connector *connector,
+ 			drm_parse_y420cmdb_bitmap(connector, db);
+ 		if (cea_db_is_vcdb(db))
+ 			drm_parse_vcdb(connector, db);
++		if (cea_db_is_hdmi_hdr_metadata_block(db))
++			drm_parse_hdr_metadata_block(connector, db);
+ 	}
+ }
+ 
+
+From 744cff434de53a8d7ddba8cf41c6436a8a5ed94c Mon Sep 17 00:00:00 2001
+From: Uma Shankar <uma.shankar@intel.com>
+Date: Thu, 16 May 2019 19:40:09 +0530
+Subject: [PATCH] drm: Enable HDR infoframe support
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Enable Dynamic Range and Mastering Infoframe for HDR
+content, which is defined in CEA 861.3 spec.
+
+The metadata will be computed based on blending
+policy in userspace compositors and passed as a connector
+property blob to driver. The same will be sent as infoframe
+to panel which support HDR.
+
+Added the const version of infoframe for DRM metadata
+for HDR.
+
+v2: Rebase and added Ville's POC changes.
+
+v3: No Change
+
+v4: Addressed Shashank's review comments and merged the
+patch making drm infoframe function arguments as constant.
+
+v5: Rebase
+
+v6: Fixed checkpatch warnings with --strict option. Addressed
+Shashank's review comments and added his RB.
+
+v7: Addressed Brian Starkey's review comments. Merged 2 patches
+into one.
+
+v8: Addressed Jonas Karlman review comments.
+
+v9: Addressed Jonas Karlman review comments.
+
+v10: Addressed Ville's review comments.
+
+v11: Added BUILD_BUG_ON and sizeof instead of magic numbers as
+per Ville's comments.
+
+Signed-off-by: Uma Shankar <uma.shankar@intel.com>
+Reviewed-by: Shashank Sharma <shashank.sharma@intel.com>
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1558015817-12025-5-git-send-email-uma.shankar@intel.com
+(cherry picked from commit 2cdbfd66a82969770ce1a7032fb1e2155a08cee8)
+---
+ drivers/gpu/drm/drm_edid.c |  72 +++++++++++++++++
+ drivers/video/hdmi.c       | 190 +++++++++++++++++++++++++++++++++++++++++++++
+ include/drm/drm_edid.h     |   5 ++
+ include/linux/hdmi.h       |  28 +++++++
+ 4 files changed, 295 insertions(+)
+
+diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+index 1189ef19328c..e8dde7372c41 100644
+--- a/drivers/gpu/drm/drm_edid.c
++++ b/drivers/gpu/drm/drm_edid.c
+@@ -4911,6 +4911,78 @@ static bool is_hdmi2_sink(struct drm_connector *connector)
+ 		connector->display_info.color_formats & DRM_COLOR_FORMAT_YCRCB420;
+ }
+ 
++static inline bool is_eotf_supported(u8 output_eotf, u8 sink_eotf)
++{
++	return sink_eotf & BIT(output_eotf);
++}
++
++/**
++ * drm_hdmi_infoframe_set_hdr_metadata() - fill an HDMI DRM infoframe with
++ *                                         HDR metadata from userspace
++ * @frame: HDMI DRM infoframe
++ * @hdr_metadata: hdr_source_metadata info from userspace
++ *
++ * Return: 0 on success or a negative error code on failure.
++ */
++int
++drm_hdmi_infoframe_set_hdr_metadata(struct hdmi_drm_infoframe *frame,
++				    const struct drm_connector_state *conn_state)
++{
++	struct drm_connector *connector;
++	struct hdr_output_metadata *hdr_metadata;
++	int err;
++
++	if (!frame || !conn_state)
++		return -EINVAL;
++
++	connector = conn_state->connector;
++
++	if (!conn_state->hdr_output_metadata)
++		return -EINVAL;
++
++	hdr_metadata = conn_state->hdr_output_metadata->data;
++
++	if (!hdr_metadata || !connector)
++		return -EINVAL;
++
++	/* Sink EOTF is Bit map while infoframe is absolute values */
++	if (!is_eotf_supported(hdr_metadata->hdmi_metadata_type1.eotf,
++	    connector->hdr_sink_metadata.hdmi_type1.eotf)) {
++		DRM_DEBUG_KMS("EOTF Not Supported\n");
++		return -EINVAL;
++	}
++
++	err = hdmi_drm_infoframe_init(frame);
++	if (err < 0)
++		return err;
++
++	frame->eotf = hdr_metadata->hdmi_metadata_type1.eotf;
++	frame->metadata_type = hdr_metadata->hdmi_metadata_type1.metadata_type;
++
++	BUILD_BUG_ON(sizeof(frame->display_primaries) !=
++		     sizeof(hdr_metadata->hdmi_metadata_type1.display_primaries));
++	BUILD_BUG_ON(sizeof(frame->white_point) !=
++		     sizeof(hdr_metadata->hdmi_metadata_type1.white_point));
++
++	memcpy(&frame->display_primaries,
++	       &hdr_metadata->hdmi_metadata_type1.display_primaries,
++	       sizeof(frame->display_primaries));
++
++	memcpy(&frame->white_point,
++	       &hdr_metadata->hdmi_metadata_type1.white_point,
++	       sizeof(frame->white_point));
++
++	frame->max_display_mastering_luminance =
++		hdr_metadata->hdmi_metadata_type1.max_display_mastering_luminance;
++	frame->min_display_mastering_luminance =
++		hdr_metadata->hdmi_metadata_type1.min_display_mastering_luminance;
++	frame->max_fall = hdr_metadata->hdmi_metadata_type1.max_fall;
++	frame->max_cll = hdr_metadata->hdmi_metadata_type1.max_cll;
++
++	return 0;
++}
++EXPORT_SYMBOL(drm_hdmi_infoframe_set_hdr_metadata);
++
+ /**
+  * drm_hdmi_avi_infoframe_from_display_mode() - fill an HDMI AVI infoframe with
+  *                                              data from a DRM display mode
+diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
+index 799ae49774f5..481f0367dfd3 100644
+--- a/drivers/video/hdmi.c
++++ b/drivers/video/hdmi.c
+@@ -650,6 +650,150 @@ hdmi_vendor_any_infoframe_check_only(const union hdmi_vendor_any_infoframe *fram
+ 	return 0;
+ }
+ 
++/**
++ * hdmi_drm_infoframe_init() - initialize an HDMI Dynaminc Range and
++ * mastering infoframe
++ * @frame: HDMI DRM infoframe
++ *
++ * Returns 0 on success or a negative error code on failure.
++ */
++int hdmi_drm_infoframe_init(struct hdmi_drm_infoframe *frame)
++{
++	memset(frame, 0, sizeof(*frame));
++
++	frame->type = HDMI_INFOFRAME_TYPE_DRM;
++	frame->version = 1;
++	frame->length = HDMI_DRM_INFOFRAME_SIZE;
++
++	return 0;
++}
++EXPORT_SYMBOL(hdmi_drm_infoframe_init);
++
++static int hdmi_drm_infoframe_check_only(const struct hdmi_drm_infoframe *frame)
++{
++	if (frame->type != HDMI_INFOFRAME_TYPE_DRM ||
++	    frame->version != 1)
++		return -EINVAL;
++
++	if (frame->length != HDMI_DRM_INFOFRAME_SIZE)
++		return -EINVAL;
++
++	return 0;
++}
++
++/**
++ * hdmi_drm_infoframe_check() - check a HDMI DRM infoframe
++ * @frame: HDMI DRM infoframe
++ *
++ * Validates that the infoframe is consistent.
++ * Returns 0 on success or a negative error code on failure.
++ */
++int hdmi_drm_infoframe_check(struct hdmi_drm_infoframe *frame)
++{
++	return hdmi_drm_infoframe_check_only(frame);
++}
++EXPORT_SYMBOL(hdmi_drm_infoframe_check);
++
++/**
++ * hdmi_drm_infoframe_pack_only() - write HDMI DRM infoframe to binary buffer
++ * @frame: HDMI DRM infoframe
++ * @buffer: destination buffer
++ * @size: size of buffer
++ *
++ * Packs the information contained in the @frame structure into a binary
++ * representation that can be written into the corresponding controller
++ * registers. Also computes the checksum as required by section 5.3.5 of
++ * the HDMI 1.4 specification.
++ *
++ * Returns the number of bytes packed into the binary buffer or a negative
++ * error code on failure.
++ */
++ssize_t hdmi_drm_infoframe_pack_only(const struct hdmi_drm_infoframe *frame,
++				     void *buffer, size_t size)
++{
++	u8 *ptr = buffer;
++	size_t length;
++	int i;
++
++	length = HDMI_INFOFRAME_HEADER_SIZE + frame->length;
++
++	if (size < length)
++		return -ENOSPC;
++
++	memset(buffer, 0, size);
++
++	ptr[0] = frame->type;
++	ptr[1] = frame->version;
++	ptr[2] = frame->length;
++	ptr[3] = 0; /* checksum */
++
++	/* start infoframe payload */
++	ptr += HDMI_INFOFRAME_HEADER_SIZE;
++
++	*ptr++ = frame->eotf;
++	*ptr++ = frame->metadata_type;
++
++	for (i = 0; i < 3; i++) {
++		*ptr++ = frame->display_primaries[i].x;
++		*ptr++ = frame->display_primaries[i].x >> 8;
++		*ptr++ = frame->display_primaries[i].y;
++		*ptr++ = frame->display_primaries[i].y >> 8;
++	}
++
++	*ptr++ = frame->white_point.x;
++	*ptr++ = frame->white_point.x >> 8;
++
++	*ptr++ = frame->white_point.y;
++	*ptr++ = frame->white_point.y >> 8;
++
++	*ptr++ = frame->max_display_mastering_luminance;
++	*ptr++ = frame->max_display_mastering_luminance >> 8;
++
++	*ptr++ = frame->min_display_mastering_luminance;
++	*ptr++ = frame->min_display_mastering_luminance >> 8;
++
++	*ptr++ = frame->max_cll;
++	*ptr++ = frame->max_cll >> 8;
++
++	*ptr++ = frame->max_fall;
++	*ptr++ = frame->max_fall >> 8;
++
++	hdmi_infoframe_set_checksum(buffer, length);
++
++	return length;
++}
++EXPORT_SYMBOL(hdmi_drm_infoframe_pack_only);
++
++/**
++ * hdmi_drm_infoframe_pack() - check a HDMI DRM infoframe,
++ *                             and write it to binary buffer
++ * @frame: HDMI DRM infoframe
++ * @buffer: destination buffer
++ * @size: size of buffer
++ *
++ * Validates that the infoframe is consistent and updates derived fields
++ * (eg. length) based on other fields, after which it packs the information
++ * contained in the @frame structure into a binary representation that
++ * can be written into the corresponding controller registers. This function
++ * also computes the checksum as required by section 5.3.5 of the HDMI 1.4
++ * specification.
++ *
++ * Returns the number of bytes packed into the binary buffer or a negative
++ * error code on failure.
++ */
++ssize_t hdmi_drm_infoframe_pack(struct hdmi_drm_infoframe *frame,
++				void *buffer, size_t size)
++{
++	int ret;
++
++	ret = hdmi_drm_infoframe_check(frame);
++	if (ret)
++		return ret;
++
++	return hdmi_drm_infoframe_pack_only(frame, buffer, size);
++}
++EXPORT_SYMBOL(hdmi_drm_infoframe_pack);
++
+ /*
+  * hdmi_vendor_any_infoframe_check() - check a vendor infoframe
+  */
+@@ -758,6 +902,10 @@ hdmi_infoframe_pack_only(const union hdmi_infoframe *frame, void *buffer, size_t
+ 		length = hdmi_avi_infoframe_pack_only(&frame->avi,
+ 						      buffer, size);
+ 		break;
++	case HDMI_INFOFRAME_TYPE_DRM:
++		length = hdmi_drm_infoframe_pack_only(&frame->drm,
++						      buffer, size);
++		break;
+ 	case HDMI_INFOFRAME_TYPE_SPD:
+ 		length = hdmi_spd_infoframe_pack_only(&frame->spd,
+ 						      buffer, size);
+@@ -806,6 +954,9 @@ hdmi_infoframe_pack(union hdmi_infoframe *frame,
+ 	case HDMI_INFOFRAME_TYPE_AVI:
+ 		length = hdmi_avi_infoframe_pack(&frame->avi, buffer, size);
+ 		break;
++	case HDMI_INFOFRAME_TYPE_DRM:
++		length = hdmi_drm_infoframe_pack(&frame->drm, buffer, size);
++		break;
+ 	case HDMI_INFOFRAME_TYPE_SPD:
+ 		length = hdmi_spd_infoframe_pack(&frame->spd, buffer, size);
+ 		break;
+@@ -838,6 +989,8 @@ static const char *hdmi_infoframe_type_get_name(enum hdmi_infoframe_type type)
+ 		return "Source Product Description (SPD)";
+ 	case HDMI_INFOFRAME_TYPE_AUDIO:
+ 		return "Audio";
++	case HDMI_INFOFRAME_TYPE_DRM:
++		return "Dynamic Range and Mastering";
+ 	}
+ 	return "Reserved";
+ }
+@@ -1284,6 +1437,40 @@ static void hdmi_audio_infoframe_log(const char *level,
+ 			frame->downmix_inhibit ? "Yes" : "No");
+ }
+ 
++/**
++ * hdmi_drm_infoframe_log() - log info of HDMI DRM infoframe
++ * @level: logging level
++ * @dev: device
++ * @frame: HDMI DRM infoframe
++ */
++static void hdmi_drm_infoframe_log(const char *level,
++				   struct device *dev,
++				   const struct hdmi_drm_infoframe *frame)
++{
++	int i;
++
++	hdmi_infoframe_log_header(level, dev,
++				  (struct hdmi_any_infoframe *)frame);
++	hdmi_log("length: %d\n", frame->length);
++	hdmi_log("metadata type: %d\n", frame->metadata_type);
++	hdmi_log("eotf: %d\n", frame->eotf);
++	for (i = 0; i < 3; i++) {
++		hdmi_log("x[%d]: %d\n", i, frame->display_primaries[i].x);
++		hdmi_log("y[%d]: %d\n", i, frame->display_primaries[i].y);
++	}
++
++	hdmi_log("white point x: %d\n", frame->white_point.x);
++	hdmi_log("white point y: %d\n", frame->white_point.y);
++
++	hdmi_log("max_display_mastering_luminance: %d\n",
++		 frame->max_display_mastering_luminance);
++	hdmi_log("min_display_mastering_luminance: %d\n",
++		 frame->min_display_mastering_luminance);
++
++	hdmi_log("max_cll: %d\n", frame->max_cll);
++	hdmi_log("max_fall: %d\n", frame->max_fall);
++}
++
+ static const char *
+ hdmi_3d_structure_get_name(enum hdmi_3d_structure s3d_struct)
+ {
+@@ -1372,6 +1559,9 @@ void hdmi_infoframe_log(const char *level,
+ 	case HDMI_INFOFRAME_TYPE_VENDOR:
+ 		hdmi_vendor_any_infoframe_log(level, dev, &frame->vendor);
+ 		break;
++	case HDMI_INFOFRAME_TYPE_DRM:
++		hdmi_drm_infoframe_log(level, dev, &frame->drm);
++		break;
+ 	}
+ }
+ EXPORT_SYMBOL(hdmi_infoframe_log);
+diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+index 9d3b5b93102c..0e21e91c4314 100644
+--- a/include/drm/drm_edid.h
++++ b/include/drm/drm_edid.h
+@@ -25,6 +25,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/hdmi.h>
++#include <drm/drm_mode.h>
+ 
+ struct drm_device;
+ struct i2c_adapter;
+@@ -370,6 +371,10 @@ drm_hdmi_avi_infoframe_quant_range(struct hdmi_avi_infoframe *frame,
+ 				   const struct drm_display_mode *mode,
+ 				   enum hdmi_quantization_range rgb_quant_range);
+ 
++int
++drm_hdmi_infoframe_set_hdr_metadata(struct hdmi_drm_infoframe *frame,
++				    const struct drm_connector_state *conn_state);
++
+ /**
+  * drm_eld_mnl - Get ELD monitor name length in bytes.
+  * @eld: pointer to an eld memory structure with mnl set
+diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
+index 6780476dcbff..bcf3c6c3499e 100644
+--- a/include/linux/hdmi.h
++++ b/include/linux/hdmi.h
+@@ -47,6 +47,7 @@ enum hdmi_infoframe_type {
+ 	HDMI_INFOFRAME_TYPE_AVI = 0x82,
+ 	HDMI_INFOFRAME_TYPE_SPD = 0x83,
+ 	HDMI_INFOFRAME_TYPE_AUDIO = 0x84,
++	HDMI_INFOFRAME_TYPE_DRM = 0x87,
+ };
+ 
+ #define HDMI_IEEE_OUI 0x000c03
+@@ -55,6 +56,7 @@ enum hdmi_infoframe_type {
+ #define HDMI_AVI_INFOFRAME_SIZE    13
+ #define HDMI_SPD_INFOFRAME_SIZE    25
+ #define HDMI_AUDIO_INFOFRAME_SIZE  10
++#define HDMI_DRM_INFOFRAME_SIZE    26
+ 
+ #define HDMI_INFOFRAME_SIZE(type)	\
+ 	(HDMI_INFOFRAME_HEADER_SIZE + HDMI_ ## type ## _INFOFRAME_SIZE)
+@@ -185,12 +187,37 @@ struct hdmi_avi_infoframe {
+ 	unsigned short right_bar;
+ };
+ 
++/* DRM Infoframe as per CTA 861.G spec */
++struct hdmi_drm_infoframe {
++	enum hdmi_infoframe_type type;
++	unsigned char version;
++	unsigned char length;
++	enum hdmi_eotf eotf;
++	enum hdmi_metadata_type metadata_type;
++	struct {
++		u16 x, y;
++	} display_primaries[3];
++	struct {
++		u16 x, y;
++	} white_point;
++	u16 max_display_mastering_luminance;
++	u16 min_display_mastering_luminance;
++	u16 max_cll;
++	u16 max_fall;
++};
++
+ int hdmi_avi_infoframe_init(struct hdmi_avi_infoframe *frame);
+ ssize_t hdmi_avi_infoframe_pack(struct hdmi_avi_infoframe *frame, void *buffer,
+ 				size_t size);
+ ssize_t hdmi_avi_infoframe_pack_only(const struct hdmi_avi_infoframe *frame,
+ 				     void *buffer, size_t size);
+ int hdmi_avi_infoframe_check(struct hdmi_avi_infoframe *frame);
++int hdmi_drm_infoframe_init(struct hdmi_drm_infoframe *frame);
++ssize_t hdmi_drm_infoframe_pack(struct hdmi_drm_infoframe *frame, void *buffer,
++				size_t size);
++ssize_t hdmi_drm_infoframe_pack_only(const struct hdmi_drm_infoframe *frame,
++				     void *buffer, size_t size);
++int hdmi_drm_infoframe_check(struct hdmi_drm_infoframe *frame);
+ 
+ enum hdmi_spd_sdi {
+ 	HDMI_SPD_SDI_UNKNOWN,
+@@ -381,6 +408,7 @@ union hdmi_infoframe {
+ 	struct hdmi_spd_infoframe spd;
+ 	union hdmi_vendor_any_infoframe vendor;
+ 	struct hdmi_audio_infoframe audio;
++	struct hdmi_drm_infoframe drm;
+ };
+ 
+ ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
+
+From 1d0f115e51eff1cc6b5d91d0da3fb2d0eac02dfd Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
+Date: Thu, 16 May 2019 19:40:12 +0530
+Subject: [PATCH] drm: Add HLG EOTF
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+ADD HLG EOTF to the list of EOTF transfer functions supported.
+Hybrid Log-Gamma (HLG) is a high dynamic range (HDR) standard.
+HLG defines a nonlinear transfer function in which the lower
+half of the signal values use a gamma curve and the upper half
+of the signal values use a logarithmic curve.
+
+v2: Rebase
+
+v3: Fixed a warning message
+
+v4: Addressed Shashank's review comments
+
+v5: Addressed Jonas Karlman's review comment and dropped the i915
+tag from header.
+
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Signed-off-by: Uma Shankar <uma.shankar@intel.com>
+Reviewed-by: Shashank Sharma <shashank.sharma@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1558015817-12025-8-git-send-email-uma.shankar@intel.com
+(cherry picked from commit b5e3eed1eeb363c148e2935d9d3c12c30a280de6)
+---
+ drivers/gpu/drm/drm_edid.c | 3 ++-
+ include/linux/hdmi.h       | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+index e8dde7372c41..a6ed6cc2ab50 100644
+--- a/drivers/gpu/drm/drm_edid.c
++++ b/drivers/gpu/drm/drm_edid.c
+@@ -3861,7 +3861,8 @@ static uint8_t eotf_supported(const u8 *edid_ext)
+ 	return edid_ext[2] &
+ 		(BIT(HDMI_EOTF_TRADITIONAL_GAMMA_SDR) |
+ 		 BIT(HDMI_EOTF_TRADITIONAL_GAMMA_HDR) |
+-		 BIT(HDMI_EOTF_SMPTE_ST2084));
++		 BIT(HDMI_EOTF_SMPTE_ST2084) |
++		 BIT(HDMI_EOTF_BT_2100_HLG));
+ }
+ 
+ static uint8_t hdr_metadata_type(const u8 *edid_ext)
+diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
+index bcf3c6c3499e..ee55ba589cdc 100644
+--- a/include/linux/hdmi.h
++++ b/include/linux/hdmi.h
+@@ -162,6 +162,7 @@ enum hdmi_eotf {
+ 	HDMI_EOTF_TRADITIONAL_GAMMA_SDR,
+ 	HDMI_EOTF_TRADITIONAL_GAMMA_HDR,
+ 	HDMI_EOTF_SMPTE_ST2084,
++	HDMI_EOTF_BT_2100_HLG,
+ };
+ 
+ struct hdmi_avi_infoframe {
+
+From 2fe4343857e629b3bbc89a0c393a080ea3fb7379 Mon Sep 17 00:00:00 2001
+From: Uma Shankar <uma.shankar@intel.com>
+Date: Thu, 16 May 2019 19:40:16 +0530
+Subject: [PATCH] video/hdmi: Add Unpack function for DRM infoframe
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Added unpack function for DRM infoframe for dynamic
+range and mastering infoframe readout.
+
+v2: Addressed Ville's review comments.
+
+Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Signed-off-by: Uma Shankar <uma.shankar@intel.com>
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1558015817-12025-12-git-send-email-uma.shankar@intel.com
+(cherry picked from commit 270afb37ae34fc1499d166f6edf4bc472f529d96)
+---
+ drivers/video/hdmi.c | 67 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+
+diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
+index 481f0367dfd3..b99ba01dfed5 100644
+--- a/drivers/video/hdmi.c
++++ b/drivers/video/hdmi.c
+@@ -1804,6 +1804,70 @@ hdmi_vendor_any_infoframe_unpack(union hdmi_vendor_any_infoframe *frame,
+ 	return 0;
+ }
+ 
++/**
++ * hdmi_drm_infoframe_unpack() - unpack binary buffer to a HDMI DRM infoframe
++ * @frame: HDMI DRM infoframe
++ * @buffer: source buffer
++ * @size: size of buffer
++ *
++ * Unpacks the information contained in binary @buffer into a structured
++ * @frame of the HDMI Dynamic Range and Mastering (DRM) information frame.
++ * Also verifies the checksum as required by section 5.3.5 of the HDMI 1.4
++ * specification.
++ *
++ * Returns 0 on success or a negative error code on failure.
++ */
++static int hdmi_drm_infoframe_unpack(struct hdmi_drm_infoframe *frame,
++				     const void *buffer, size_t size)
++{
++	const u8 *ptr = buffer;
++	const u8 *temp;
++	u8 x_lsb, x_msb;
++	u8 y_lsb, y_msb;
++	int ret;
++	int i;
++
++	if (size < HDMI_INFOFRAME_SIZE(DRM))
++		return -EINVAL;
++
++	if (ptr[0] != HDMI_INFOFRAME_TYPE_DRM ||
++	    ptr[1] != 1 ||
++	    ptr[2] != HDMI_DRM_INFOFRAME_SIZE)
++		return -EINVAL;
++
++	if (hdmi_infoframe_checksum(buffer, HDMI_INFOFRAME_SIZE(DRM)) != 0)
++		return -EINVAL;
++
++	ret = hdmi_drm_infoframe_init(frame);
++	if (ret)
++		return ret;
++
++	ptr += HDMI_INFOFRAME_HEADER_SIZE;
++
++	frame->eotf = ptr[0] & 0x7;
++	frame->metadata_type = ptr[1] & 0x7;
++
++	temp = ptr + 2;
++	for (i = 0; i < 3; i++) {
++		x_lsb = *temp++;
++		x_msb = *temp++;
++		frame->display_primaries[i].x =  (x_msb << 8) | x_lsb;
++		y_lsb = *temp++;
++		y_msb = *temp++;
++		frame->display_primaries[i].y = (y_msb << 8) | y_lsb;
++	}
++
++	frame->white_point.x = (ptr[15] << 8) | ptr[14];
++	frame->white_point.y = (ptr[17] << 8) | ptr[16];
++
++	frame->max_display_mastering_luminance = (ptr[19] << 8) | ptr[18];
++	frame->min_display_mastering_luminance = (ptr[21] << 8) | ptr[20];
++	frame->max_cll = (ptr[23] << 8) | ptr[22];
++	frame->max_fall = (ptr[25] << 8) | ptr[24];
++
++	return 0;
++}
++
+ /**
+  * hdmi_infoframe_unpack() - unpack binary buffer to a HDMI infoframe
+  * @frame: HDMI infoframe
+@@ -1830,6 +1894,9 @@ int hdmi_infoframe_unpack(union hdmi_infoframe *frame,
+ 	case HDMI_INFOFRAME_TYPE_AVI:
+ 		ret = hdmi_avi_infoframe_unpack(&frame->avi, buffer, size);
+ 		break;
++	case HDMI_INFOFRAME_TYPE_DRM:
++		ret = hdmi_drm_infoframe_unpack(&frame->drm, buffer, size);
++		break;
+ 	case HDMI_INFOFRAME_TYPE_SPD:
+ 		ret = hdmi_spd_infoframe_unpack(&frame->spd, buffer, size);
+ 		break;
+
+From 05322634fb22dbc9243355f0ca39bf8b98be737b Mon Sep 17 00:00:00 2001
+From: Sean Paul <seanpaul@chromium.org>
+Date: Thu, 23 May 2019 09:54:58 -0400
+Subject: [PATCH] drm/edid: Fix docbook in
+ drm_hdmi_infoframe_set_hdr_metadata()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fixes the following warnings:
+../drivers/gpu/drm/drm_edid.c:4925: warning: Function parameter or member 'conn_state' not described in 'drm_hdmi_infoframe_set_hdr_metadata'
+../drivers/gpu/drm/drm_edid.c:4925: warning: Excess function parameter 'hdr_metadata' description in 'drm_hdmi_infoframe_set_hdr_metadata'
+
+Fixes: 2cdbfd66a829 ("drm: Enable HDR infoframe support")
+Cc: Uma Shankar <uma.shankar@intel.com>
+Cc: Shashank Sharma <shashank.sharma@intel.com>
+Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>
+Cc: Sean Paul <sean@poorly.run>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: "Ville Syrjälä" <ville.syrjala@linux.intel.com>
+Cc: Hans Verkuil <hansverk@cisco.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-fbdev@vger.kernel.org
+Reviewed-by: Uma Shankar <uma.shankar@intel.com>
+Signed-off-by: Sean Paul <seanpaul@chromium.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190523135504.184354-1-sean@poorly.run
+(cherry picked from commit 6ac98829a4144a2cc78e97b84ee752ce6689e87f)
+---
+ drivers/gpu/drm/drm_edid.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+index a6ed6cc2ab50..c21b7c5ba880 100644
+--- a/drivers/gpu/drm/drm_edid.c
++++ b/drivers/gpu/drm/drm_edid.c
+@@ -4921,7 +4921,7 @@ static inline bool is_eotf_supported(u8 output_eotf, u8 sink_eotf)
+  * drm_hdmi_infoframe_set_hdr_metadata() - fill an HDMI DRM infoframe with
+  *                                         HDR metadata from userspace
+  * @frame: HDMI DRM infoframe
+- * @hdr_metadata: hdr_source_metadata info from userspace
++ * @conn_state: Connector state containing HDR metadata
+  *
+  * Return: 0 on success or a negative error code on failure.
+  */
+
+From 79f2f889670a8a718d1d8593ebb9f7137206f2d2 Mon Sep 17 00:00:00 2001
+From: Uma Shankar <uma.shankar@intel.com>
+Date: Thu, 30 May 2019 01:29:01 +0530
+Subject: [PATCH] drm: Drop a redundant unused variable
+
+Drop a redundant and unused variable "hdr_output_metadata" from
+drm_connector.
+
+Suggested-by: Daniel Vetter <daniel@ffwll.ch>
+Signed-off-by: Uma Shankar <uma.shankar@intel.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/1559159944-21103-2-git-send-email-uma.shankar@intel.com
+(cherry picked from commit 848d56dddad8a3a052a983d2f47b739d0492b8b1)
+---
+ include/drm/drm_connector.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+index eda59a6a858b..1896abe854f8 100644
+--- a/include/drm/drm_connector.h
++++ b/include/drm/drm_connector.h
+@@ -1208,8 +1208,6 @@ struct drm_connector {
+ 	 */
+ 	struct llist_node free_node;
+ 
+-	/* HDR metdata */
+-	struct hdr_output_metadata hdr_output_metadata;
+ 	struct hdr_sink_metadata hdr_sink_metadata;
+ };
+ 
+
+From 4073a9a1292dba468288143ae9a30862e8fb8702 Mon Sep 17 00:00:00 2001
+From: Uma Shankar <uma.shankar@intel.com>
+Date: Thu, 30 May 2019 01:29:03 +0530
+Subject: [PATCH] drm: Fixed doc warnings in drm uapi header
+
+Fixed doc warnings in drm uapi header. All the UAPI
+structures are now documented in kernel doc.
+
+Signed-off-by: Uma Shankar <uma.shankar@intel.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/1559159944-21103-4-git-send-email-uma.shankar@intel.com
+(cherry picked from commit cfc1ce7e5212b19423d38ed2035318a35f983309)
+---
+ include/uapi/drm/drm_mode.h | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
+index 9927efca12cf..b86d17028e6c 100644
+--- a/include/uapi/drm/drm_mode.h
++++ b/include/uapi/drm/drm_mode.h
+@@ -825,6 +825,10 @@ struct drm_format_modifier {
+ };
+ 
+ /**
++ * struct drm_mode_create_blob - Create New block property
++ * @data: Pointer to data to copy.
++ * @length: Length of data to copy.
++ * @blob_id: new property ID.
+  * Create a new 'blob' data property, copying length bytes from data pointer,
+  * and returning new blob ID.
+  */
+@@ -838,6 +842,8 @@ struct drm_mode_create_blob {
+ };
+ 
+ /**
++ * struct drm_mode_destroy_blob - Destroy user blob
++ * @blob_id: blob_id to destroy
+  * Destroy a user-created blob property.
+  */
+ struct drm_mode_destroy_blob {
+@@ -845,6 +851,12 @@ struct drm_mode_destroy_blob {
+ };
+ 
+ /**
++ * struct drm_mode_create_lease - Create lease
++ * @object_ids: Pointer to array of object ids.
++ * @object_count: Number of object ids.
++ * @flags: flags for new FD.
++ * @lessee_id: unique identifier for lessee.
++ * @fd: file descriptor to new drm_master file.
+  * Lease mode resources, creating another drm_master.
+  */
+ struct drm_mode_create_lease {
+@@ -862,6 +874,10 @@ struct drm_mode_create_lease {
+ };
+ 
+ /**
++ * struct drm_mode_list_lessees - List lessees
++ * @count_lessees: Number of lessees.
++ * @pad: pad.
++ * @lessees_ptr: Pointer to lessess.
+  * List lesses from a drm_master
+  */
+ struct drm_mode_list_lessees {
+@@ -882,6 +898,10 @@ struct drm_mode_list_lessees {
+ };
+ 
+ /**
++ * struct drm_mode_get_lease - Get Lease
++ * @count_objects: Number of leased objects.
++ * @pad: pad.
++ * @objects_ptr: Pointer to objects.
+  * Get leased objects
+  */
+ struct drm_mode_get_lease {
+@@ -902,6 +922,8 @@ struct drm_mode_get_lease {
+ };
+ 
+ /**
++ * struct drm_mode_revoke_lease - Revoke lease
++ * @lessee_id: Unique ID of lessee.
+  * Revoke lease
+  */
+ struct drm_mode_revoke_lease {
+
+From 967a29578981fefe18333596927c762b893db859 Mon Sep 17 00:00:00 2001
+From: Uma Shankar <uma.shankar@intel.com>
+Date: Tue, 4 Jun 2019 16:47:02 +0530
+Subject: [PATCH] drm: Fix docbook warnings in hdr metadata helper structures
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fixes the following warnings:
+./include/drm/drm_mode_config.h:841: warning: Incorrect use of
+kernel-doc format:          * hdr_output_metadata_property: Connector
+property containing hdr
+./include/drm/drm_mode_config.h:918: warning: Function parameter or member 'hdr_output_metadata_property' not described in 'drm_mode_config'
+./include/drm/drm_connector.h:1251: warning: Function parameter or member 'hdr_output_metadata' not described in 'drm_connector'
+./include/drm/drm_connector.h:1251: warning: Function parameter or member 'hdr_sink_metadata' not described in 'drm_connector'
+
+Also adds some property documentation for HDR Metadata Connector
+Property in connector property create function.
+
+v2: Fixed Sean Paul's review comments.
+
+v3: Fixed Daniel Vetter's review comments, added the UAPI structure
+definition section in kernel docs.
+
+v4: Fixed Daniel Vetter's review comments.
+
+v5: Added structure member references as per Daniel's suggestion.
+
+Cc: Shashank Sharma <shashank.sharma@intel.com>
+Cc: Ville Syrjä <ville.syrjala@linux.intel.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>
+Cc: Sean Paul <sean@poorly.run>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: "Ville Syrjä" <ville.syrjala@linux.intel.com>
+Cc: Hans Verkuil <hansverk@cisco.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-fbdev@vger.kernel.org
+Reviewed-by: Sean Paul <sean@poorly.run> (v1)
+Signed-off-by: Uma Shankar <uma.shankar@intel.com>
+[danvet: Fix up markup: () for functions, & for structs. Style guide
+also recommends to prepend struct for structures.]
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/1559647022-7336-1-git-send-email-uma.shankar@intel.com
+(cherry picked from commit a09db883e5d938b525a86a4630fc04f98ff1063d)
+---
+ drivers/gpu/drm/drm_connector.c | 40 ++++++++++++++++++++++
+ include/drm/drm_connector.h     |  1 +
+ include/drm/drm_mode_config.h   |  4 +--
+ include/linux/hdmi.h            | 12 +++++++
+ include/uapi/drm/drm_mode.h     | 74 ++++++++++++++++++++++++++++++++++++++++-
+ 5 files changed, 128 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+index e053ae284504..faa1daa702f1 100644
+--- a/drivers/gpu/drm/drm_connector.c
++++ b/drivers/gpu/drm/drm_connector.c
+@@ -959,6 +959,46 @@ static const struct drm_prop_enum_list hdmi_colorspaces[] = {
+  *	  is no longer protected and userspace should take appropriate action
+  *	  (whatever that might be).
+  *
++ * HDR_OUTPUT_METADATA:
++ *	Connector property to enable userspace to send HDR Metadata to
++ *	driver. This metadata is based on the composition and blending
++ *	policies decided by user, taking into account the hardware and
++ *	sink capabilities. The driver gets this metadata and creates a
++ *	Dynamic Range and Mastering Infoframe (DRM) in case of HDMI,
++ *	SDP packet (Non-audio INFOFRAME SDP v1.3) for DP. This is then
++ *	sent to sink. This notifies the sink of the upcoming frame's Color
++ *	Encoding and Luminance parameters.
++ *
++ *	Userspace first need to detect the HDR capabilities of sink by
++ *	reading and parsing the EDID. Details of HDR metadata for HDMI
++ *	are added in CTA 861.G spec. For DP , its defined in VESA DP
++ *	Standard v1.4. It needs to then get the metadata information
++ *	of the video/game/app content which are encoded in HDR (basically
++ *	using HDR transfer functions). With this information it needs to
++ *	decide on a blending policy and compose the relevant
++ *	layers/overlays into a common format. Once this blending is done,
++ *	userspace will be aware of the metadata of the composed frame to
++ *	be send to sink. It then uses this property to communicate this
++ *	metadata to driver which then make a Infoframe packet and sends
++ *	to sink based on the type of encoder connected.
++ *
++ *	Userspace will be responsible to do Tone mapping operation in case:
++ *		- Some layers are HDR and others are SDR
++ *		- HDR layers luminance is not same as sink
++ *	It will even need to do colorspace conversion and get all layers
++ *	to one common colorspace for blending. It can use either GL, Media
++ *	or display engine to get this done based on the capabilties of the
++ *	associated hardware.
++ *
++ *	Driver expects metadata to be put in &struct hdr_output_metadata
++ *	structure from userspace. This is received as blob and stored in
++ *	&drm_connector_state.hdr_output_metadata. It parses EDID and saves the
++ *	sink metadata in &struct hdr_sink_metadata, as
++ *	&drm_connector.hdr_sink_metadata.  Driver uses
++ *	drm_hdmi_infoframe_set_hdr_metadata() helper to set the HDR metadata,
++ *	hdmi_drm_infoframe_pack() to pack the infoframe as per spec, in case of
++ *	HDMI encoder.
++ *
+  * max bpc:
+  *	This range property is used by userspace to limit the bit depth. When
+  *	used the driver would limit the bpc in accordance with the valid range
+diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+index 1896abe854f8..770c53358101 100644
+--- a/include/drm/drm_connector.h
++++ b/include/drm/drm_connector.h
+@@ -1208,6 +1208,7 @@ struct drm_connector {
+ 	 */
+ 	struct llist_node free_node;
+ 
++	/** @hdr_sink_metadata: HDR Metadata Information read from sink */
+ 	struct hdr_sink_metadata hdr_sink_metadata;
+ };
+ 
+diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
+index c031b5a9d8d1..a0dfa89c7c91 100644
+--- a/include/drm/drm_mode_config.h
++++ b/include/drm/drm_mode_config.h
+@@ -837,8 +837,8 @@ struct drm_mode_config {
+ 	struct drm_property *writeback_out_fence_ptr_property;
+ 
+ 	/**
+-	 * hdr_output_metadata_property: Connector property containing hdr
+-	 * metatda. This will be provided by userspace compositors based
++	 * @hdr_output_metadata_property: Connector property containing hdr
++	 * metatada. This will be provided by userspace compositors based
+ 	 * on HDR content
+ 	 */
+ 	struct drm_property *hdr_output_metadata_property;
+diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
+index ee55ba589cdc..9918a6c910c5 100644
+--- a/include/linux/hdmi.h
++++ b/include/linux/hdmi.h
+@@ -367,8 +367,19 @@ struct hdr_static_metadata {
+ 	__u16 min_cll;
+ };
+ 
++/**
++ * struct hdr_sink_metadata - HDR sink metadata
++ *
++ * Metadata Information read from Sink's EDID
++ */
+ struct hdr_sink_metadata {
++	/**
++	 * @metadata_type: Static_Metadata_Descriptor_ID.
++	 */
+ 	__u32 metadata_type;
++	/**
++	 * @hdmi_type1: HDR Metadata Infoframe.
++	 */
+ 	union {
+ 		struct hdr_static_metadata hdmi_type1;
+ 	};
+@@ -398,6 +409,7 @@ union hdmi_vendor_any_infoframe {
+  * @spd: spd infoframe
+  * @vendor: union of all vendor infoframes
+  * @audio: audio infoframe
++ * @drm: Dynamic Range and Mastering infoframe
+  *
+  * This is used by the generic pack function. This works since all infoframes
+  * have the same header which also indicates which type of infoframe should be
+diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
+index b86d17028e6c..806b4582b6df 100644
+--- a/include/uapi/drm/drm_mode.h
++++ b/include/uapi/drm/drm_mode.h
+@@ -33,6 +33,15 @@
+ extern "C" {
+ #endif
+ 
++/**
++ * DOC: overview
++ *
++ * DRM exposes many UAPI and structure definition to have a consistent
++ * and standardized interface with user.
++ * Userspace can refer to these structure definitions and UAPI formats
++ * to communicate to driver
++ */
++
+ #define DRM_CONNECTOR_NAME_LEN	32
+ #define DRM_DISPLAY_MODE_LEN	32
+ #define DRM_PROP_NAME_LEN	32
+@@ -629,24 +638,87 @@ struct drm_color_lut {
+ 	__u16 reserved;
+ };
+ 
+-/* HDR Metadata Infoframe as per 861.G spec */
++/**
++ * struct hdr_metadata_infoframe - HDR Metadata Infoframe Data.
++ *
++ * HDR Metadata Infoframe as per CTA 861.G spec. This is expected
++ * to match exactly with the spec.
++ *
++ * Userspace is expected to pass the metadata information as per
++ * the format described in this structure.
++ */
+ struct hdr_metadata_infoframe {
++	/**
++	 * @eotf: Electro-Optical Transfer Function (EOTF)
++	 * used in the stream.
++	 */
+ 	__u8 eotf;
++	/**
++	 * @metadata_type: Static_Metadata_Descriptor_ID.
++	 */
+ 	__u8 metadata_type;
++	/**
++	 * @display_primaries: Color Primaries of the Data.
++	 * These are coded as unsigned 16-bit values in units of
++	 * 0.00002, where 0x0000 represents zero and 0xC350
++	 * represents 1.0000.
++	 * @display_primaries.x: X cordinate of color primary.
++	 * @display_primaries.y: Y cordinate of color primary.
++	 */
+ 	struct {
+ 		__u16 x, y;
+ 		} display_primaries[3];
++	/**
++	 * @white_point: White Point of Colorspace Data.
++	 * These are coded as unsigned 16-bit values in units of
++	 * 0.00002, where 0x0000 represents zero and 0xC350
++	 * represents 1.0000.
++	 * @white_point.x: X cordinate of whitepoint of color primary.
++	 * @white_point.y: Y cordinate of whitepoint of color primary.
++	 */
+ 	struct {
+ 		__u16 x, y;
+ 		} white_point;
++	/**
++	 * @max_display_mastering_luminance: Max Mastering Display Luminance.
++	 * This value is coded as an unsigned 16-bit value in units of 1 cd/m2,
++	 * where 0x0001 represents 1 cd/m2 and 0xFFFF represents 65535 cd/m2.
++	 */
+ 	__u16 max_display_mastering_luminance;
++	/**
++	 * @min_display_mastering_luminance: Min Mastering Display Luminance.
++	 * This value is coded as an unsigned 16-bit value in units of
++	 * 0.0001 cd/m2, where 0x0001 represents 0.0001 cd/m2 and 0xFFFF
++	 * represents 6.5535 cd/m2.
++	 */
+ 	__u16 min_display_mastering_luminance;
++	/**
++	 * @max_cll: Max Content Light Level.
++	 * This value is coded as an unsigned 16-bit value in units of 1 cd/m2,
++	 * where 0x0001 represents 1 cd/m2 and 0xFFFF represents 65535 cd/m2.
++	 */
+ 	__u16 max_cll;
++	/**
++	 * @max_fall: Max Frame Average Light Level.
++	 * This value is coded as an unsigned 16-bit value in units of 1 cd/m2,
++	 * where 0x0001 represents 1 cd/m2 and 0xFFFF represents 65535 cd/m2.
++	 */
+ 	__u16 max_fall;
+ };
+ 
++/**
++ * struct hdr_output_metadata - HDR output metadata
++ *
++ * Metadata Information to be passed from userspace
++ */
+ struct hdr_output_metadata {
++	/**
++	 * @metadata_type: Static_Metadata_Descriptor_ID.
++	 */
+ 	__u32 metadata_type;
++	/**
++	 * @hdmi_metadata_type1: HDR Metadata Infoframe.
++	 */
+ 	union {
+ 		struct hdr_metadata_infoframe hdmi_metadata_type1;
+ 	};
+
+From 034bd6f8fa173cd0ad0cabbb6adb9fbc87fac671 Mon Sep 17 00:00:00 2001
+From: Uma Shankar <uma.shankar@intel.com>
+Date: Mon, 3 Jun 2019 18:38:50 +0530
+Subject: [PATCH] video/hdmi: Dropped static functions from kernel doc
+
+Dropped static functions from kernel documentation.
+
+v2: Dropped the comments altogether for static functions,
+as the definitions seems self explanatory.
+
+Suggested-by: Daniel Vetter <daniel@ffwll.ch>
+Signed-off-by: Uma Shankar <uma.shankar@intel.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/1559567330-25182-4-git-send-email-uma.shankar@intel.com
+(cherry picked from commit 67ceef2a1dd0f2bfdd8501fd8e85ec307c2e7f7b)
+---
+ drivers/video/hdmi.c | 30 ------------------------------
+ 1 file changed, 30 deletions(-)
+
+diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
+index b99ba01dfed5..b939bc28d886 100644
+--- a/drivers/video/hdmi.c
++++ b/drivers/video/hdmi.c
+@@ -1191,12 +1191,6 @@ hdmi_content_type_get_name(enum hdmi_content_type content_type)
+ 	return "Invalid";
+ }
+ 
+-/**
+- * hdmi_avi_infoframe_log() - log info of HDMI AVI infoframe
+- * @level: logging level
+- * @dev: device
+- * @frame: HDMI AVI infoframe
+- */
+ static void hdmi_avi_infoframe_log(const char *level,
+ 				   struct device *dev,
+ 				   const struct hdmi_avi_infoframe *frame)
+@@ -1268,12 +1262,6 @@ static const char *hdmi_spd_sdi_get_name(enum hdmi_spd_sdi sdi)
+ 	return "Reserved";
+ }
+ 
+-/**
+- * hdmi_spd_infoframe_log() - log info of HDMI SPD infoframe
+- * @level: logging level
+- * @dev: device
+- * @frame: HDMI SPD infoframe
+- */
+ static void hdmi_spd_infoframe_log(const char *level,
+ 				   struct device *dev,
+ 				   const struct hdmi_spd_infoframe *frame)
+@@ -1404,12 +1392,6 @@ hdmi_audio_coding_type_ext_get_name(enum hdmi_audio_coding_type_ext ctx)
+ 	return "Reserved";
+ }
+ 
+-/**
+- * hdmi_audio_infoframe_log() - log info of HDMI AUDIO infoframe
+- * @level: logging level
+- * @dev: device
+- * @frame: HDMI AUDIO infoframe
+- */
+ static void hdmi_audio_infoframe_log(const char *level,
+ 				     struct device *dev,
+ 				     const struct hdmi_audio_infoframe *frame)
+@@ -1437,12 +1419,6 @@ static void hdmi_audio_infoframe_log(const char *level,
+ 			frame->downmix_inhibit ? "Yes" : "No");
+ }
+ 
+-/**
+- * hdmi_drm_infoframe_log() - log info of HDMI DRM infoframe
+- * @level: logging level
+- * @dev: device
+- * @frame: HDMI DRM infoframe
+- */
+ static void hdmi_drm_infoframe_log(const char *level,
+ 				   struct device *dev,
+ 				   const struct hdmi_drm_infoframe *frame)
+@@ -1500,12 +1476,6 @@ hdmi_3d_structure_get_name(enum hdmi_3d_structure s3d_struct)
+ 	return "Reserved";
+ }
+ 
+-/**
+- * hdmi_vendor_infoframe_log() - log info of HDMI VENDOR infoframe
+- * @level: logging level
+- * @dev: device
+- * @frame: HDMI VENDOR infoframe
+- */
+ static void
+ hdmi_vendor_any_infoframe_log(const char *level,
+ 			      struct device *dev,
+
+From 4851b6f78ea694cc463ea40b460944bcb7387d1b Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Thu, 2 May 2019 15:53:34 -0700
+Subject: [PATCH] ARM: dts: rockchip: Switch to builtin HDMI DDC bus on
+ rk3288-veyron
+
+Downstream Chrome OS kernels use the builtin DDC bus from dw_hdmi on
+veyron.  This is the only way to get them to negotiate HDCP.
+
+Although HDCP isn't currently all supported upstream, it still seems
+like it makes sense to use dw_hdmi's builtin I2C.  Maybe eventually we
+can get HDCP negotiation working.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Sean Paul <sean@poorly.run>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit bf09924f21767e6bb7cb3aae48c48c2c2ab8261a)
+---
+ arch/arm/boot/dts/rk3288-veyron.dtsi | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
+index 90c8312d01ff..99e2771d4d31 100644
+--- a/arch/arm/boot/dts/rk3288-veyron.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
+@@ -175,7 +175,8 @@
+ };
+ 
+ &hdmi {
+-	ddc-i2c-bus = <&i2c5>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&hdmi_ddc>;
+ 	status = "okay";
+ };
+ 
+@@ -346,14 +347,6 @@
+ 	i2c-scl-rising-time-ns = <300>;		/* 225ns measured */
+ };
+ 
+-&i2c5 {
+-	status = "okay";
+-
+-	clock-frequency = <100000>;
+-	i2c-scl-falling-time-ns = <300>;
+-	i2c-scl-rising-time-ns = <1000>;
+-};
+-
+ &io_domains {
+ 	status = "okay";
+ 
+
+From 47d43b2853fdd4bd598bc7e9166d45bc40075588 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Thu, 2 May 2019 15:53:35 -0700
+Subject: [PATCH] ARM: dts: rockchip: Add unwedge pinctrl entries for dw_hdmi
+ on rk3288
+
+This adds the "unwedge" pinctrl entries introduced by a recent dw_hdmi
+change that can unwedge the dw_hdmi i2c bus in some cases.  It's
+expected that any boards using this would add:
+
+  pinctrl-names = "default", "unwedge";
+  pinctrl-0 = <&hdmi_ddc>;
+  pinctrl-1 = <&hdmi_ddc_unwedge>;
+
+Note that this isn't added by default because some boards may choose
+to mux i2c5 for their DDC bus (if that is more tested for them).
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Sean Paul <sean@poorly.run>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit c077d9d717dc481a6a95f9ef2562ef6bda74fbdf)
+---
+ arch/arm/boot/dts/rk3288.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 766d1cf51a5b..cc893e154fe5 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -1547,6 +1547,15 @@
+ 				rockchip,pins = <7 RK_PC3 2 &pcfg_pull_none>,
+ 						<7 RK_PC4 2 &pcfg_pull_none>;
+ 			};
++
++			hdmi_ddc_unwedge: hdmi-ddc-unwedge {
++				rockchip,pins = <7 RK_PC3 RK_FUNC_GPIO &pcfg_output_low>,
++						<7 RK_PC4 2 &pcfg_pull_none>;
++			};
++		};
++
++		pcfg_output_low: pcfg-output-low {
++			output-low;
+ 		};
+ 
+ 		pcfg_pull_up: pcfg-pull-up {
+
+From f254ea18ce919359e5d65f2327ab42111493e49f Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Thu, 2 May 2019 15:53:36 -0700
+Subject: [PATCH] ARM: dts: rockchip: Add HDMI i2c unwedging for rk3288-veyron
+
+Veyron uses the builtin i2c controller that's part of dw-hdmi.  Hook
+up the unwedging feature.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Sean Paul <sean@poorly.run>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit cd6386087d826b9421ed97b778676f4177ffdfbd)
+---
+ arch/arm/boot/dts/rk3288-veyron.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
+index 99e2771d4d31..c574844a6bb2 100644
+--- a/arch/arm/boot/dts/rk3288-veyron.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
+@@ -175,8 +175,9 @@
+ };
+ 
+ &hdmi {
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "unwedge";
+ 	pinctrl-0 = <&hdmi_ddc>;
++	pinctrl-1 = <&hdmi_ddc_unwedge>;
+ 	status = "okay";
+ };
+ 
+
+From 2911c4561b72d382b69eea8c08d72b78f51946fe Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Wed, 5 Jun 2019 13:43:19 -0700
+Subject: [PATCH] ARM: dts: rockchip: Split GPIO keys for veyron into multiple
+ devices
+
+With a single device DT overrides can become messy, especially when
+keys are added or removed. Multiple devices also allow to
+enable/disable wakeup per key/group.
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+[used actual switch+event constants in new lid-switch entry]
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit b8925b7c2f867df6ce3e20deb4b3e2b9b32b20ff)
+---
+ arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi | 27 ++++++++++--------
+ arch/arm/boot/dts/rk3288-veyron-minnie.dts      | 38 +++++++++++++------------
+ arch/arm/boot/dts/rk3288-veyron-pinky.dts       |  2 +-
+ arch/arm/boot/dts/rk3288-veyron.dtsi            |  4 +--
+ 4 files changed, 38 insertions(+), 33 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+index fbef34578100..5727017f34b2 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+@@ -70,6 +70,21 @@
+ 		pinctrl-0 = <&ac_present_ap>;
+ 	};
+ 
++	lid_switch: lid-switch {
++		compatible = "gpio-keys";
++		pinctrl-names = "default";
++		pinctrl-0 = <&ap_lid_int_l>;
++
++		lid {
++			label = "Lid";
++			gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_LOW>;
++			wakeup-source;
++			linux,code = <SW_LID>;
++			linux,input-type = <EV_SW>;
++			debounce-interval = <1>;
++		};
++	};
++
+ 	panel: panel {
+ 		compatible ="innolux,n116bge", "simple-panel";
+ 		status = "okay";
+@@ -149,18 +164,6 @@
+ 	status = "okay";
+ };
+ 
+-&gpio_keys {
+-	pinctrl-0 = <&pwr_key_l &ap_lid_int_l>;
+-	lid {
+-		label = "Lid";
+-		gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_LOW>;
+-		wakeup-source;
+-		linux,code = <0>; /* SW_LID */
+-		linux,input-type = <5>; /* EV_SW */
+-		debounce-interval = <1>;
+-	};
+-};
+-
+ &pwm0 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/rk3288-veyron-minnie.dts b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+index a65099b4aef1..b2cc70a08554 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-minnie.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+@@ -48,6 +48,26 @@
+ 		regulator-boot-on;
+ 		vin-supply = <&vcc18_wl>;
+ 	};
++
++	volume_buttons: volume-buttons {
++		compatible = "gpio-keys";
++		pinctrl-names = "default";
++		pinctrl-0 = <&volum_down_l &volum_up_l>;
++
++		volum_down {
++			label = "Volum_down";
++			gpios = <&gpio5 RK_PB3 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_VOLUMEDOWN>;
++			debounce-interval = <100>;
++		};
++
++		volum_up {
++			label = "Volum_up";
++			gpios = <&gpio5 RK_PB2 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_VOLUMEUP>;
++			debounce-interval = <100>;
++		};
++	};
+ };
+ 
+ &backlight {
+@@ -90,24 +110,6 @@
+ 	pwm-off-delay-ms = <200>;
+ };
+ 
+-&gpio_keys {
+-	pinctrl-0 = <&pwr_key_l &ap_lid_int_l &volum_down_l &volum_up_l>;
+-
+-	volum_down {
+-		label = "Volum_down";
+-		gpios = <&gpio5 RK_PB3 GPIO_ACTIVE_LOW>;
+-		linux,code = <KEY_VOLUMEDOWN>;
+-		debounce-interval = <100>;
+-	};
+-
+-	volum_up {
+-		label = "Volum_up";
+-		gpios = <&gpio5 RK_PB2 GPIO_ACTIVE_LOW>;
+-		linux,code = <KEY_VOLUMEUP>;
+-		debounce-interval = <100>;
+-	};
+-};
+-
+ &i2c_tunnel {
+ 	battery: bq27500@55 {
+ 		compatible = "ti,bq27500";
+diff --git a/arch/arm/boot/dts/rk3288-veyron-pinky.dts b/arch/arm/boot/dts/rk3288-veyron-pinky.dts
+index 9645be7b3d8c..9b6f4d9b03b6 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-pinky.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-pinky.dts
+@@ -35,7 +35,7 @@
+ 	force-hpd;
+ };
+ 
+-&gpio_keys {
++&lid_switch {
+ 	pinctrl-0 = <&pwr_key_h &ap_lid_int_l>;
+ 
+ 	power {
+diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
+index c574844a6bb2..3257ca90f0e8 100644
+--- a/arch/arm/boot/dts/rk3288-veyron.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
+@@ -23,11 +23,11 @@
+ 		reg = <0x0 0x0 0x0 0x80000000>;
+ 	};
+ 
+-	gpio_keys: gpio-keys {
++	power_button: power-button {
+ 		compatible = "gpio-keys";
+-
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pwr_key_l>;
++
+ 		power {
+ 			label = "Power";
+ 			gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_LOW>;
+
+From 3fa0dd5725b06e08b495e279545947ca7a7d9453 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Tue, 4 Jun 2019 15:31:59 -0700
+Subject: [PATCH] clk: rockchip: Remove 48 MHz PLL rate from rk3288
+
+The 48 MHz PLL rate is not present in the downstream chromeos-3.14
+tree.  Looking at history, it was originally removed in
+<https://crrev.com/c/265810> ("CHROMIUM: clk: rockchip: expand more
+clocks support") with no explanation.  Much of that patch was later
+reverted in <https://crrev.com/c/284595> ("CHROMIUM: clk: rockchip:
+Revert more questionable PLL rates"), but that patch left in the
+removal of 48 MHz.  What I wrote in that patch:
+
+> Note that the original change also removed the rate (48000000, 1,
+> 64, 32) from the table.  I have no idea why that was squashed in
+> there, but that rate was invalid anyway (it appears to have an out
+> of bounds NO).  I'm not putting that rate in.
+
+Reading the TRM I see that NO is defined as
+- NO: 1, 2-16 (even only)
+...and furthermore only 4 bits are assigned for NO-1, which means that
+the highest NO we could even represent is 16.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 7d2129310b8c1f22850d56b1725447aef88d8b1f)
+---
+ drivers/clk/rockchip/clk-rk3288.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/clk/rockchip/clk-rk3288.c b/drivers/clk/rockchip/clk-rk3288.c
+index 24baeb56a1b3..72a0605a435b 100644
+--- a/drivers/clk/rockchip/clk-rk3288.c
++++ b/drivers/clk/rockchip/clk-rk3288.c
+@@ -121,7 +121,6 @@ static struct rockchip_pll_rate_table rk3288_pll_rates[] = {
+ 	RK3066_PLL_RATE( 160000000, 1, 80, 12),
+ 	RK3066_PLL_RATE( 157500000, 1, 105, 16),
+ 	RK3066_PLL_RATE( 126000000, 1, 84, 16),
+-	RK3066_PLL_RATE(  48000000, 1, 64, 32),
+ 	{ /* sentinel */ },
+ };
+ 
+
+From 079b043886d70dc2a711332372a4683bff23a80a Mon Sep 17 00:00:00 2001
+From: Jonas Karlman <jonas@kwiboo.se>
+Date: Sun, 9 Jun 2019 21:04:57 +0000
+Subject: [PATCH] Revert "drm/uapi: Remove unused DRM_DISPLAY_INFO_LEN"
+
+This reverts commit 506bf5cf041f30b20e2cb51cc76a883328ae9bec.
+---
+ include/uapi/drm/drm_mode.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
+index 806b4582b6df..a03b258d43db 100644
+--- a/include/uapi/drm/drm_mode.h
++++ b/include/uapi/drm/drm_mode.h
+@@ -42,6 +42,7 @@ extern "C" {
+  * to communicate to driver
+  */
+ 
++#define DRM_DISPLAY_INFO_LEN	32
+ #define DRM_CONNECTOR_NAME_LEN	32
+ #define DRM_DISPLAY_MODE_LEN	32
+ #define DRM_PROP_NAME_LEN	32

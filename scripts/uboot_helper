@@ -162,6 +162,16 @@ devices = \
         'config': 'miqi-rk3288_config'
       },
     },
+    'RK3288': {
+      'miqi': {
+        'dtb': 'rk3288-miqi.dtb',
+        'config': 'miqi-rk3288_config'
+      },
+      'tinkerboard': {
+        'dtb': 'rk3288-tinker-s.dtb',
+        'config': 'tinker-rk3288_config'
+      },
+    },
     'RK3328': {
       'box': {
         'dtb': 'rk3328-box.dtb',

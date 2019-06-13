@@ -8,9 +8,12 @@
   # U-Boot firmware package(s) to use
     UBOOT_FIRMWARE="rkbin"
 
+  # Additional kernel dependencies
+    KERNEL_EXTRA_DEPENDS_TARGET="lz4:host"
+
   # Kernel to use. values can be:
   # default:  default mainline kernel
-    LINUX="${LINUX:-rockchip-4.4}"
+    LINUX="${LINUX:-default}"
 
 ################################################################################
 # setup build defaults
@@ -47,7 +50,9 @@
     GRAPHIC_DRIVERS=""
 
   # Use a vendor specific KODI repo
-    KODI_VENDOR="rockchip"
+    if [ "$LINUX" = "rockchip-4.4" ]; then
+      KODI_VENDOR="rockchip"
+    fi
 
   # KODI Player implementation to use (default / bcm2835-driver / libfslvpuwrap)
     KODIPLAYER_DRIVER="$OPENGLES"
