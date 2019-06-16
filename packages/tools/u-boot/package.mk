@@ -18,6 +18,12 @@ PKG_NEED_UNPACK="$PROJECT_DIR/$PROJECT/bootloader"
 [ -n "$DEVICE" ] && PKG_NEED_UNPACK+=" $PROJECT_DIR/$PROJECT/devices/$DEVICE/bootloader"
 
 case "$PROJECT" in
+  Amlogic)
+    PKG_DEPENDS_TARGET+=" amlogic-boot-fip"
+    ;;
+esac
+
+case "$PROJECT" in
   Rockchip)
     PKG_VERSION="8659d08d2b589693d121c1298484e861b7dafc4f"
     PKG_SHA256="3f9f2bbd0c28be6d7d6eb909823fee5728da023aca0ce37aef3c8f67d1179ec1"
@@ -27,16 +33,18 @@ case "$PROJECT" in
     PKG_NEED_UNPACK+=" $(get_pkg_directory rkbin)"
     ;;
   *)
-    PKG_VERSION="2019.01"
-    PKG_SHA256="50bd7e5a466ab828914d080d5f6a432345b500e8fba1ad3b7b61e95e60d51c22"
+    PKG_VERSION="2019.04"
+    PKG_SHA256="76b7772d156b3ddd7644c8a1736081e55b78828537ff714065d21dbade229bef"
     PKG_URL="http://ftp.denx.de/pub/u-boot/u-boot-$PKG_VERSION.tar.bz2"
     ;;
 esac
 
 post_patch() {
-  if [ -n "$UBOOT_SYSTEM" ]; then
-    # Enable LZ4, LZO and LZMA decompression support
-    echo -e "CONFIG_LZ4=y\nCONFIG_LZO=y\nCONFIG_LZMA=y" >> "$PKG_BUILD/configs/$($ROOT/$SCRIPTS/uboot_helper $PROJECT $DEVICE $UBOOT_SYSTEM config)"
+  if [ -n "$UBOOT_SYSTEM" ] && find_file_path bootloader/config; then
+    PKG_CONFIG_FILE="$PKG_BUILD/configs/$($ROOT/$SCRIPTS/uboot_helper $PROJECT $DEVICE $UBOOT_SYSTEM config)"
+    if [ -f "$PKG_CONFIG_FILE" ]; then
+      cat $FOUND_PATH >> "$PKG_CONFIG_FILE"
+    fi
   fi
 }
 

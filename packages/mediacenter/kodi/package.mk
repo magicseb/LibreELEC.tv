@@ -7,6 +7,7 @@ PKG_LICENSE="GPL"
 PKG_SITE="http://www.kodi.tv"
 PKG_DEPENDS_TARGET="toolchain JsonSchemaBuilder:host TexturePacker:host Python2 zlib systemd lzo pcre swig:host libass curl fontconfig fribidi tinyxml libjpeg-turbo freetype libcdio taglib libxml2 libxslt rapidjson sqlite ffmpeg crossguid giflib libdvdnav libhdhomerun libfmt lirc libfstrcmp flatbuffers:host flatbuffers"
 PKG_LONGDESC="A free and open source cross-platform media player."
+PKG_BUILD_FLAGS="+speed"
 
 PKG_PATCH_DIRS="$KODI_VENDOR"
 
@@ -52,7 +53,9 @@ configure_package() {
     PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET wayland waylandpp"
     CFLAGS="$CFLAGS -DMESA_EGL_NO_X11_HEADERS"
     CXXFLAGS="$CXXFLAGS -DMESA_EGL_NO_X11_HEADERS"
-    KODI_XORG="-DCORE_PLATFORM_NAME=wayland -DWAYLAND_RENDER_SYSTEM=gles"
+    KODI_XORG="-DCORE_PLATFORM_NAME=wayland \
+               -DWAYLAND_RENDER_SYSTEM=gles \
+               -DWAYLANDPP_PROTOCOLS_DIR=${SYSROOT_PREFIX}/usr/share/waylandpp/protocols"
   fi
 
   if [ ! "$OPENGL" = "no" ]; then
@@ -86,6 +89,10 @@ configure_package() {
     KODI_CEC="-DENABLE_CEC=ON"
   else
     KODI_CEC="-DENABLE_CEC=OFF"
+  fi
+
+  if [ "$CEC_FRAMEWORK_SUPPORT" = "yes" ]; then
+    PKG_PATCH_DIRS+=" cec-framework"
   fi
 
   if [ "$KODI_OPTICAL_SUPPORT" = yes ]; then
