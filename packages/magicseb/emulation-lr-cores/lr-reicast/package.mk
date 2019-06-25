@@ -2,17 +2,17 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-reicast"
-PKG_VERSION="8c38fcedbe064f7fbda9c2213fd6987b7d4e4dbc"
-PKG_SHA256="b1e5fce1d8ac498c3da0ac8825f977eacae57a7902dead0a4e88618bdae502da"
+PKG_VERSION="4a020d4080221a32ca18b22045ff41d0364c5d5b"
+PKG_SHA256="46f69d1ed57f9675683775d97779245c9ef118b9cd33d564c63750abbb1433b7"
 PKG_LICENSE="GPLv2"
-PKG_SITE="https://github.com/libretro/reicast-emulator"
-PKG_URL="https://github.com/libretro/reicast-emulator/archive/$PKG_VERSION.tar.gz"
+PKG_SITE="https://github.com/libretro/flycast"
+PKG_URL="https://github.com/libretro/flycast/archive/$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain linux glibc"
 PKG_LONGDESC="Reicast is a multiplatform Sega Dreamcast emulator"
 PKG_TOOLCHAIN="make"
 PKG_BUILD_FLAGS="-gold"
 
-PKG_LIBNAME="reicast_libretro.so"
+PKG_LIBNAME="flycast_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"
 
 PKG_MAKE_OPTS_TARGET="HAVE_OPENMP=0 GIT_VERSION=${PKG_VERSION:0:7} WITH_DYNAREC=$ARCH"
