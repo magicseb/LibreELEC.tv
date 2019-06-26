@@ -100,5 +100,10 @@
   # use the kernel CEC framework for libcec (yes / no)
     CEC_FRAMEWORK_SUPPORT="yes"
 
+  # set the addon dirs
+    ADDON_SERVER_URL="https://amlgx.libreelec.tv"
+    ADDON_PATH="$ADDON_VERSION/${DEVICE:-$PROJECT}/$TARGET_ARCH"
+    ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
+
   # debug tty path
     DEBUG_TTY="/dev/ttyAML0"
