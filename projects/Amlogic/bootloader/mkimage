@@ -3,17 +3,17 @@
 
 . config/options $1
 
+DTB="$(${SCRIPTS}/uboot_helper ${PROJECT} ${DEVICE} ${UBOOT_SYSTEM} dtb)"
+
 case "${UBOOT_SYSTEM}" in
   box|"")
-    DTB="@@DTB_NAME@@"
+    echo "image box"
     ;;
 
   *)
     echo "image: writing u-boot to $(basename $DISK)"
     dd if="$INSTALL/usr/share/bootloader/u-boot.bin.sd.bin" of="$DISK" conv=fsync,notrunc bs=1 count=112 >"$SAVE_ERROR" 2>&1 || show_error
     dd if="$INSTALL/usr/share/bootloader/u-boot.bin.sd.bin" of="$DISK" conv=fsync,notrunc bs=512 skip=1 seek=1 >"$SAVE_ERROR" 2>&1 || show_error
-
-    DTB="$(${SCRIPTS}/uboot_helper ${PROJECT} ${DEVICE} ${UBOOT_SYSTEM} dtb)"
     ;;
 esac
 
