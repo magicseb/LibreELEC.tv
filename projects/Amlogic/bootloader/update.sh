@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-2.0
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
+[ -z "$UPDATE_DIR" ] && UPDATE_DIR="/storage/.update"
 [ -z "$SYSTEM_ROOT" ] && SYSTEM_ROOT=""
 [ -z "$BOOT_ROOT" ] && BOOT_ROOT="/flash"
 [ -z "$BOOT_PART" ] && BOOT_PART=$(df "$BOOT_ROOT" | tail -1 | awk {' print $1 '})
@@ -22,12 +23,10 @@
 # mount $BOOT_ROOT rw
   mount -o remount,rw $BOOT_ROOT
 
-# update device trees
-  for dtbfile in $BOOT_ROOT/dtb/*.dtb ; do
-    dtb=$(basename $dtbfile)
-    echo "Updating $dtb"
-    cp -p $SYSTEM_ROOT/usr/share/bootloader/$dtb $BOOT_ROOT/dtb/ 2>/dev/null || true
-  done
+# update device tree
+[ -d "$BOOT_ROOT/dtb_old" ] && rm -r $BOOT_ROOT/dtb_old
+mv $BOOT_ROOT/dtb $BOOT_ROOT/dtb_old
+cp -R $UPDATE_DIR/.tmp/*/3rdparty/bootloader/dtb $BOOT_ROOT
 
 # update u-boot scripts
   for scriptfile in $SYSTEM_ROOT/usr/share/bootloader/*_autoscript* $SYSTEM_ROOT/usr/share/bootloader/*.scr ; do
