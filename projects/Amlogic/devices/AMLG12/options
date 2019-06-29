@@ -1,3 +1,6 @@
+  # Linux Kernel to use
+    LINUX="amlogic-5.2.0"
+
   # OpenGL-ES implementation to use
     OPENGLES="libmali"
 
@@ -10,5 +13,5 @@
   # Mali GPU family
     MALI_FAMILY="g31 g52"
 
-  # additional drivers to install
-    ADDITIONAL_DRIVERS+=" mali-bifrost"
+  # additional drivers to install:
+    ADDITIONAL_DRIVERS=""
