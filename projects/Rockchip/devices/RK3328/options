@@ -42,3 +42,10 @@
     else
       EXTRA_CMDLINE="console=uart8250,mmio32,0xff130000 console=tty0"
     fi
+
+    UBOOT_VERSION="vendor"
+
+  # additional packages to install:
+  # Space separated list is supported,
+  # e.g. ADDITIONAL_PACKAGES="PACKAGE1 PACKAGE2"
+    ADDITIONAL_PACKAGES+=" rockchip-autoscript"
