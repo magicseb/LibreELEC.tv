@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-bsnes-mercury-balanced"
-PKG_VERSION="4e221df676ffc7b46d083cf2ae100131eabe5076"
-PKG_SHA256="ad493381c5736e521996b850918e0df7c09124c71d98fac6a1e04c57830dade4"
+PKG_VERSION="e1cef8b467cb97858d403896302ca0babb4ec1f1"
+PKG_SHA256="d087dd697bc5e22b54e33e736d9d59993d34221d0aa65664c14361c0fa416fcc"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/bsnes-mercury"
 PKG_URL="https://github.com/libretro/bsnes-mercury/archive/$PKG_VERSION.tar.gz"

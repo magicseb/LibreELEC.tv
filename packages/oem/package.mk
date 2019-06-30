@@ -15,6 +15,7 @@ PKG_TOOLCHAIN="manual"
 OEM_EMU_COMMON=" \
   baseone \
   retroarch \
+  rr-config-tool \
   lr-2048 \
   lr-atari800 \
   lr-beetle-pce-fast \

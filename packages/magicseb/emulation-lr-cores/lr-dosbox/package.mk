@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-dosbox"
-PKG_VERSION="2aa0bd13b372956b2fe989ca5e9d8e45f75fb44d"
-PKG_SHA256="15e31cfdb251fae1f2096030227327dcae781640a32cb5f34c23764fb9c7bb75"
+PKG_VERSION="410746e07668314b880098b4dc8808a7855d02f3"
+PKG_SHA256="c52f195a46fa47e0536809f4745fb8f9c3dff2ecf19097342fc3cae9b423135b"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/dosbox-libretro"
 PKG_URL="https://github.com/libretro/dosbox-libretro/archive/$PKG_VERSION.tar.gz"

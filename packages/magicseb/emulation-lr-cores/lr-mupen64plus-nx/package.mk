@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-mupen64plus-nx"
-PKG_VERSION="96608bace2b9caf3fd5f7e685b2d3ce2add2ff0e"
-PKG_SHA256="c208e4b33887635dcace82f6af9b6a81bfd9e305e845a0880242b44862cc6f53"
+PKG_VERSION="b31459d1e9b1bc1cf93d3577e185fe8d4198a978"
+PKG_SHA256="0b8a2e62d1349e04625db67c308e72c8cc33156d6379c33e367441af4154479c"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/mupen64plus-libretro-nx"
 PKG_URL="https://github.com/libretro/mupen64plus-libretro-nx/archive/$PKG_VERSION.tar.gz"
@@ -49,6 +49,12 @@ pre_configure_target() {
         ;;
       RPi2)
         PKG_MAKE_OPTS_TARGET+=" platform=rpi2"
+        CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads \
+                        -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
+
+        ;;
+     RPi3)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
         CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads \
                         -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
 

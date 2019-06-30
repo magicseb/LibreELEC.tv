@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-bluemsx"
-PKG_VERSION="c59ffa367745a94f376b438be3f428578ce501f5"
-PKG_SHA256="f15cd30196f78c0554971a785229586baa3e10ae644f22618f66d46372bb7ca9"
+PKG_VERSION="37b164179736b7a93615d57f57b2b5e89a846404"
+PKG_SHA256="7a0b8a38bcf6026d8643cde38d5517b9539e8b394bd516e435f81de6cc19503d"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/blueMSX-libretro"
 PKG_URL="https://github.com/libretro/blueMSX-libretro/archive/$PKG_VERSION.tar.gz"
