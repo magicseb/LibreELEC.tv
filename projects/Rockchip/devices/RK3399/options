@@ -29,6 +29,7 @@
     KERNEL_MAKE_EXTRACMD+=" rockchip/rk3399-khadas-edge.dtb"
     KERNEL_MAKE_EXTRACMD+=" rockchip/rk3399-khadas-edge-v.dtb"
     KERNEL_MAKE_EXTRACMD+=" rockchip/rk3399-khadas-edge-captain.dtb"
+    KERNEL_MAKE_EXTRACMD+=" rockchip/rk3399-magicsee-n6-max.dtb"
     KERNEL_MAKE_EXTRACMD+=" rockchip/rk3399-rock960.dtb"
     KERNEL_MAKE_EXTRACMD+=" rockchip/rk3399-rock-pi-4.dtb"
     KERNEL_MAKE_EXTRACMD+=" rockchip/rk3399-rockpro64.dtb"

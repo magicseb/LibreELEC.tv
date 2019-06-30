@@ -1,0 +1,11 @@
+--- a/drivers/media/rc/keymaps/Makefile
++++ b/drivers/media/rc/keymaps/Makefile
+@@ -55,6 +55,7 @@
+ 			rc-leadtek-y04g0051.o \
+ 			rc-lirc.o \
+ 			rc-lme2510.o \
++			rc-magicn6.o \
+ 			rc-manli.o \
+ 			rc-medion-x10.o \
+ 			rc-medion-x10-digitainer.o \
+
