@@ -101,8 +101,8 @@
     CEC_FRAMEWORK_SUPPORT="yes"
 
   # set the addon dirs
-    ADDON_SERVER_URL="https://amlgx.libreelec.tv"
-    ADDON_PATH="$ADDON_VERSION/${DEVICE:-$PROJECT}/$TARGET_ARCH"
+    ADDON_SERVER_URL="https://balbes150.libreelec.tv/addons"
+    ADDON_PATH="$ADDON_VERSION/AMLG12/$TARGET_ARCH"
     ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
 
   # debug tty path
