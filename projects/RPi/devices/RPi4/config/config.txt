@@ -26,7 +26,9 @@ force_turbo=0
 # Avoids bringing CEC (enabled TV) out of standby and channel switch when
 # rebooting.
 hdmi_ignore_cec_init=1
+
 dtparam=audio=on
+
 
 ################################################################################
 # End of default configuration
