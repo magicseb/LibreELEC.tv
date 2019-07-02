@@ -59,7 +59,6 @@ OEM_EMU_RPI=" \
   lr-yabause"
 
 OEM_EMU_ROCKCHIP=" \
-  lr-parallel-n64 \
   lr-mame2010 \
   lr-snes9x2010 \
   lr-vice \
