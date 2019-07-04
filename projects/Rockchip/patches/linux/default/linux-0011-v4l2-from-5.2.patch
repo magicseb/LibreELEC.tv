@@ -1,4 +1,4 @@
-From 9674c72bd43e54c709c26b19d4e7cfedc102f421 Mon Sep 17 00:00:00 2001
+From b5837b6d33eca74d5f1a0e67c0c619d90acf8721 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Thu, 21 Feb 2019 08:22:41 -0500
 Subject: [PATCH] media: media-devnode: fill in media chardev kobject to ease
@@ -28,7 +28,7 @@ index 6b87a721dc49..61dc05fcc55c 100644
  	/* Part 3: Add the media and char device */
  	ret = cdev_device_add(&devnode->cdev, &devnode->dev);
 
-From a7fd2116e3c51392c716a16f95c0f9b7445b64fd Mon Sep 17 00:00:00 2001
+From 4f2a18e4dd53f7ad1110c5f7538207c1d1904057 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Thu, 21 Feb 2019 08:23:50 -0500
 Subject: [PATCH] media: vivid: use vzalloc for dev->bitmap_out
@@ -83,7 +83,7 @@ index e61b91b414f9..9350ca65dd91 100644
  	dev->clipcount_out = win->clipcount;
  	if (dev->clipcount_out)
 
-From 026d7f78ec9bcb600a72a94274a6067ccffe7a53 Mon Sep 17 00:00:00 2001
+From 28ad72e4906b8a5fc3dfc03d76ad27c6a9eee3e9 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Thu, 21 Feb 2019 08:37:42 -0500
 Subject: [PATCH] media: v4l2-subdev: add release() internal op
@@ -177,7 +177,7 @@ index 349e1c18cf48..e807aa96ed3b 100644
  
  #define V4L2_SUBDEV_NAME_SIZE 32
 
-From 38d3eac9a500c534599dbe988dcef00099b09a61 Mon Sep 17 00:00:00 2001
+From b41b24faa78483e5ec91345902defd792e578b1c Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Fri, 1 Mar 2019 06:11:27 -0500
 Subject: [PATCH] media: v4l2-subdev: handle module refcounting here
@@ -376,7 +376,7 @@ index e807aa96ed3b..a7fa5b80915a 100644
  	struct v4l2_subdev_pad_config *pad;
  #endif
 
-From a33d2a6320926d8bfbef29339c4b7f39a3ed4343 Mon Sep 17 00:00:00 2001
+From 3ebc13091c6987a72c32f9785a4af71e3b0c8610 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Thu, 21 Feb 2019 08:47:28 -0500
 Subject: [PATCH] media: vimc: free vimc_cap_device when the last user
@@ -434,7 +434,7 @@ index ea869631a3f6..54fda5b29dd0 100644
  	vdev->ioctl_ops = &vimc_cap_ioctl_ops;
  	vdev->lock = &vcap->lock;
 
-From cc9c2cc2cf58e44ff8a942c00dd8edf4a35522b0 Mon Sep 17 00:00:00 2001
+From 684e4462a32a87f494ac1ba5869edc5045479bbc Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Tue, 5 Mar 2019 03:36:20 -0500
 Subject: [PATCH] media: vimc: use new release op
@@ -635,7 +635,7 @@ index 59195f262623..d7891d3bbeaa 100644
  		goto err_free_hdl;
  
 
-From c3c90a85beb8d00059058400727f6dd6dc095bca Mon Sep 17 00:00:00 2001
+From 4947016e38b55379aceb483201e4d64d92ca06da Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Thu, 28 Feb 2019 07:35:46 -0500
 Subject: [PATCH] media: vb2: drop VB2_BUF_STATE_REQUEUEING
@@ -782,7 +782,7 @@ index 65108819de5a..a0a514a51895 100644
  void vb2_buffer_done(struct vb2_buffer *vb, enum vb2_buffer_state state);
  
 
-From 9dad9e9ac6bd2c5a36751b9ff32a0ca087b2b68a Mon Sep 17 00:00:00 2001
+From bdface2c1de26d9ff2eed395755c83fc901b3163 Mon Sep 17 00:00:00 2001
 From: Jernej Skrabec <jernej.skrabec@siol.net>
 Date: Mon, 28 Jan 2019 15:55:01 -0500
 Subject: [PATCH] media: cedrus: Add support for H6
@@ -827,7 +827,7 @@ index ff11cbeba205..b98add3cdedd 100644
  };
  MODULE_DEVICE_TABLE(of, cedrus_dt_match);
 
-From 01539248e1b4223e5b5158ddeaac79e8f12dbf5b Mon Sep 17 00:00:00 2001
+From 7b8e0de3ac53052e4be5496a42c685a852da61d8 Mon Sep 17 00:00:00 2001
 From: Shuah Khan <shuah@kernel.org>
 Date: Fri, 22 Feb 2019 19:17:09 -0500
 Subject: [PATCH] media: replace WARN_ON in __media_pipeline_start()
@@ -863,7 +863,7 @@ index dd859d7b235a..a998a2e0ea1d 100644
  			goto error;
  		}
 
-From d752ebe011655e143b863702a7e4c36c912a13a6 Mon Sep 17 00:00:00 2001
+From cba23c1cd9bdaf002ec354cd11f85a4454671074 Mon Sep 17 00:00:00 2001
 From: Souptick Joarder <jrdr.linux@gmail.com>
 Date: Mon, 4 Feb 2019 10:01:43 -0500
 Subject: [PATCH] media: videobuf2: Return error after allocation failure
@@ -908,7 +908,7 @@ index 6dfbd5b05907..1c6659f7c394 100644
  	return buf;
  }
 
-From a001730c0073b71ab9459c92b572a56ec1574c20 Mon Sep 17 00:00:00 2001
+From c1a94b6a9963d54877fcc8a0984b9cd6e51c9818 Mon Sep 17 00:00:00 2001
 From: Helen Fornazier <helen.koike@collabora.com>
 Date: Wed, 6 Mar 2019 17:42:37 -0500
 Subject: [PATCH] media: vimc: deb: fix default sink bayer format
@@ -942,7 +942,7 @@ index eaed4233ad1b..20826f209731 100644
  	.colorspace = V4L2_COLORSPACE_DEFAULT,
  };
 
-From 41f775927690cd666a5e66b8817a5b4b733b8e06 Mon Sep 17 00:00:00 2001
+From 6ab8ba64f0122ac4187273ce8d3507d92909c43c Mon Sep 17 00:00:00 2001
 From: Helen Fornazier <helen.koike@collabora.com>
 Date: Wed, 6 Mar 2019 17:42:39 -0500
 Subject: [PATCH] media: vimc: cap: fix step width/height in enum framesize
@@ -977,7 +977,7 @@ index 54fda5b29dd0..290b08ebb1b6 100644
  	return 0;
  }
 
-From 1ffabf24162cb7223ef8ef16d4a41e7dfdf797b1 Mon Sep 17 00:00:00 2001
+From ad7d0f7aad0bc379c656f928d104432f6127bf6e Mon Sep 17 00:00:00 2001
 From: Helen Fornazier <helen.koike@collabora.com>
 Date: Wed, 6 Mar 2019 17:42:41 -0500
 Subject: [PATCH] media: vimc: stream: cleanup frame field from struct
@@ -1039,7 +1039,7 @@ index 752af2e2d5a2..dc1d0be431cb 100644
  };
  
 
-From 6011745eeba9ad2f44a1c031f4107772ca99ee0d Mon Sep 17 00:00:00 2001
+From 8d68e81c5a051b0960bcebb16b7b6b74cc72f3b7 Mon Sep 17 00:00:00 2001
 From: Helen Fornazier <helen.koike@collabora.com>
 Date: Wed, 6 Mar 2019 17:42:42 -0500
 Subject: [PATCH] media: vimc: stream: add docs to struct vimc_stream
@@ -1081,7 +1081,7 @@ index dc1d0be431cb..a7c5ac5ace4f 100644
  	struct media_pipeline pipe;
  	struct vimc_ent_device *ved_pipeline[VIMC_STREAMER_PIPELINE_MAX_SIZE];
 
-From b82f2c53829aa8490b8837932a382032d1a7539b Mon Sep 17 00:00:00 2001
+From 7f0a5508eaadcd97f1815b2e9352a6c3b2fe4e59 Mon Sep 17 00:00:00 2001
 From: Helen Fornazier <helen.koike@collabora.com>
 Date: Wed, 6 Mar 2019 17:42:43 -0500
 Subject: [PATCH] media: vimc: stream: init/terminate the first entity
@@ -1169,7 +1169,7 @@ index b7c1fdef5f0d..6fc18fea2e45 100644
  		} else {
  			vdev = container_of(entity,
 
-From 75c660fed24ac5d72c93cf8a7e8446dac51b66a3 Mon Sep 17 00:00:00 2001
+From 07a1cba9087a512a123c4957952db0363a335097 Mon Sep 17 00:00:00 2001
 From: Hans Petter Selasky <hps@selasky.org>
 Date: Fri, 25 Jan 2019 08:01:46 -0500
 Subject: [PATCH] media: strscpy() returns a negative value on failure unlike
@@ -1201,7 +1201,7 @@ index f6d663934648..038739584a84 100644
  }
  
 
-From 528b345627c62ae59158bfcae839caa4dd6e5942 Mon Sep 17 00:00:00 2001
+From 31117dab7e5611d082f37649985d8ad6de06104a Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
 Date: Wed, 27 Feb 2019 00:57:23 -0500
 Subject: [PATCH] media: rockchip-vpu: Remove duplicated include from
@@ -1218,7 +1218,7 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
-index 962412c79b91..57611464ad07 100644
+index d489b5dd54d7..9386accc9934 100644
 --- a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
 +++ b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
 @@ -22,7 +22,6 @@
@@ -1230,7 +1230,7 @@ index 962412c79b91..57611464ad07 100644
  
  #include "rockchip_vpu_common.h"
 
-From 2f13d70f939ad88292bdd2cb210b4da8b2afef66 Mon Sep 17 00:00:00 2001
+From 36e48f3c9a4b6e324180a845365a628daa076efe Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil@xs4all.nl>
 Date: Wed, 13 Mar 2019 10:46:42 -0400
 Subject: [PATCH] media: vicodec: remove WARN_ON(1) from get_q_data()
@@ -1259,57 +1259,7 @@ index 8788369e59a0..74c58421b26c 100644
  	}
  	return NULL;
 
-From 666e2fc28f6e01587c499ddac3247520f36067fa Mon Sep 17 00:00:00 2001
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-Date: Fri, 1 Mar 2019 08:48:38 -0500
-Subject: [PATCH] media: v4l2-fwnode: Defaults may not override endpoint
- configuration in firmware
-
-The lack of defaults provided by the caller to
-v4l2_fwnode_endpoint_parse() signals the use of the default lane mapping.
-The default lane mapping must not be used however if the firmmare contains
-the lane mapping. Disable the default lane mapping in that case, and
-improve the debug messages telling of the use of the defaults.
-
-This was missed previously since the default mapping will only unsed in
-this case if the bus type is set, and no driver did both while still
-needing the lane mapping configuration.
-
-Fixes: b4357d21d674 ("media: v4l: fwnode: Support default CSI-2 lane mapping for drivers")
-
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-(cherry picked from commit 9d3863736a267068a0ae67c6695af8770ef330b7)
----
- drivers/media/v4l2-core/v4l2-fwnode.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-index 7495f8323147..ccefa55813ad 100644
---- a/drivers/media/v4l2-core/v4l2-fwnode.c
-+++ b/drivers/media/v4l2-core/v4l2-fwnode.c
-@@ -163,7 +163,7 @@ static int v4l2_fwnode_endpoint_parse_csi2_bus(struct fwnode_handle *fwnode,
- 		}
- 
- 		if (use_default_lane_mapping)
--			pr_debug("using default lane mapping\n");
-+			pr_debug("no lane mapping given, using defaults\n");
- 	}
- 
- 	rval = fwnode_property_read_u32_array(fwnode, "data-lanes", NULL, 0);
-@@ -175,6 +175,10 @@ static int v4l2_fwnode_endpoint_parse_csi2_bus(struct fwnode_handle *fwnode,
- 					       num_data_lanes);
- 
- 		have_data_lanes = true;
-+		if (use_default_lane_mapping) {
-+			pr_debug("data-lanes property exists; disabling default mapping\n");
-+			use_default_lane_mapping = false;
-+		}
- 	}
- 
- 	for (i = 0; i < num_data_lanes; i++) {
-
-From 1f34b9e544954b0429851a48301af382abc92228 Mon Sep 17 00:00:00 2001
+From 970c21e7484e69d0fac0521cd8b785e90f58a6c9 Mon Sep 17 00:00:00 2001
 From: Sakari Ailus <sakari.ailus@linux.intel.com>
 Date: Tue, 19 Mar 2019 04:07:32 -0400
 Subject: [PATCH] media: v4l2-fwnode: Add a deprecation note in the old ACPI
@@ -1342,7 +1292,7 @@ index ccefa55813ad..ea1ed88f9dc8 100644
   *	Scope (\_SB.PCI0.I2C2)
   *	{
 
-From 249f07090cccb7acafea179d6faa4025cc5d47f6 Mon Sep 17 00:00:00 2001
+From a4f87efb21b7719b55ff5a53073ad8eb05527a57 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Wed, 6 Mar 2019 16:13:21 -0500
 Subject: [PATCH] media: vb2: add requires_requests bit for stateless codecs
@@ -1448,7 +1398,7 @@ index a0a514a51895..22f3ff76a8b5 100644
  	unsigned			uses_requests:1;
  
 
-From 611d68b0312211db4e9a52ac033affe5e0fa2763 Mon Sep 17 00:00:00 2001
+From 6afac1382e82fa061fcca4c709f17a30beb7404b Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Wed, 6 Mar 2019 16:13:23 -0500
 Subject: [PATCH] media: cedrus: set requires_requests
@@ -1481,7 +1431,7 @@ index b47854b3bce4..9673874ece10 100644
  	ret = vb2_queue_init(src_vq);
  	if (ret)
 
-From cfd0fd4a020951ac8a47db1386ba178cda7b2da7 Mon Sep 17 00:00:00 2001
+From 09eac6d471e48a6a01bf6cf12258c2190669f6b3 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Wed, 20 Mar 2019 10:31:18 -0400
 Subject: [PATCH] media: media requests: return EBADR instead of EACCES
@@ -1629,7 +1579,7 @@ index bd36d7431698..3cd25a2717ce 100644
  
  #endif
 
-From e0465446e764295e3d534d337d474134fee57f2a Mon Sep 17 00:00:00 2001
+From bbee99fc391c2875112c1efe4756c04357994370 Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:24 -0500
 Subject: [PATCH] media: vicodec: selection api should only check single buffer
@@ -1694,7 +1644,7 @@ index 74c58421b26c..fa582e64d226 100644
  
  	q_data = get_q_data(ctx, s->type);
 
-From 8abff4c6e3b02d9ba54dba61ac0d86e9d152f092 Mon Sep 17 00:00:00 2001
+From f175d9b7d04015ce7f344aee9f662bfa06839069 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Tue, 12 Mar 2019 07:53:55 -0400
 Subject: [PATCH] media: vicodec: fix g_selection: either handle crop or
@@ -1758,7 +1708,7 @@ index fa582e64d226..1cb2ff227d10 100644
  	return -EINVAL;
  }
 
-From 405f4189e7d617ea5d9df5706196c79f5be7bc53 Mon Sep 17 00:00:00 2001
+From 066e82f0a4fd6ce2c4b35f22c34fe67cb1336101 Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:25 -0500
 Subject: [PATCH] media: vicodec: upon release, call m2m release before freeing
@@ -1796,99 +1746,7 @@ index 1cb2ff227d10..fbf1400b537f 100644
  
  	return 0;
 
-From ec2dc6a3682b6183c5611272d5cc636d11178a6b Mon Sep 17 00:00:00 2001
-From: Dafna Hirschfeld <dafna3@gmail.com>
-Date: Wed, 6 Mar 2019 16:13:26 -0500
-Subject: [PATCH] media: v4l2-ctrl: v4l2_ctrl_request_setup returns with error
- upon failure
-
-If one of the controls fails to set,
-then 'v4l2_ctrl_request_setup'
-immediately returns with the error code.
-
-Signed-off-by: Dafna Hirschfeld <dafna3@gmail.com>
-Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-(cherry picked from commit 09ca38a50795a263d2b16dc95794dc5bc17c1d5c)
----
- drivers/media/v4l2-core/v4l2-ctrls.c | 18 +++++++++++-------
- include/media/v4l2-ctrls.h           |  2 +-
- 2 files changed, 12 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-index b79d3bbd8350..54d66dbc2a31 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-@@ -3899,18 +3899,19 @@ void v4l2_ctrl_request_complete(struct media_request *req,
- }
- EXPORT_SYMBOL(v4l2_ctrl_request_complete);
- 
--void v4l2_ctrl_request_setup(struct media_request *req,
-+int v4l2_ctrl_request_setup(struct media_request *req,
- 			     struct v4l2_ctrl_handler *main_hdl)
- {
- 	struct media_request_object *obj;
- 	struct v4l2_ctrl_handler *hdl;
- 	struct v4l2_ctrl_ref *ref;
-+	int ret = 0;
- 
- 	if (!req || !main_hdl)
--		return;
-+		return 0;
- 
- 	if (WARN_ON(req->state != MEDIA_REQUEST_STATE_QUEUED))
--		return;
-+		return -EBUSY;
- 
- 	/*
- 	 * Note that it is valid if nothing was found. It means
-@@ -3919,10 +3920,10 @@ void v4l2_ctrl_request_setup(struct media_request *req,
- 	 */
- 	obj = media_request_object_find(req, &req_ops, main_hdl);
- 	if (!obj)
--		return;
-+		return 0;
- 	if (obj->completed) {
- 		media_request_object_put(obj);
--		return;
-+		return -EBUSY;
- 	}
- 	hdl = container_of(obj, struct v4l2_ctrl_handler, req_obj);
- 
-@@ -3990,12 +3991,15 @@ void v4l2_ctrl_request_setup(struct media_request *req,
- 				update_from_auto_cluster(master);
- 		}
- 
--		try_or_set_cluster(NULL, master, true, 0);
--
-+		ret = try_or_set_cluster(NULL, master, true, 0);
- 		v4l2_ctrl_unlock(master);
-+
-+		if (ret)
-+			break;
- 	}
- 
- 	media_request_object_put(obj);
-+	return ret;
- }
- EXPORT_SYMBOL(v4l2_ctrl_request_setup);
- 
-diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
-index e5cae37ced2d..200f8a66ecaa 100644
---- a/include/media/v4l2-ctrls.h
-+++ b/include/media/v4l2-ctrls.h
-@@ -1127,7 +1127,7 @@ __poll_t v4l2_ctrl_poll(struct file *file, struct poll_table_struct *wait);
-  * applying control values in a request is only applicable to memory-to-memory
-  * devices.
-  */
--void v4l2_ctrl_request_setup(struct media_request *req,
-+int v4l2_ctrl_request_setup(struct media_request *req,
- 			     struct v4l2_ctrl_handler *parent);
- 
- /**
-
-From deed25ef770ac1f0bde53a58867fc7c46eb2372b Mon Sep 17 00:00:00 2001
+From 3b7803df352f3b0555df4a24bceb8c3beaf38612 Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:27 -0500
 Subject: [PATCH] media: vicodec: change variable name for the return value of
@@ -1931,7 +1789,7 @@ index fbf1400b537f..11fbc44973b2 100644
  		struct vicodec_q_data *q_dst;
  		unsigned int comp_frame_size = ntohl(ctx->state.header.size);
 
-From ca1d85478e781d493cffcc7d36a5fd9303a374a5 Mon Sep 17 00:00:00 2001
+From 8392265ccd5679214a00e6dbf445d9cbe12cbfee Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:29 -0500
 Subject: [PATCH] media: vicodec: bugfix: free compressed_frame upon device
@@ -1960,7 +1818,7 @@ index 11fbc44973b2..41e09b558a88 100644
  
  	return 0;
 
-From 0e9e8a8fd4d6ccbf8281a41b9f599bab946f431c Mon Sep 17 00:00:00 2001
+From 3c251575ecf97a1114cba3b592f8e65b586f17a4 Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:30 -0500
 Subject: [PATCH] media: vicodec: Move raw frame preparation code to a function
@@ -2177,7 +2035,7 @@ index 6573a471c5ca..515b3115b3c6 100644
  	cf.i_frame_qp = state->i_frame_qp;
  	cf.p_frame_qp = state->p_frame_qp;
 
-From dfac2b2b0318b98d582e7cee5326070d4b9622dc Mon Sep 17 00:00:00 2001
+From 247ef904b8e75642cfa5c0bbea3c18bda8864d7b Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:31 -0500
 Subject: [PATCH] media: vicodec: add field 'buf' to fwht_raw_frame
@@ -2234,7 +2092,7 @@ index 41e09b558a88..467352d71674 100644
  		ctx->source_changed = false;
  	}
 
-From 52e63a0f45b26a4dde441a050ff54c98c8abdcb9 Mon Sep 17 00:00:00 2001
+From 5e06872cc2bec6a61b2aab1ecc76fa40a40b546e Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:32 -0500
 Subject: [PATCH] media: vicodec: keep the ref frame according to the format in
@@ -2832,7 +2690,7 @@ index 467352d71674..970b307b6ffa 100644
  	state->ref_frame.luma = state->ref_frame.buf;
  	ctx->comp_max_size = total_planes_size;
 
-From 7763c2fadb033ac2be8a59f7770cecbc1b64ef34 Mon Sep 17 00:00:00 2001
+From a68bb5662fa889c847fc916053fa582df85f0fa0 Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:33 -0500
 Subject: [PATCH] media: vicodec: Validate version dependent header values in a
@@ -2902,7 +2760,7 @@ index 970b307b6ffa..ab837d5cb2d8 100644
  	info = info_from_header(p_hdr);
  	if (!info)
 
-From 6230512c47b997da2d65543ce886d2f4958a313e Mon Sep 17 00:00:00 2001
+From 5c83fe81232a7fc3e389d71e72f53f07a7639374 Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:34 -0500
 Subject: [PATCH] media: vicodec: rename v4l2_fwht_default_fmt to
@@ -3003,7 +2861,7 @@ index ab837d5cb2d8..f68c90f995b9 100644
  						     info->components_num,
  						     info->pixenc,
 
-From bed53c9cffb6553a556129b704dfe0aa44c5c228 Mon Sep 17 00:00:00 2001
+From f4cb715639d80e6d6093f5572958efaea2de9592 Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:35 -0500
 Subject: [PATCH] media: vicodec: Handle the case that the reference buffer is
@@ -3088,7 +2946,7 @@ index 372ed95e1a1f..01e7f09efc4e 100644
  	case V4L2_PIX_FMT_GREY:
  		rf->cb = NULL;
 
-From 5789d3336983809bda67b604c88d9bbfa5cb7a76 Mon Sep 17 00:00:00 2001
+From b4633db107b4dc8ab46a25f8199dd337a0d3deaf Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:36 -0500
 Subject: [PATCH] media: vicodec: add struct for encoder/decoder instance
@@ -3402,7 +3260,7 @@ index f68c90f995b9..b86985babdb1 100644
  
  	return 0;
 
-From b7a3e6e9ad337f0ccf52532b4d0dd0918e80ec97 Mon Sep 17 00:00:00 2001
+From 86b681146a084ebb1b6b8e52a413a7a870da7e2f Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:37 -0500
 Subject: [PATCH] media: vicodec: add documentation to
@@ -3440,7 +3298,7 @@ index c97fb7923be5..3a0fe41549f7 100644
  =====================
  
 
-From 71138a16cac935170930b8668c9dee668b0ef2fd Mon Sep 17 00:00:00 2001
+From f4c29937d07d7f62ff665e9f9d421c7bc98db9b4 Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:38 -0500
 Subject: [PATCH] media: vicodec: add documentation to
@@ -3586,7 +3444,7 @@ index 3a0fe41549f7..0aaee04f81dd 100644
  
  CX2341x MPEG Controls
 
-From dce8114865cf19189d694ffd050dcd6d40abfeca Mon Sep 17 00:00:00 2001
+From bd9f4b91b8d0453019435ea3b27d6b560c4207dd Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:39 -0500
 Subject: [PATCH] media: vicodec: add documentation to
@@ -3618,7 +3476,7 @@ index 2675bef3eefe..6c961cfb74da 100644
 +      - Same format as V4L2_PIX_FMT_FWHT but requires stateless codec implementation.
 +	See the :ref:`associated Codec Control IDs <v4l2-mpeg-fwht>`.
 
-From f189d983e034760252bb19c3d01b676d5b1c5712 Mon Sep 17 00:00:00 2001
+From 51c33dccb6c05fe38dfdf69006bf217512481c78 Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:40 -0500
 Subject: [PATCH] media: vicodec: Introducing stateless fwht defs and structs
@@ -3865,7 +3723,7 @@ index 1db220da3bcc..496e6453450c 100644
  /*  Vendor-specific formats   */
  #define V4L2_PIX_FMT_CPIA1    v4l2_fourcc('C', 'P', 'I', 'A') /* cpia1 YUV */
 
-From 87e28ef6fc46dc8c604eb7d711ce3aba18e5bf4f Mon Sep 17 00:00:00 2001
+From 3bc451c84ad49ddb597b2c44d26185ea9238fdff Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Wed, 13 Mar 2019 10:44:20 -0400
 Subject: [PATCH] media: v4l2-ioctl.c: add V4L2_PIX_FMT_FWHT_STATELESS to
@@ -3894,7 +3752,7 @@ index 038739584a84..ac87c3e37280 100644
  		case V4L2_PIX_FMT_WNVA:		descr = "WNVA"; break;
  		case V4L2_PIX_FMT_SN9C10X:	descr = "GSPCA SN9C10X"; break;
 
-From 0e7f19a0ecea0dca5a75c168d45e2f8c7b29a3fb Mon Sep 17 00:00:00 2001
+From 3f418ecfbb6b83eca761080ba9ddb3b700ab3e79 Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:41 -0500
 Subject: [PATCH] media: vicodec: Register another node for stateless decoder
@@ -4055,7 +3913,7 @@ index a3a9d8ac4a33..a8e8db85b684 100644
  
  	return 0;
 
-From 546dff6f7ac508431171f251de019ab88515b703 Mon Sep 17 00:00:00 2001
+From 28fa0033c334fb5066025946dc06bdc454d7e668 Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:42 -0500
 Subject: [PATCH] media: vicodec: Add support for stateless decoder.
@@ -4558,7 +4416,7 @@ index a8e8db85b684..617fc53246e4 100644
  #endif
  
 
-From c766ad7653ae226aae6581ee4de4a5017222b838 Mon Sep 17 00:00:00 2001
+From 64d8b094e1a234ba5be6c341159992587db4ea6f Mon Sep 17 00:00:00 2001
 From: Dafna Hirschfeld <dafna3@gmail.com>
 Date: Wed, 6 Mar 2019 16:13:43 -0500
 Subject: [PATCH] media: vicodec: set pixelformat to
@@ -4709,7 +4567,7 @@ index 617fc53246e4..a5f8f74ea3bf 100644
  	else
  		ctx->q_data[V4L2_M2M_SRC].sizeimage =
 
-From bd8782154657e0e2f242c8eead6049ab5da24285 Mon Sep 17 00:00:00 2001
+From 6ad5c746746d738b69349b308f0052d17b347c1d Mon Sep 17 00:00:00 2001
 From: Dan Carpenter <dan.carpenter@oracle.com>
 Date: Mon, 25 Mar 2019 05:06:26 -0400
 Subject: [PATCH] media: v4l2-ctrl: potential shift wrapping bugs
@@ -4754,7 +4612,7 @@ index aed1c3a06500..b1ae2e555c68 100644
  	/* Empty menu items should also be skipped */
  	if (ctrl->type == V4L2_CTRL_TYPE_MENU) {
 
-From a5836906d9f7064c68ebb1a0728f825d3d8e4912 Mon Sep 17 00:00:00 2001
+From ebe880bc92e0bf3dfff648032b8e3a299b89e0ca Mon Sep 17 00:00:00 2001
 From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Date: Thu, 28 Mar 2019 15:02:23 -0400
 Subject: [PATCH] media: vim2m: Fix RGB 565 BE/LE support
@@ -4833,7 +4691,7 @@ index dd47821fc661..d8763a8a7be6 100644
  			*dst += 2;
  		}
 
-From 057e128d991b9d008659e423ea1b3ee8a1aef4b2 Mon Sep 17 00:00:00 2001
+From 088046f2020a8a6bfc87d7de3a02ab4553620c44 Mon Sep 17 00:00:00 2001
 From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Date: Mon, 10 Sep 2018 08:19:16 -0400
 Subject: [PATCH] media: replace strncpy() by strscpy()
@@ -5516,7 +5374,7 @@ index 04f88f9d6bb4..c998aa4dc73b 100644
  	return 0;
  }
 
-From f7b1aa325d6a823289f35ff1b90a9f497a1851a9 Mon Sep 17 00:00:00 2001
+From 893d9944646072a30bde07424e01cc490e55ffb8 Mon Sep 17 00:00:00 2001
 From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Date: Fri, 29 Mar 2019 11:28:45 -0400
 Subject: [PATCH] media: staging: use strscpy() instead of strlcpy()
@@ -5556,7 +5414,7 @@ index 910594125889..6cd93419b81d 100644
  
  	media_device_init(&imxmd->md);
 diff --git a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
-index 57611464ad07..58721c46fba4 100644
+index 9386accc9934..ec0a973c3041 100644
 --- a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
 +++ b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
 @@ -462,7 +462,7 @@ static int rockchip_vpu_probe(struct platform_device *pdev)
@@ -5569,7 +5427,7 @@ index 57611464ad07..58721c46fba4 100644
  	vpu->v4l2_dev.mdev = &vpu->mdev;
  
 
-From af3d49a367959e4ff748910533d0491db66cabe7 Mon Sep 17 00:00:00 2001
+From aed43190d13a4f315a9999c2fe1c26ad42cf3c14 Mon Sep 17 00:00:00 2001
 From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Date: Fri, 29 Mar 2019 11:58:14 -0400
 Subject: [PATCH] media: pixfmt-packed-yuv.rst: fix PDF output
@@ -5677,7 +5535,7 @@ index 7fcee1c11ac4..9d2b281f06a2 100644
  
        - ``V4L2_PIX_FMT_VUYX32``
 
-From e7df6c6a0e594082f67c9573e853a8ea89d3ac40 Mon Sep 17 00:00:00 2001
+From a6a89aedb17dc4eed344aca1ad65231d85bdbb52 Mon Sep 17 00:00:00 2001
 From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 Date: Fri, 29 Mar 2019 12:13:50 -0400
 Subject: [PATCH] media: pdf docs: adjust several tables for better display
@@ -6822,7 +6680,7 @@ index f5440d55d510..bf1dbb68eebc 100644
  .. flat-table:: Vendor and device specific formats
      :header-rows:  1
 
-From 543b003b2e4daf7111468f81e4b36d9f029d1735 Mon Sep 17 00:00:00 2001
+From 0715d5081ad6e2beed35dc734604146398f19c7c Mon Sep 17 00:00:00 2001
 From: Fish Lin <linfish@google.com>
 Date: Thu, 28 Mar 2019 23:20:46 -0400
 Subject: [PATCH] media: v4l: add I / P frame min max QP definitions
@@ -6912,7 +6770,7 @@ index 78816ec88751..37807f23231e 100644
  #define V4L2_CID_MPEG_VIDEO_MPEG4_P_FRAME_QP	(V4L2_CID_MPEG_BASE+401)
  #define V4L2_CID_MPEG_VIDEO_MPEG4_B_FRAME_QP	(V4L2_CID_MPEG_BASE+402)
 
-From 26cedc6365126dbe81e3c797c996add2f29b98d1 Mon Sep 17 00:00:00 2001
+From 7250e4af1cb68dd3e3fd8fed7b549a347cc66b53 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil@xs4all.nl>
 Date: Mon, 1 Apr 2019 03:42:05 -0400
 Subject: [PATCH] media: v4l2-ctrls.h: remove spurious text
@@ -6950,7 +6808,7 @@ index bd621cec65a5..ee026387f513 100644
   * framework. This function will lock the control's handler, so it cannot be
   * used from within the &v4l2_ctrl_ops functions.
 
-From 6e56f06c8b3505d089dfe9b2e10787995c44275d Mon Sep 17 00:00:00 2001
+From bfd472326fd9572583310d2b847cd21becdc19f4 Mon Sep 17 00:00:00 2001
 From: Ezequiel Garcia <ezequiel@collabora.com>
 Date: Thu, 28 Mar 2019 12:16:30 -0400
 Subject: [PATCH] media: vb2: Minor function naming fix
@@ -6991,7 +6849,7 @@ index b11a779e97b0..1c3147275785 100644
  	.fill_vb2_buffer	= __fill_vb2_buffer,
  	.copy_timestamp		= __copy_timestamp,
 
-From 167e9dcf5458559767cccf550f864ea7f538643b Mon Sep 17 00:00:00 2001
+From 6a2d6cbb1c7b9f0b00c7ab3bc6116d919e278d98 Mon Sep 17 00:00:00 2001
 From: Ezequiel Garcia <ezequiel@collabora.com>
 Date: Thu, 28 Mar 2019 14:07:03 -0400
 Subject: [PATCH] media: rockchip/vpu: Rename pixel format helpers
@@ -7052,7 +6910,7 @@ index ab0fb2053620..fb5e36aedd8c 100644
  		return;
  
 
-From 8c7490292c5d9f312be574838854f023b7d750ad Mon Sep 17 00:00:00 2001
+From 5e4729c61cb5317e2724ba0d7319fb9749940f8e Mon Sep 17 00:00:00 2001
 From: Ezequiel Garcia <ezequiel@collabora.com>
 Date: Thu, 28 Mar 2019 14:07:04 -0400
 Subject: [PATCH] media: Introduce helpers to fill pixel format structs
@@ -7287,7 +7145,7 @@ index 2b93cb281fa5..0a41bbecf3d3 100644
 +
  #endif /* V4L2_COMMON_H_ */
 
-From 4eb0767e9d68bf1ec8d967fdc97d218d0407a992 Mon Sep 17 00:00:00 2001
+From dc3964ebf38a2138ea47edab403cdaa34dac5e1c Mon Sep 17 00:00:00 2001
 From: Helen Fornazier <helen.koike@collabora.com>
 Date: Wed, 6 Mar 2019 17:42:40 -0500
 Subject: [PATCH] media: v4l2-common: add bayer formats in v4l2_format_info
@@ -7336,7 +7194,7 @@ index d869a2910435..b5778b2ffa27 100644
  	unsigned int i;
  
 
-From 6195b0b83d8a5040da3bface4e57a213e23faad1 Mon Sep 17 00:00:00 2001
+From f01513e533a525410ad305e761da30a53e0f7241 Mon Sep 17 00:00:00 2001
 From: Helen Fornazier <helen.koike@collabora.com>
 Date: Wed, 13 Mar 2019 14:29:37 -0400
 Subject: [PATCH] media: vimc: propagate pixel format in the stream
@@ -8491,7 +8349,7 @@ index a7c5ac5ace4f..2b3667408794 100644
  
  /**
 
-From 09ba0ea46e73bf519c285d256c0b44fbea8a0b56 Mon Sep 17 00:00:00 2001
+From d355a596f6b2f65622e8c579796f0762fb5aa907 Mon Sep 17 00:00:00 2001
 From: Shuah Khan <shuah@kernel.org>
 Date: Mon, 1 Apr 2019 20:40:19 -0400
 Subject: [PATCH] media: Media Device Allocator API
@@ -8805,7 +8663,7 @@ index 000000000000..b35ea6062596
 +#endif /* CONFIG_MEDIA_CONTROLLER && CONFIG_USB */
 +#endif /* _MEDIA_DEV_ALLOCATOR_H */
 
-From d93fb0affcef6ae653d5ceeb71522cf31d2405df Mon Sep 17 00:00:00 2001
+From 9bafdca44ef079b80ff393f529cf97d215bdc4bc Mon Sep 17 00:00:00 2001
 From: Shuah Khan <shuah@kernel.org>
 Date: Mon, 1 Apr 2019 20:43:18 -0400
 Subject: [PATCH] media: Clear devnode->media_dev holding media_devnode_lock
@@ -8838,7 +8696,7 @@ index 61dc05fcc55c..d5aa30eeff4a 100644
  }
  
 
-From fa67bbe0fa250802605d08446754d8a3b94b3249 Mon Sep 17 00:00:00 2001
+From 2ca229a1fc52a8d3230340cf1d4f8efdd30d1c03 Mon Sep 17 00:00:00 2001
 From: Mickael Guene <mickael.guene@st.com>
 Date: Tue, 9 Apr 2019 02:15:47 -0400
 Subject: [PATCH] media: uapi: Add MEDIA_BUS_FMT_BGR888_3X8 media bus format
@@ -8995,7 +8853,7 @@ index d6a5a3bfe6c4..2a6b253cfb05 100644
  #define MEDIA_BUS_FMT_RGB888_1X24		0x100a
  #define MEDIA_BUS_FMT_RGB888_2X12_BE		0x100b
 
-From dee2e7a017ec82f2046778696b83fe76e828394b Mon Sep 17 00:00:00 2001
+From cf61c7e1e70ea29f18b93f605de8736013f8b76b Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil@xs4all.nl>
 Date: Mon, 1 Apr 2019 08:41:58 -0400
 Subject: [PATCH] media: videobuf2-v4l2.c: move up STATE_DEQUEUED check
@@ -9050,7 +8908,7 @@ index 1c3147275785..fb9ac7696fc6 100644
  		dprintk(1, "%s: request_fd < 0\n", opname);
  		return -EINVAL;
 
-From 8c8857abe6f1abd27d61ac64173cbef65f382925 Mon Sep 17 00:00:00 2001
+From d46629b67db576b7856c954e3dbbf087edc5ddc5 Mon Sep 17 00:00:00 2001
 From: Jernej Skrabec <jernej.skrabec@siol.net>
 Date: Sun, 7 Apr 2019 14:47:28 -0400
 Subject: [PATCH] media: cedrus: Fix initialization order
@@ -9129,7 +8987,7 @@ index b98add3cdedd..d0429c0e6b6b 100644
  	v4l2_device_unregister(&dev->v4l2_dev);
  
 
-From 4cd35122dc7a9aaf9e580e85c2dba915c8a3cfdb Mon Sep 17 00:00:00 2001
+From 4640e6c84ebab7ac7571c44398820664ea4a4e1a Mon Sep 17 00:00:00 2001
 From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 Date: Thu, 28 Mar 2019 01:23:54 -0400
 Subject: [PATCH] media: v4l: Add definitions for missing 32-bit RGB formats
@@ -9335,7 +9193,7 @@ index 496e6453450c..00525503267d 100644
  #define V4L2_PIX_FMT_XRGB32  v4l2_fourcc('B', 'X', '2', '4') /* 32  XRGB-8-8-8-8  */
  
 
-From 499b6b56be61d1c3e0b16b43d5f1e6fcb1d7a78b Mon Sep 17 00:00:00 2001
+From 4c4a7fe2891c28c9f60a1d4ecd219384ac5e6d30 Mon Sep 17 00:00:00 2001
 From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 Date: Thu, 28 Mar 2019 01:23:54 -0400
 Subject: [PATCH] media: v4l: Add definitions for missing 16-bit RGB4444
@@ -9522,7 +9380,7 @@ index 00525503267d..561eabdd027a 100644
  #define V4L2_PIX_FMT_ARGB555 v4l2_fourcc('A', 'R', '1', '5') /* 16  ARGB-1-5-5-5  */
  #define V4L2_PIX_FMT_XRGB555 v4l2_fourcc('X', 'R', '1', '5') /* 16  XRGB-1-5-5-5  */
 
-From bbe4b02292e7081af0243bf0500c1ae345aca508 Mon Sep 17 00:00:00 2001
+From 560f042b5b7e4f1e346c76c00ebbe939256d2865 Mon Sep 17 00:00:00 2001
 From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 Date: Thu, 28 Mar 2019 01:23:54 -0400
 Subject: [PATCH] media: v4l: Add definitions for missing 16-bit RGB555 formats
@@ -9708,7 +9566,7 @@ index 561eabdd027a..1050a75fb7ef 100644
  #define V4L2_PIX_FMT_RGB555X v4l2_fourcc('R', 'G', 'B', 'Q') /* 16  RGB-5-5-5 BE  */
  #define V4L2_PIX_FMT_ARGB555X v4l2_fourcc_be('A', 'R', '1', '5') /* 16  ARGB-5-5-5 BE */
 
-From 0a85cd57b8f7b3d2487d7f8cc57d39b19823f6a2 Mon Sep 17 00:00:00 2001
+From 6adeda71615278b0a7e2fcce0eb36926d4a4942c Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Tue, 23 Apr 2019 10:05:09 -0400
 Subject: [PATCH] media: field-order.rst: clarify FIELD_ANY and FIELD_NONE
@@ -9772,7 +9630,7 @@ index 3fb473e3b8e2..d640e922a974 100644
        - 2
        - Images consist of the top (aka odd) field only.
 
-From 4accb27596ecdec0ad553a4c5768c9260a8f3a79 Mon Sep 17 00:00:00 2001
+From 85f7014455fcbb94ff61a3e2f8f4c7dcc22d5092 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Thu, 25 Apr 2019 03:12:27 -0400
 Subject: [PATCH] media: rockchip/vpu: Do not request id 0 for our video device
@@ -9795,7 +9653,7 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
-index 58721c46fba4..c00e2b47d5c1 100644
+index ec0a973c3041..4f377aec01e1 100644
 --- a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
 +++ b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
 @@ -352,7 +352,7 @@ static int rockchip_vpu_video_device_register(struct rockchip_vpu_dev *vpu)
@@ -9808,46 +9666,7 @@ index 58721c46fba4..c00e2b47d5c1 100644
  		v4l2_err(&vpu->v4l2_dev, "Failed to register video device\n");
  		goto err_free_dev;
 
-From c0f92c3d4653fe928074a592b03213bde052720e Mon Sep 17 00:00:00 2001
-From: Jonas Karlman <jonas@kwiboo.se>
-Date: Thu, 25 Apr 2019 03:12:28 -0400
-Subject: [PATCH] media: rockchip/vpu: Add missing dont_use_autosuspend() calls
-
-Those calls are needed to restore a clean PM state when the probe fails
-or when the driver is unloaded such that future ->probe() calls can
-initialize runtime PM again.
-
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-(cherry picked from commit 5c5b90f5cbad77dc15d8b5582efdb2e362bcd710)
----
- drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
-index c00e2b47d5c1..b25e93daafde 100644
---- a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
-+++ b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
-@@ -489,6 +489,7 @@ static int rockchip_vpu_probe(struct platform_device *pdev)
- 	v4l2_device_unregister(&vpu->v4l2_dev);
- err_clk_unprepare:
- 	clk_bulk_unprepare(vpu->variant->num_clocks, vpu->clocks);
-+	pm_runtime_dont_use_autosuspend(vpu->dev);
- 	pm_runtime_disable(vpu->dev);
- 	return ret;
- }
-@@ -509,6 +510,7 @@ static int rockchip_vpu_remove(struct platform_device *pdev)
- 	}
- 	v4l2_device_unregister(&vpu->v4l2_dev);
- 	clk_bulk_unprepare(vpu->variant->num_clocks, vpu->clocks);
-+	pm_runtime_dont_use_autosuspend(vpu->dev);
- 	pm_runtime_disable(vpu->dev);
- 	return 0;
- }
-
-From fd3d1fa7826f249e14cf0f4a70e87e4eac65f1d5 Mon Sep 17 00:00:00 2001
+From 0650b9792a1f1182fefd6ffc357859caa30c0488 Mon Sep 17 00:00:00 2001
 From: Boris Brezillon <boris.brezillon@collabora.com>
 Date: Thu, 25 Apr 2019 03:12:29 -0400
 Subject: [PATCH] media: rockchip/vpu: Get vdev from the file arg in
@@ -9881,7 +9700,7 @@ index fb5e36aedd8c..dcbfc3cbc9f3 100644
  		 vpu->dev->driver->name);
  	return 0;
 
-From a09a931b5f71160dd94090ff7c9121f348f1de5b Mon Sep 17 00:00:00 2001
+From fc40bf087e21b3e13d09eaeb317c01e17f816cc7 Mon Sep 17 00:00:00 2001
 From: Boris Brezillon <boris.brezillon@collabora.com>
 Date: Thu, 25 Apr 2019 03:12:30 -0400
 Subject: [PATCH] media: rockchip/vpu: Initialize mdev->bus_info
@@ -9897,7 +9716,7 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
-index b25e93daafde..675348a06a39 100644
+index 4f377aec01e1..8bbc905b26c8 100644
 --- a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
 +++ b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
 @@ -463,6 +463,8 @@ static int rockchip_vpu_probe(struct platform_device *pdev)
@@ -9909,57 +9728,3 @@ index b25e93daafde..675348a06a39 100644
  	media_device_init(&vpu->mdev);
  	vpu->v4l2_dev.mdev = &vpu->mdev;
  
-
-From 13311a3fd696951977fac154886522ee0dbf1b9b Mon Sep 17 00:00:00 2001
-From: Jonas Karlman <jonas@kwiboo.se>
-Date: Thu, 25 Apr 2019 03:12:31 -0400
-Subject: [PATCH] media: rockchip/vpu: Fix/re-order probe-error/remove path
-
-media_device_cleanup() and v4l2_m2m_unregister_media_controller() were
-missing in the probe error path.
-While at it, re-order calls in the remove path to unregister/cleanup
-things in the reverse order they were initialized/registered.
-
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-(cherry picked from commit fc8670d1f72b746ff3a5fe441f1fca4c4dba0e6f)
----
- drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
-index 675348a06a39..8bbc905b26c8 100644
---- a/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
-+++ b/drivers/staging/media/rockchip/vpu/rockchip_vpu_drv.c
-@@ -482,10 +482,12 @@ static int rockchip_vpu_probe(struct platform_device *pdev)
- 	return 0;
- err_video_dev_unreg:
- 	if (vpu->vfd_enc) {
-+		v4l2_m2m_unregister_media_controller(vpu->m2m_dev);
- 		video_unregister_device(vpu->vfd_enc);
- 		video_device_release(vpu->vfd_enc);
- 	}
- err_m2m_rel:
-+	media_device_cleanup(&vpu->mdev);
- 	v4l2_m2m_release(vpu->m2m_dev);
- err_v4l2_unreg:
- 	v4l2_device_unregister(&vpu->v4l2_dev);
-@@ -503,13 +505,13 @@ static int rockchip_vpu_remove(struct platform_device *pdev)
- 	v4l2_info(&vpu->v4l2_dev, "Removing %s\n", pdev->name);
- 
- 	media_device_unregister(&vpu->mdev);
--	v4l2_m2m_unregister_media_controller(vpu->m2m_dev);
--	v4l2_m2m_release(vpu->m2m_dev);
--	media_device_cleanup(&vpu->mdev);
- 	if (vpu->vfd_enc) {
-+		v4l2_m2m_unregister_media_controller(vpu->m2m_dev);
- 		video_unregister_device(vpu->vfd_enc);
- 		video_device_release(vpu->vfd_enc);
- 	}
-+	media_device_cleanup(&vpu->mdev);
-+	v4l2_m2m_release(vpu->m2m_dev);
- 	v4l2_device_unregister(&vpu->v4l2_dev);
- 	clk_bulk_unprepare(vpu->variant->num_clocks, vpu->clocks);
- 	pm_runtime_dont_use_autosuspend(vpu->dev);

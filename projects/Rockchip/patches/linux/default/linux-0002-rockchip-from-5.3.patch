@@ -1,4 +1,4 @@
-From fa8236d6572e4eaaa90b99d74cecf8d0a92b6a7f Mon Sep 17 00:00:00 2001
+From 6de120bc3d4af99b69aac42fcc0cf58805d512b3 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Mon, 6 May 2019 11:58:12 +0200
 Subject: [PATCH] ASoC: hdmi-codec: remove function name debug traces
@@ -72,7 +72,7 @@ index 39caf19abb0b..eb31d7eddcbf 100644
  		dev_err(dev, "%s: No platform data\n", __func__);
  		return -EINVAL;
 
-From c58acd8e45def5c8b5f277bdf6444df63832e701 Mon Sep 17 00:00:00 2001
+From ee03e9b42f56340a64174baca3ca427fd9228c13 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Mon, 6 May 2019 11:58:13 +0200
 Subject: [PATCH] ASoC: hdmi-codec: remove reference to the current substream
@@ -213,7 +213,7 @@ index eb31d7eddcbf..4d32f93f6be6 100644
  				   GFP_KERNEL);
  	if (!hcp->daidrv)
 
-From f759dd79b520b54bae1ea8f7fb7e3054573e318f Mon Sep 17 00:00:00 2001
+From 2df485717c98d700094cfd3d944475a9e186a22c Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Mon, 6 May 2019 11:58:14 +0200
 Subject: [PATCH] ASoC: hdmi-codec: remove reference to the dai drivers in the
@@ -289,7 +289,7 @@ index 4d32f93f6be6..9408e6bc4d3e 100644
  		dev_err(dev, "%s: snd_soc_register_component() failed (%d)\n",
  			__func__, ret);
 
-From 87efee528d1b6baea06f1d38e85a3f1943bed607 Mon Sep 17 00:00:00 2001
+From 199be8f4e72a2abebb049a4b32e88017b69aa13e Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Mon, 6 May 2019 11:58:15 +0200
 Subject: [PATCH] ASoC: hdmi-codec: remove ops dependency on the dai id
@@ -535,7 +535,7 @@ index 9408e6bc4d3e..90a892766625 100644
  	dev_set_drvdata(dev, hcp);
  
 
-From 37c3514757c9e9d43d6edc965be72dec1b64ec39 Mon Sep 17 00:00:00 2001
+From 73fdf4fbeaf0c1418ae4aba43d870c8e74dc9e4a Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Mon, 13 May 2019 10:18:47 +0200
 Subject: [PATCH] ASoC: hdmi-codec: re-introduce mutex locking
@@ -606,7 +606,7 @@ index 90a892766625..6a0cc8d7e141 100644
  	if (!daidrv)
  		return -ENOMEM;
 
-From 457c4fad18b7f3c3d21dbc171db105a0c772c711 Mon Sep 17 00:00:00 2001
+From 43d5e3f15f0233cb2af0b8298fe76e03f66348be Mon Sep 17 00:00:00 2001
 From: Caesar Wang <caesar.wang@rock-chips.com>
 Date: Tue, 9 Apr 2019 13:47:07 -0700
 Subject: [PATCH] ARM: dts: rockchip: fix PWM clock found on RK3288 Socs
@@ -662,7 +662,7 @@ index aa017abf4f42..171231a0cd9b 100644
  		status = "disabled";
  	};
 
-From a53c5655b10476dd92c5d897fba6923d86b81410 Mon Sep 17 00:00:00 2001
+From 57fba674c53d885410ae7924fcc132dc473aeaf4 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Fri, 3 May 2019 16:48:14 -0700
 Subject: [PATCH] ARM: dts: rockchip: Remove bogus 'i2s_clk_out' from
@@ -703,7 +703,7 @@ index e852594417b5..f9c4ece3c0d3 100644
  
  &rk808 {
 
-From 7248d9787964516fa3a39ac874cf6e036a5ed4a3 Mon Sep 17 00:00:00 2001
+From 56a1ba42bdfd1ecfd0ced4e33df42b1962bcbf3d Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Fri, 3 May 2019 16:45:37 -0700
 Subject: [PATCH] ARM: dts: rockchip: Make rk3288-veyron-mickey's emmc work
@@ -766,7 +766,7 @@ index f9c4ece3c0d3..52f6abc22291 100644
  	status = "disabled";
  };
 
-From 300b013e507ec05f020f48c96852a643e662ebd9 Mon Sep 17 00:00:00 2001
+From df12665b7db901b0a77a5a5926983894f983630b Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Fri, 3 May 2019 16:41:42 -0700
 Subject: [PATCH] ARM: dts: rockchip: Make rk3288-veyron-minnie run at hs200
@@ -819,7 +819,7 @@ index 468a1818545d..ce57881625ec 100644
  	pinctrl-0 = <&pwr_key_l &ap_lid_int_l &volum_down_l &volum_up_l>;
  
 
-From 0326148ebfc5d78adf6d74eff9291d3d5368fba9 Mon Sep 17 00:00:00 2001
+From 28c34fbfe4f3789997d7319e3bab993d3eb0f5b0 Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Thu, 16 May 2019 09:29:40 -0700
 Subject: [PATCH] ARM: dts: rockchip: raise CPU trip point temperature for
@@ -884,7 +884,7 @@ index 1252522392c7..e81f1a0cac83 100644
  
  &uart0 {
 
-From 15776271bb62686b8552728bd77a21171cd3f9b8 Mon Sep 17 00:00:00 2001
+From 683c79966324d3e89163b44529d4454387e38d27 Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Thu, 16 May 2019 09:29:41 -0700
 Subject: [PATCH] ARM: dts: rockchip: raise GPU trip point temperatures for
@@ -941,7 +941,7 @@ index e81f1a0cac83..90c8312d01ff 100644
  	ddc-i2c-bus = <&i2c5>;
  	status = "okay";
 
-From da8e4ad23d1bd20889c162268923a56d6f8fcbe3 Mon Sep 17 00:00:00 2001
+From 8ad37032ecd9c64487952ff7fc69470ee9c6b8e8 Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Thu, 16 May 2019 09:29:42 -0700
 Subject: [PATCH] ARM: dts: raise GPU trip point temperature for speedy to 80
@@ -978,7 +978,7 @@ index aae37c535444..9a87017347ea 100644
  	temperature = <90000>;
  };
 
-From a60cf61b444dfd73364da10cc06d9ad73d99c7f0 Mon Sep 17 00:00:00 2001
+From 54e45791538c4bf2fef1f300fc490405e3fd4f45 Mon Sep 17 00:00:00 2001
 From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 Date: Fri, 10 May 2019 02:03:14 +0900
 Subject: [PATCH] arm64: dts: rockchip: add PCIe nodes on rk3399-rockpro64
@@ -1030,7 +1030,7 @@ index 20ec7d1c25d7..eb5594062006 100644
  			rockchip,pins = <1 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
  		};
 
-From b718c63859c8b67adbc1eb6ca3af7d1d5c4abea2 Mon Sep 17 00:00:00 2001
+From cef8391237bc93c2f59eaf4ea76836320f35ee66 Mon Sep 17 00:00:00 2001
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Date: Fri, 17 May 2019 09:36:24 +0530
 Subject: [PATCH] arm64: dts: rockchip: Enable SPI0 and SPI4 on Rock960
@@ -1067,7 +1067,7 @@ index 12285c51cceb..c624b4e73129 100644
  	dr_mode = "otg";
  };
 
-From 0784b526d6015d26e58b9f737210f989b469063d Mon Sep 17 00:00:00 2001
+From 39e09beb196df4063af07c24c615893588f4f2bf Mon Sep 17 00:00:00 2001
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Date: Fri, 17 May 2019 09:36:25 +0530
 Subject: [PATCH] arm64: dts: rockchip: Enable SPI1 on Ficus
@@ -1104,7 +1104,7 @@ index 6b059bd7a04f..ebe2ee77ba1f 100644
  	dr_mode = "host";
  };
 
-From 862863401f3603a5b622377e8813829d58f4d968 Mon Sep 17 00:00:00 2001
+From 7933010db20328abb5d7c1406de959174ba1b1db Mon Sep 17 00:00:00 2001
 From: Wen Yang <wen.yang99@zte.com.cn>
 Date: Fri, 26 Apr 2019 15:08:08 +0800
 Subject: [PATCH] ARM: rockchip: fix missing of_node_put calls in smp code
@@ -1204,7 +1204,7 @@ index 065b09e6f1eb..4a4f914c34cf 100644
  	}
  	rk3288_bootram_phy = res.start;
 
-From b5f627fd6ca46062e3702880d0ef8a2ba86d9c61 Mon Sep 17 00:00:00 2001
+From 39db3f64aaac98e777ff1ac2f9b6e0c2a4f8c990 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Tue, 7 May 2019 13:49:35 -0700
 Subject: [PATCH] clk: rockchip: Use clk_hw_get_rate() in MMC phase calculation
@@ -1243,7 +1243,7 @@ index 026a26bb702d..07526f64dbfd 100644
  	u8 delay_num;
  	u32 raw_value;
 
-From c143aa27858fda22a032acc3e05c6b80c9b64c9c Mon Sep 17 00:00:00 2001
+From 954150dbccedf40021ec51d02bf954099b709433 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Fri, 3 May 2019 14:22:08 -0700
 Subject: [PATCH] clk: rockchip: Don't yell about bad mmc phases when getting
@@ -1289,7 +1289,7 @@ index 07526f64dbfd..17662217d1bb 100644
  	raw_value = readl(mmc_clock->reg) >> (mmc_clock->shift);
  
 
-From d9c46eeb837f8a0d63dcf0fc64e78e4e8490b512 Mon Sep 17 00:00:00 2001
+From c5caaa7bc03fbc583376e2bfd9c5f66cc946e087 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Tue, 7 May 2019 13:57:42 -0700
 Subject: [PATCH] clk: rockchip: Slightly more accurate math in
@@ -1370,7 +1370,7 @@ index 17662217d1bb..baa73285b953 100644
  
  	return degrees % 360;
 
-From 11a65316b691aa8a15f8f231ba07ee622c21ff67 Mon Sep 17 00:00:00 2001
+From 32bd793d3a5c3961c77eda588af92754f20f03ed Mon Sep 17 00:00:00 2001
 From: Justin Swartz <justin.swartz@risingedge.co.za>
 Date: Thu, 16 May 2019 12:44:36 +0000
 Subject: [PATCH] clk: rockchip: add 1.464GHz cpu-clock rate to rk3228
@@ -1398,7 +1398,7 @@ index 7af48184b022..b85730565edd 100644
  	RK3228_CPUCLK_RATE(1392000000, 1, 5),
  	RK3228_CPUCLK_RATE(1296000000, 1, 5),
 
-From ffa4771f534951fe17328d8ed1b28ee0a85444c0 Mon Sep 17 00:00:00 2001
+From 5aa2df0f4d22afefba7852a4491ebdd5d31a9ad0 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Tue, 21 May 2019 13:32:14 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add pin names for rk3288-veyron-minnie
@@ -1656,7 +1656,7 @@ index ce57881625ec..a65099b4aef1 100644
  	backlight {
  		bl_pwr_en: bl_pwr_en {
 
-From b2ceba130cb6500281cdd88a093ed2fd1f109484 Mon Sep 17 00:00:00 2001
+From 9514f28ab9ac871398f7c13375d77621aeb460b2 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Tue, 21 May 2019 13:32:15 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add pin names for rk3288-veyron-jerry
@@ -1891,7 +1891,7 @@ index b1613af83d5d..164561f04c1d 100644
  	backlight {
  		bl_pwr_en: bl_pwr_en {
 
-From e8024a6d127c84a7028ebfce90c7eccbf29d2e02 Mon Sep 17 00:00:00 2001
+From 885b4a7f7159eff17ec271ace6c9d0a4de81dfb0 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Tue, 21 May 2019 16:49:33 -0700
 Subject: [PATCH] ARM: dts: rockchip: Mark that the rk3288 timer might stop in
@@ -1936,7 +1936,7 @@ index 171231a0cd9b..1e5260b556b7 100644
  
  	timer: timer@ff810000 {
 
-From 168325574d0da998c3c6ac0b40cd43ef9e70cf0d Mon Sep 17 00:00:00 2001
+From 99eb10f158ad98ef6be3a1d7d7f3c85b943b59ac Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Thu, 16 May 2019 10:25:09 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add #cooling-cells entry for rk3288 GPU
@@ -1965,7 +1965,7 @@ index 1e5260b556b7..7e9b8c7f6ab7 100644
  		status = "disabled";
  	};
 
-From ff37f027de3eca7fee46a2f42b7b96c3d3243ab1 Mon Sep 17 00:00:00 2001
+From 9a6db29ad7e4a7d4c063385f7141cee725cf3150 Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Thu, 16 May 2019 10:25:10 -0700
 Subject: [PATCH] ARM: dts: rockchip: Use GPU as cooling device for the GPU
@@ -2004,7 +2004,7 @@ index 7e9b8c7f6ab7..fd188bb4fd48 100644
  			};
  		};
 
-From 6a4ccf6d23d2ff42f981ca23b0b5143af788dceb Mon Sep 17 00:00:00 2001
+From 5b0e20972bc4df1aac5d314cb754676dc9016ad2 Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Mon, 20 May 2019 15:00:49 -0700
 Subject: [PATCH] ARM: dts: rockchip: remove GPU 500 MHz OPP on rk3288
@@ -2044,7 +2044,7 @@ index fd188bb4fd48..159d91180cee 100644
  			opp-hz = /bits/ 64 <600000000>;
  			opp-microvolt = <1250000>;
 
-From 86fda223baf848d8263b2ddbc9a86765d4381500 Mon Sep 17 00:00:00 2001
+From fe1883e66d8eecd6a1229f1d33f386bc86b70634 Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Mon, 20 May 2019 15:00:50 -0700
 Subject: [PATCH] ARM: dts: rockchip: Use the GPU to cool CPU thermal zone of
@@ -2108,7 +2108,7 @@ index 52f6abc22291..34797abe3403 100644
  };
  
 
-From 8529b204ebe5d53f1d1e8f51c429a3199c9a580d Mon Sep 17 00:00:00 2001
+From 91507b3e46fdcd0279450c503b17c3c03a0ca11e Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Mon, 20 May 2019 15:00:51 -0700
 Subject: [PATCH] ARM: dts: rockchip: Configure the GPU thermal zone for mickey
@@ -2214,7 +2214,7 @@ index 34797abe3403..945e80801292 100644
  	status = "disabled";
  };
 
-From 3b946e9b521118f69b23d4c08b0e45c440b61d5b Mon Sep 17 00:00:00 2001
+From 865632ecfe650031bde718fc38d43afe4c79a2a1 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil@xs4all.nl>
 Date: Fri, 10 May 2019 11:15:04 -0400
 Subject: [PATCH] media: cec: mark devnode as registered before actually
@@ -2255,7 +2255,7 @@ index f5d1578e256a..db7adffcdc76 100644
  
  clr_bit:
 
-From 973eba3c9ad24a8d181f7c3627a17f6a9c3fa813 Mon Sep 17 00:00:00 2001
+From 0eb4e11495e0c7c9a3829737d79590d1e5d30189 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Tue, 23 Apr 2019 08:37:39 -0400
 Subject: [PATCH] media: cec: cec_transmit_msg_fh: do sanity checks first
@@ -2301,7 +2301,7 @@ index f1261cc2b6fa..b6102510e203 100644
  		if (cec_msg_destination(msg) == 0xf) {
  			dprintk(1, "%s: invalid poll message\n", __func__);
 
-From d9411a3cf1a6ce84350cf4ad664932572b452ef5 Mon Sep 17 00:00:00 2001
+From 4d2337fd640e1eb185b5e0943c62c8ffa7453a74 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Tue, 23 Apr 2019 08:43:30 -0400
 Subject: [PATCH] media: cec: move check from cec_transmit to
@@ -2358,7 +2358,7 @@ index 156a0d76ab2a..12d676484472 100644
  		err = -EBUSY;
  	else
 
-From 1f59c07a4674eedb76ae1bc3f4dc4a7725ca534e Mon Sep 17 00:00:00 2001
+From f344c44b396f17c4d96a1cf206f22f47ae1900f9 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Tue, 23 Apr 2019 08:44:59 -0400
 Subject: [PATCH] media: cec: add CEC_MSG_FL_RAW flag and msg_is_raw helper
@@ -2404,7 +2404,7 @@ index 3094af68b6e7..5704fa0292b5 100644
  /* cec_msg tx/rx_status field */
  #define CEC_TX_STATUS_OK		(1 << 0)
 
-From 97944ebc505003ac8592556d9eb8b035cc892862 Mon Sep 17 00:00:00 2001
+From 8382f895f9af621d0f31ecf4a1e22e1a70ca0783 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Tue, 23 Apr 2019 08:48:22 -0400
 Subject: [PATCH] media: cec: support CEC_MSG_FL_RAW
@@ -2560,7 +2560,7 @@ index 5b9232b6e663..9a1ec9299aca 100644
  		}
  		if (msg->reply) {
 
-From 34ff39e0a2381e42ec7a8b4cbade462fe880baa8 Mon Sep 17 00:00:00 2001
+From 421f1eb82bd3b7ae3efc5f652e5926b3f39bcb43 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Tue, 23 Apr 2019 08:14:01 -0400
 Subject: [PATCH] media: cec: allow any initiator for Ping and Image/Text View
@@ -2613,7 +2613,7 @@ index 9a1ec9299aca..5827d8c3742a 100644
  			return -ENONET;
  		}
 
-From a8acef3ba441627d5237557fee52c55fc6821063 Mon Sep 17 00:00:00 2001
+From db6793b83feb8e38e01263f3c000cc869cb317f9 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil@xs4all.nl>
 Date: Wed, 29 May 2019 04:22:15 -0400
 Subject: [PATCH] media: cec-adap: fix regression in ping sanity check
@@ -2644,7 +2644,7 @@ index 5827d8c3742a..ac3683a7b2ab 100644
  			dprintk(1, "%s: initiator has unknown logical address %d\n",
  				__func__, cec_msg_initiator(msg));
 
-From 374ba50dde3ac205045c6a351b7cfb1638c324ec Mon Sep 17 00:00:00 2001
+From a796abd8782cebb027eab244ab17a31b47485a43 Mon Sep 17 00:00:00 2001
 From: John Keeping <john@metanate.com>
 Date: Mon, 3 Jun 2019 15:34:35 +0100
 Subject: [PATCH] ARM: dts: rockchip: fix pwm-cells for rk3288's pwm3
@@ -2672,7 +2672,7 @@ index 159d91180cee..766d1cf51a5b 100644
  		pinctrl-0 = <&pwm3_pin>;
  		clocks = <&cru PCLK_RKPWM>;
 
-From 30c572f728a92083e8d4230227b7dd371955c638 Mon Sep 17 00:00:00 2001
+From 9c6b5041a056b2e0a125e4e1a9e748ca9ea656c0 Mon Sep 17 00:00:00 2001
 From: Helen Koike <helen.koike@collabora.com>
 Date: Mon, 3 Jun 2019 11:22:15 -0300
 Subject: [PATCH] arm64: dts: rockchip: fix isp iommu clocks and power domain
@@ -2731,7 +2731,7 @@ index 196ac9b78076..89594a7276f4 100644
  
  	hdmi_sound: hdmi-sound {
 
-From 83c65f8cda33050b2e04d7ce4e3767fc0acb1b35 Mon Sep 17 00:00:00 2001
+From b8cd3232c2c114b83d9dacc1cec478e60e6b6751 Mon Sep 17 00:00:00 2001
 From: Akash Gajjar <akash@openedev.com>
 Date: Wed, 29 May 2019 00:16:58 +0530
 Subject: [PATCH] arm64: dts: rockchip: add WiFi+BT support on ROCK Pi4 board
@@ -2889,7 +2889,7 @@ index e030627159c6..55e74f4d5cd0 100644
  	status = "okay";
  };
 
-From 29cfc5831d2233688cda65cc9d5f47d7c3e2e9d2 Mon Sep 17 00:00:00 2001
+From 91fbba5af24b3858ade80f52204788f337821b0c Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Fri, 24 May 2019 16:33:09 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add pin names for rk3288-veyron jaq,
@@ -3525,7 +3525,4880 @@ index 9a87017347ea..9b140db04456 100644
  	backlight {
  		bl_pwr_en: bl_pwr_en {
 
-From 25e7abe1d7acd0899e93c62e74ade559b7923ed4 Mon Sep 17 00:00:00 2001
+From c522ad08aedbe7ee6ec823d6c60752d5ad81b26c Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Thu, 2 May 2019 15:53:32 -0700
+Subject: [PATCH] dt-bindings: drm/bridge/synopsys: dw-hdmi: Add "unwedge" for
+ ddc bus
+
+In certain situations it was seen that we could wedge up the DDC bus
+on the HDMI adapter on rk3288.  The only way to unwedge was to mux one
+of the pins over to GPIO output-driven-low temporarily and then
+quickly mux back.  Full details can be found in the patch
+("drm/bridge/synopsys: dw-hdmi: Add "unwedge" for ddc bus").
+
+Since unwedge requires remuxing the pins, we first need to add to the
+bindings so that we can specify what state the pins should be in for
+unwedging.
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Sean Paul <seanpaul@chromium.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190502225336.206885-1-dianders@chromium.org
+(cherry picked from commit c60362500149608bc535c9cb80d42ddd03f8152a)
+---
+ .../devicetree/bindings/display/rockchip/dw_hdmi-rockchip.txt      | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/rockchip/dw_hdmi-rockchip.txt b/Documentation/devicetree/bindings/display/rockchip/dw_hdmi-rockchip.txt
+index 39143424a474..8346bac81f1c 100644
+--- a/Documentation/devicetree/bindings/display/rockchip/dw_hdmi-rockchip.txt
++++ b/Documentation/devicetree/bindings/display/rockchip/dw_hdmi-rockchip.txt
+@@ -38,6 +38,13 @@ Optional properties
+ - phys: from general PHY binding: the phandle for the PHY device.
+ - phy-names: Should be "hdmi" if phys references an external phy.
+ 
++Optional pinctrl entry:
++- If you have both a "unwedge" and "default" pinctrl entry, dw_hdmi
++  will switch to the unwedge pinctrl state for 10ms if it ever gets an
++  i2c timeout.  It's intended that this unwedge pinctrl entry will
++  cause the SDA line to be driven low to work around a hardware
++  errata.
++
+ Example:
+ 
+ hdmi: hdmi@ff980000 {
+
+From cda5414e68508e10f9457902a14941b6016ade3b Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Thu, 2 May 2019 15:53:33 -0700
+Subject: [PATCH] drm/bridge/synopsys: dw-hdmi: Add "unwedge" for ddc bus
+
+See the PhD thesis in the comments in this patch for details, but to
+summarize this adds a hacky "unwedge" feature to the dw_hdmi i2c bus to
+workaround what appears to be a hardware errata.  This relies on a
+pinctrl entry to help change around muxing to perform the unwedge.
+
+NOTE that the specific TV this was tested on was the "Samsung
+UN40HU6950FXZA" and the specific port was the "STB" port.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Sean Paul <seanpaul@chromium.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190502225336.206885-2-dianders@chromium.org
+(cherry picked from commit 50f9495efe308eb25fd921ea7c8c8143ddeeae30)
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 116 +++++++++++++++++++++++++-----
+ 1 file changed, 100 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index ab7968c8f6a2..ae18f860f0a8 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -19,6 +19,7 @@
+ #include <linux/hdmi.h>
+ #include <linux/mutex.h>
+ #include <linux/of_device.h>
++#include <linux/pinctrl/consumer.h>
+ #include <linux/regmap.h>
+ #include <linux/spinlock.h>
+ 
+@@ -169,6 +170,10 @@ struct dw_hdmi {
+ 	bool sink_is_hdmi;
+ 	bool sink_has_audio;
+ 
++	struct pinctrl *pinctrl;
++	struct pinctrl_state *default_state;
++	struct pinctrl_state *unwedge_state;
++
+ 	struct mutex mutex;		/* for state below and previous_mode */
+ 	enum drm_connector_force force;	/* mutex-protected force state */
+ 	bool disabled;			/* DRM has disabled our bridge */
+@@ -247,11 +252,82 @@ static void dw_hdmi_i2c_init(struct dw_hdmi *hdmi)
+ 		    HDMI_IH_MUTE_I2CM_STAT0);
+ }
+ 
++static bool dw_hdmi_i2c_unwedge(struct dw_hdmi *hdmi)
++{
++	/* If no unwedge state then give up */
++	if (IS_ERR(hdmi->unwedge_state))
++		return false;
++
++	dev_info(hdmi->dev, "Attempting to unwedge stuck i2c bus\n");
++
++	/*
++	 * This is a huge hack to workaround a problem where the dw_hdmi i2c
++	 * bus could sometimes get wedged.  Once wedged there doesn't appear
++	 * to be any way to unwedge it (including the HDMI_I2CM_SOFTRSTZ)
++	 * other than pulsing the SDA line.
++	 *
++	 * We appear to be able to pulse the SDA line (in the eyes of dw_hdmi)
++	 * by:
++	 * 1. Remux the pin as a GPIO output, driven low.
++	 * 2. Wait a little while.  1 ms seems to work, but we'll do 10.
++	 * 3. Immediately jump to remux the pin as dw_hdmi i2c again.
++	 *
++	 * At the moment of remuxing, the line will still be low due to its
++	 * recent stint as an output, but then it will be pulled high by the
++	 * (presumed) external pullup.  dw_hdmi seems to see this as a rising
++	 * edge and that seems to get it out of its jam.
++	 *
++	 * This wedging was only ever seen on one TV, and only on one of
++	 * its HDMI ports.  It happened when the TV was powered on while the
++	 * device was plugged in.  A scope trace shows the TV bringing both SDA
++	 * and SCL low, then bringing them both back up at roughly the same
++	 * time.  Presumably this confuses dw_hdmi because it saw activity but
++	 * no real STOP (maybe it thinks there's another master on the bus?).
++	 * Giving it a clean rising edge of SDA while SCL is already high
++	 * presumably makes dw_hdmi see a STOP which seems to bring dw_hdmi out
++	 * of its stupor.
++	 *
++	 * Note that after coming back alive, transfers seem to immediately
++	 * resume, so if we unwedge due to a timeout we should wait a little
++	 * longer for our transfer to finish, since it might have just started
++	 * now.
++	 */
++	pinctrl_select_state(hdmi->pinctrl, hdmi->unwedge_state);
++	msleep(10);
++	pinctrl_select_state(hdmi->pinctrl, hdmi->default_state);
++
++	return true;
++}
++
++static int dw_hdmi_i2c_wait(struct dw_hdmi *hdmi)
++{
++	struct dw_hdmi_i2c *i2c = hdmi->i2c;
++	int stat;
++
++	stat = wait_for_completion_timeout(&i2c->cmp, HZ / 10);
++	if (!stat) {
++		/* If we can't unwedge, return timeout */
++		if (!dw_hdmi_i2c_unwedge(hdmi))
++			return -EAGAIN;
++
++		/* We tried to unwedge; give it another chance */
++		stat = wait_for_completion_timeout(&i2c->cmp, HZ / 10);
++		if (!stat)
++			return -EAGAIN;
++	}
++
++	/* Check for error condition on the bus */
++	if (i2c->stat & HDMI_IH_I2CM_STAT0_ERROR)
++		return -EIO;
++
++	return 0;
++}
++
+ static int dw_hdmi_i2c_read(struct dw_hdmi *hdmi,
+ 			    unsigned char *buf, unsigned int length)
+ {
+ 	struct dw_hdmi_i2c *i2c = hdmi->i2c;
+-	int stat;
++	int ret;
+ 
+ 	if (!i2c->is_regaddr) {
+ 		dev_dbg(hdmi->dev, "set read register address to 0\n");
+@@ -270,13 +346,9 @@ static int dw_hdmi_i2c_read(struct dw_hdmi *hdmi,
+ 			hdmi_writeb(hdmi, HDMI_I2CM_OPERATION_READ,
+ 				    HDMI_I2CM_OPERATION);
+ 
+-		stat = wait_for_completion_timeout(&i2c->cmp, HZ / 10);
+-		if (!stat)
+-			return -EAGAIN;
+-
+-		/* Check for error condition on the bus */
+-		if (i2c->stat & HDMI_IH_I2CM_STAT0_ERROR)
+-			return -EIO;
++		ret = dw_hdmi_i2c_wait(hdmi);
++		if (ret)
++			return ret;
+ 
+ 		*buf++ = hdmi_readb(hdmi, HDMI_I2CM_DATAI);
+ 	}
+@@ -289,7 +361,7 @@ static int dw_hdmi_i2c_write(struct dw_hdmi *hdmi,
+ 			     unsigned char *buf, unsigned int length)
+ {
+ 	struct dw_hdmi_i2c *i2c = hdmi->i2c;
+-	int stat;
++	int ret;
+ 
+ 	if (!i2c->is_regaddr) {
+ 		/* Use the first write byte as register address */
+@@ -307,13 +379,9 @@ static int dw_hdmi_i2c_write(struct dw_hdmi *hdmi,
+ 		hdmi_writeb(hdmi, HDMI_I2CM_OPERATION_WRITE,
+ 			    HDMI_I2CM_OPERATION);
+ 
+-		stat = wait_for_completion_timeout(&i2c->cmp, HZ / 10);
+-		if (!stat)
+-			return -EAGAIN;
+-
+-		/* Check for error condition on the bus */
+-		if (i2c->stat & HDMI_IH_I2CM_STAT0_ERROR)
+-			return -EIO;
++		ret = dw_hdmi_i2c_wait(hdmi);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	return 0;
+@@ -2614,6 +2682,22 @@ __dw_hdmi_probe(struct platform_device *pdev,
+ 
+ 	/* If DDC bus is not specified, try to register HDMI I2C bus */
+ 	if (!hdmi->ddc) {
++		/* Look for (optional) stuff related to unwedging */
++		hdmi->pinctrl = devm_pinctrl_get(dev);
++		if (!IS_ERR(hdmi->pinctrl)) {
++			hdmi->unwedge_state =
++				pinctrl_lookup_state(hdmi->pinctrl, "unwedge");
++			hdmi->default_state =
++				pinctrl_lookup_state(hdmi->pinctrl, "default");
++
++			if (IS_ERR(hdmi->default_state) &&
++			    !IS_ERR(hdmi->unwedge_state)) {
++				dev_warn(dev,
++					 "Unwedge requires default pinctrl\n");
++				hdmi->unwedge_state = ERR_PTR(-ENODEV);
++			}
++		}
++
+ 		hdmi->ddc = dw_hdmi_i2c_adapter(hdmi);
+ 		if (IS_ERR(hdmi->ddc))
+ 			hdmi->ddc = NULL;
+
+From a5054b73ec22025f40e6da1d2c863c3f4bde4998 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Thu, 2 May 2019 15:53:34 -0700
+Subject: [PATCH] ARM: dts: rockchip: Switch to builtin HDMI DDC bus on
+ rk3288-veyron
+
+Downstream Chrome OS kernels use the builtin DDC bus from dw_hdmi on
+veyron.  This is the only way to get them to negotiate HDCP.
+
+Although HDCP isn't currently all supported upstream, it still seems
+like it makes sense to use dw_hdmi's builtin I2C.  Maybe eventually we
+can get HDCP negotiation working.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Sean Paul <sean@poorly.run>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit bf09924f21767e6bb7cb3aae48c48c2c2ab8261a)
+---
+ arch/arm/boot/dts/rk3288-veyron.dtsi | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
+index 90c8312d01ff..99e2771d4d31 100644
+--- a/arch/arm/boot/dts/rk3288-veyron.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
+@@ -175,7 +175,8 @@
+ };
+ 
+ &hdmi {
+-	ddc-i2c-bus = <&i2c5>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&hdmi_ddc>;
+ 	status = "okay";
+ };
+ 
+@@ -346,14 +347,6 @@
+ 	i2c-scl-rising-time-ns = <300>;		/* 225ns measured */
+ };
+ 
+-&i2c5 {
+-	status = "okay";
+-
+-	clock-frequency = <100000>;
+-	i2c-scl-falling-time-ns = <300>;
+-	i2c-scl-rising-time-ns = <1000>;
+-};
+-
+ &io_domains {
+ 	status = "okay";
+ 
+
+From fe59e537ad42cae9deede8ae6bd695af94880c7d Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Thu, 2 May 2019 15:53:35 -0700
+Subject: [PATCH] ARM: dts: rockchip: Add unwedge pinctrl entries for dw_hdmi
+ on rk3288
+
+This adds the "unwedge" pinctrl entries introduced by a recent dw_hdmi
+change that can unwedge the dw_hdmi i2c bus in some cases.  It's
+expected that any boards using this would add:
+
+  pinctrl-names = "default", "unwedge";
+  pinctrl-0 = <&hdmi_ddc>;
+  pinctrl-1 = <&hdmi_ddc_unwedge>;
+
+Note that this isn't added by default because some boards may choose
+to mux i2c5 for their DDC bus (if that is more tested for them).
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Sean Paul <sean@poorly.run>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit c077d9d717dc481a6a95f9ef2562ef6bda74fbdf)
+---
+ arch/arm/boot/dts/rk3288.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 766d1cf51a5b..cc893e154fe5 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -1547,6 +1547,15 @@
+ 				rockchip,pins = <7 RK_PC3 2 &pcfg_pull_none>,
+ 						<7 RK_PC4 2 &pcfg_pull_none>;
+ 			};
++
++			hdmi_ddc_unwedge: hdmi-ddc-unwedge {
++				rockchip,pins = <7 RK_PC3 RK_FUNC_GPIO &pcfg_output_low>,
++						<7 RK_PC4 2 &pcfg_pull_none>;
++			};
++		};
++
++		pcfg_output_low: pcfg-output-low {
++			output-low;
+ 		};
+ 
+ 		pcfg_pull_up: pcfg-pull-up {
+
+From 1430290676a4c10a8f3e0d725f77d46e00abfeae Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Thu, 2 May 2019 15:53:36 -0700
+Subject: [PATCH] ARM: dts: rockchip: Add HDMI i2c unwedging for rk3288-veyron
+
+Veyron uses the builtin i2c controller that's part of dw-hdmi.  Hook
+up the unwedging feature.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Sean Paul <sean@poorly.run>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit cd6386087d826b9421ed97b778676f4177ffdfbd)
+---
+ arch/arm/boot/dts/rk3288-veyron.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
+index 99e2771d4d31..c574844a6bb2 100644
+--- a/arch/arm/boot/dts/rk3288-veyron.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
+@@ -175,8 +175,9 @@
+ };
+ 
+ &hdmi {
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "unwedge";
+ 	pinctrl-0 = <&hdmi_ddc>;
++	pinctrl-1 = <&hdmi_ddc_unwedge>;
+ 	status = "okay";
+ };
+ 
+
+From 8007325515e2ef6f7413ffc3fc577ce55768d526 Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Wed, 5 Jun 2019 13:43:19 -0700
+Subject: [PATCH] ARM: dts: rockchip: Split GPIO keys for veyron into multiple
+ devices
+
+With a single device DT overrides can become messy, especially when
+keys are added or removed. Multiple devices also allow to
+enable/disable wakeup per key/group.
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+[used actual switch+event constants in new lid-switch entry]
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit b8925b7c2f867df6ce3e20deb4b3e2b9b32b20ff)
+---
+ arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi | 27 ++++++++++--------
+ arch/arm/boot/dts/rk3288-veyron-minnie.dts      | 38 +++++++++++++------------
+ arch/arm/boot/dts/rk3288-veyron-pinky.dts       |  2 +-
+ arch/arm/boot/dts/rk3288-veyron.dtsi            |  4 +--
+ 4 files changed, 38 insertions(+), 33 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+index fbef34578100..5727017f34b2 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+@@ -70,6 +70,21 @@
+ 		pinctrl-0 = <&ac_present_ap>;
+ 	};
+ 
++	lid_switch: lid-switch {
++		compatible = "gpio-keys";
++		pinctrl-names = "default";
++		pinctrl-0 = <&ap_lid_int_l>;
++
++		lid {
++			label = "Lid";
++			gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_LOW>;
++			wakeup-source;
++			linux,code = <SW_LID>;
++			linux,input-type = <EV_SW>;
++			debounce-interval = <1>;
++		};
++	};
++
+ 	panel: panel {
+ 		compatible ="innolux,n116bge", "simple-panel";
+ 		status = "okay";
+@@ -149,18 +164,6 @@
+ 	status = "okay";
+ };
+ 
+-&gpio_keys {
+-	pinctrl-0 = <&pwr_key_l &ap_lid_int_l>;
+-	lid {
+-		label = "Lid";
+-		gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_LOW>;
+-		wakeup-source;
+-		linux,code = <0>; /* SW_LID */
+-		linux,input-type = <5>; /* EV_SW */
+-		debounce-interval = <1>;
+-	};
+-};
+-
+ &pwm0 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm/boot/dts/rk3288-veyron-minnie.dts b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+index a65099b4aef1..b2cc70a08554 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-minnie.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+@@ -48,6 +48,26 @@
+ 		regulator-boot-on;
+ 		vin-supply = <&vcc18_wl>;
+ 	};
++
++	volume_buttons: volume-buttons {
++		compatible = "gpio-keys";
++		pinctrl-names = "default";
++		pinctrl-0 = <&volum_down_l &volum_up_l>;
++
++		volum_down {
++			label = "Volum_down";
++			gpios = <&gpio5 RK_PB3 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_VOLUMEDOWN>;
++			debounce-interval = <100>;
++		};
++
++		volum_up {
++			label = "Volum_up";
++			gpios = <&gpio5 RK_PB2 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_VOLUMEUP>;
++			debounce-interval = <100>;
++		};
++	};
+ };
+ 
+ &backlight {
+@@ -90,24 +110,6 @@
+ 	pwm-off-delay-ms = <200>;
+ };
+ 
+-&gpio_keys {
+-	pinctrl-0 = <&pwr_key_l &ap_lid_int_l &volum_down_l &volum_up_l>;
+-
+-	volum_down {
+-		label = "Volum_down";
+-		gpios = <&gpio5 RK_PB3 GPIO_ACTIVE_LOW>;
+-		linux,code = <KEY_VOLUMEDOWN>;
+-		debounce-interval = <100>;
+-	};
+-
+-	volum_up {
+-		label = "Volum_up";
+-		gpios = <&gpio5 RK_PB2 GPIO_ACTIVE_LOW>;
+-		linux,code = <KEY_VOLUMEUP>;
+-		debounce-interval = <100>;
+-	};
+-};
+-
+ &i2c_tunnel {
+ 	battery: bq27500@55 {
+ 		compatible = "ti,bq27500";
+diff --git a/arch/arm/boot/dts/rk3288-veyron-pinky.dts b/arch/arm/boot/dts/rk3288-veyron-pinky.dts
+index 9645be7b3d8c..9b6f4d9b03b6 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-pinky.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-pinky.dts
+@@ -35,7 +35,7 @@
+ 	force-hpd;
+ };
+ 
+-&gpio_keys {
++&lid_switch {
+ 	pinctrl-0 = <&pwr_key_h &ap_lid_int_l>;
+ 
+ 	power {
+diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
+index c574844a6bb2..3257ca90f0e8 100644
+--- a/arch/arm/boot/dts/rk3288-veyron.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
+@@ -23,11 +23,11 @@
+ 		reg = <0x0 0x0 0x0 0x80000000>;
+ 	};
+ 
+-	gpio_keys: gpio-keys {
++	power_button: power-button {
+ 		compatible = "gpio-keys";
+-
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pwr_key_l>;
++
+ 		power {
+ 			label = "Power";
+ 			gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_LOW>;
+
+From f3391baa209982fe3e45b55c18e7488541b7648b Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Tue, 4 Jun 2019 15:31:59 -0700
+Subject: [PATCH] clk: rockchip: Remove 48 MHz PLL rate from rk3288
+
+The 48 MHz PLL rate is not present in the downstream chromeos-3.14
+tree.  Looking at history, it was originally removed in
+<https://crrev.com/c/265810> ("CHROMIUM: clk: rockchip: expand more
+clocks support") with no explanation.  Much of that patch was later
+reverted in <https://crrev.com/c/284595> ("CHROMIUM: clk: rockchip:
+Revert more questionable PLL rates"), but that patch left in the
+removal of 48 MHz.  What I wrote in that patch:
+
+> Note that the original change also removed the rate (48000000, 1,
+> 64, 32) from the table.  I have no idea why that was squashed in
+> there, but that rate was invalid anyway (it appears to have an out
+> of bounds NO).  I'm not putting that rate in.
+
+Reading the TRM I see that NO is defined as
+- NO: 1, 2-16 (even only)
+...and furthermore only 4 bits are assigned for NO-1, which means that
+the highest NO we could even represent is 16.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 7d2129310b8c1f22850d56b1725447aef88d8b1f)
+---
+ drivers/clk/rockchip/clk-rk3288.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/clk/rockchip/clk-rk3288.c b/drivers/clk/rockchip/clk-rk3288.c
+index 24baeb56a1b3..72a0605a435b 100644
+--- a/drivers/clk/rockchip/clk-rk3288.c
++++ b/drivers/clk/rockchip/clk-rk3288.c
+@@ -121,7 +121,6 @@ static struct rockchip_pll_rate_table rk3288_pll_rates[] = {
+ 	RK3066_PLL_RATE( 160000000, 1, 80, 12),
+ 	RK3066_PLL_RATE( 157500000, 1, 105, 16),
+ 	RK3066_PLL_RATE( 126000000, 1, 84, 16),
+-	RK3066_PLL_RATE(  48000000, 1, 64, 32),
+ 	{ /* sentinel */ },
+ };
+ 
+
+From bede05d2b48c0d6fd1f59401846c05c0ed103af8 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Mon, 10 Jun 2019 10:52:34 -0700
+Subject: [PATCH] drm/bridge/synopsys: dw-hdmi: Fix unwedge crash when no
+ pinctrl entries
+
+In commit 50f9495efe30 ("drm/bridge/synopsys: dw-hdmi: Add "unwedge"
+for ddc bus") I stupidly used IS_ERR() to check for whether we have an
+"unwedge" pinctrl state even though on most flows through the driver
+the unwedge state will just be NULL.
+
+Fix it so that we consistently use NULL for no unwedge state.
+
+Fixes: 50f9495efe30 ("drm/bridge/synopsys: dw-hdmi: Add "unwedge" for ddc bus")
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Sean Paul <seanpaul@chromium.org>
+Cc: Andrzej Hajda <a.hajda@samsung.com>
+Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Jonas Karlman <jonas@kwiboo.se>
+Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Reported-by: Erico Nunes <nunes.erico@gmail.com>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Sean Paul <seanpaul@chromium.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190610175234.196844-1-dianders@chromium.org
+(cherry picked from commit 0bd79f915c68ca3372696fee2dfe3c4bde9997a3)
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index ae18f860f0a8..5de0f810af14 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -255,7 +255,7 @@ static void dw_hdmi_i2c_init(struct dw_hdmi *hdmi)
+ static bool dw_hdmi_i2c_unwedge(struct dw_hdmi *hdmi)
+ {
+ 	/* If no unwedge state then give up */
+-	if (IS_ERR(hdmi->unwedge_state))
++	if (!hdmi->unwedge_state)
+ 		return false;
+ 
+ 	dev_info(hdmi->dev, "Attempting to unwedge stuck i2c bus\n");
+@@ -2690,11 +2690,13 @@ __dw_hdmi_probe(struct platform_device *pdev,
+ 			hdmi->default_state =
+ 				pinctrl_lookup_state(hdmi->pinctrl, "default");
+ 
+-			if (IS_ERR(hdmi->default_state) &&
+-			    !IS_ERR(hdmi->unwedge_state)) {
+-				dev_warn(dev,
+-					 "Unwedge requires default pinctrl\n");
+-				hdmi->unwedge_state = ERR_PTR(-ENODEV);
++			if (IS_ERR(hdmi->default_state) ||
++			    IS_ERR(hdmi->unwedge_state)) {
++				if (!IS_ERR(hdmi->unwedge_state))
++					dev_warn(dev,
++						 "Unwedge requires default pinctrl\n");
++				hdmi->default_state = NULL;
++				hdmi->unwedge_state = NULL;
+ 			}
+ 		}
+ 
+
+From 519a1a15cf228e82fb80bbea946b2491f2595459 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Tue, 4 Jun 2019 13:42:06 -0700
+Subject: [PATCH] drm: bridge: dw-hdmi: Add hook for resume
+
+On Rockchip rk3288-based Chromebooks when you do a suspend/resume
+cycle:
+
+1. You lose the ability to detect an HDMI device being plugged in.
+
+2. If you're using the i2c bus built in to dw_hdmi then it stops
+working.
+
+Let's add a hook to the core dw-hdmi driver so that we can call it in
+dw_hdmi-rockchip in the next commit.
+
+NOTE: the exact set of steps I've done here in resume come from
+looking at the normal dw_hdmi init sequence in upstream Linux plus the
+sequence that we did in downstream Chrome OS 3.14.  Testing show that
+it seems to work, but if an extra step is needed or something here is
+not needed we could improve it.
+
+As part of this change we'll refactor the hardware init bits of
+dw-hdmi to happen all in one function and all at the same time.  Since
+we need to init the interrupt mutes before we request the IRQ, this
+means moving the hardware init earlier in the function, but there
+should be no problems with that.  Also as part of this we now
+unconditionally init the "i2c" parts of dw-hdmi, but again that ought
+to be fine.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Sean Paul <seanpaul@chromium.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190604204207.168085-1-dianders@chromium.org
+(cherry picked from commit 99d02ed523dcaf5be0c6a778708df2779cfb3ed6)
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 48 +++++++++++++++++++------------
+ include/drm/bridge/dw_hdmi.h              |  2 ++
+ 2 files changed, 31 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index 5de0f810af14..27f2ef07c8af 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -232,6 +232,13 @@ static void hdmi_mask_writeb(struct dw_hdmi *hdmi, u8 data, unsigned int reg,
+ 
+ static void dw_hdmi_i2c_init(struct dw_hdmi *hdmi)
+ {
++	hdmi_writeb(hdmi, HDMI_PHY_I2CM_INT_ADDR_DONE_POL,
++		    HDMI_PHY_I2CM_INT_ADDR);
++
++	hdmi_writeb(hdmi, HDMI_PHY_I2CM_CTLINT_ADDR_NAC_POL |
++		    HDMI_PHY_I2CM_CTLINT_ADDR_ARBITRATION_POL,
++		    HDMI_PHY_I2CM_CTLINT_ADDR);
++
+ 	/* Software reset */
+ 	hdmi_writeb(hdmi, 0x00, HDMI_I2CM_SOFTRSTZ);
+ 
+@@ -1993,16 +2000,6 @@ static int dw_hdmi_setup(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
+ 	return 0;
+ }
+ 
+-static void dw_hdmi_setup_i2c(struct dw_hdmi *hdmi)
+-{
+-	hdmi_writeb(hdmi, HDMI_PHY_I2CM_INT_ADDR_DONE_POL,
+-		    HDMI_PHY_I2CM_INT_ADDR);
+-
+-	hdmi_writeb(hdmi, HDMI_PHY_I2CM_CTLINT_ADDR_NAC_POL |
+-		    HDMI_PHY_I2CM_CTLINT_ADDR_ARBITRATION_POL,
+-		    HDMI_PHY_I2CM_CTLINT_ADDR);
+-}
+-
+ static void initialize_hdmi_ih_mutes(struct dw_hdmi *hdmi)
+ {
+ 	u8 ih_mute;
+@@ -2503,6 +2500,21 @@ static const struct regmap_config hdmi_regmap_32bit_config = {
+ 	.max_register	= HDMI_I2CM_FS_SCL_LCNT_0_ADDR << 2,
+ };
+ 
++static void dw_hdmi_init_hw(struct dw_hdmi *hdmi)
++{
++	initialize_hdmi_ih_mutes(hdmi);
++
++	/*
++	 * Reset HDMI DDC I2C master controller and mute I2CM interrupts.
++	 * Even if we are using a separate i2c adapter doing this doesn't
++	 * hurt.
++	 */
++	dw_hdmi_i2c_init(hdmi);
++
++	if (hdmi->phy.ops->setup_hpd)
++		hdmi->phy.ops->setup_hpd(hdmi, hdmi->phy.data);
++}
++
+ static struct dw_hdmi *
+ __dw_hdmi_probe(struct platform_device *pdev,
+ 		const struct dw_hdmi_plat_data *plat_data)
+@@ -2654,7 +2666,7 @@ __dw_hdmi_probe(struct platform_device *pdev,
+ 		 prod_id1 & HDMI_PRODUCT_ID1_HDCP ? "with" : "without",
+ 		 hdmi->phy.name);
+ 
+-	initialize_hdmi_ih_mutes(hdmi);
++	dw_hdmi_init_hw(hdmi);
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+@@ -2711,10 +2723,6 @@ __dw_hdmi_probe(struct platform_device *pdev,
+ 	hdmi->bridge.of_node = pdev->dev.of_node;
+ #endif
+ 
+-	dw_hdmi_setup_i2c(hdmi);
+-	if (hdmi->phy.ops->setup_hpd)
+-		hdmi->phy.ops->setup_hpd(hdmi, hdmi->phy.data);
+-
+ 	memset(&pdevinfo, 0, sizeof(pdevinfo));
+ 	pdevinfo.parent = dev;
+ 	pdevinfo.id = PLATFORM_DEVID_AUTO;
+@@ -2767,10 +2775,6 @@ __dw_hdmi_probe(struct platform_device *pdev,
+ 		hdmi->cec = platform_device_register_full(&pdevinfo);
+ 	}
+ 
+-	/* Reset HDMI DDC I2C master controller and mute I2CM interrupts */
+-	if (hdmi->i2c)
+-		dw_hdmi_i2c_init(hdmi);
+-
+ 	return hdmi;
+ 
+ err_iahb:
+@@ -2874,6 +2878,12 @@ void dw_hdmi_unbind(struct dw_hdmi *hdmi)
+ }
+ EXPORT_SYMBOL_GPL(dw_hdmi_unbind);
+ 
++void dw_hdmi_resume(struct dw_hdmi *hdmi)
++{
++	dw_hdmi_init_hw(hdmi);
++}
++EXPORT_SYMBOL_GPL(dw_hdmi_resume);
++
+ MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");
+ MODULE_AUTHOR("Andy Yan <andy.yan@rock-chips.com>");
+ MODULE_AUTHOR("Yakir Yang <ykk@rock-chips.com>");
+diff --git a/include/drm/bridge/dw_hdmi.h b/include/drm/bridge/dw_hdmi.h
+index 66e70770cce5..601243b56b69 100644
+--- a/include/drm/bridge/dw_hdmi.h
++++ b/include/drm/bridge/dw_hdmi.h
+@@ -154,6 +154,8 @@ struct dw_hdmi *dw_hdmi_bind(struct platform_device *pdev,
+ 			     struct drm_encoder *encoder,
+ 			     const struct dw_hdmi_plat_data *plat_data);
+ 
++void dw_hdmi_resume(struct dw_hdmi *hdmi);
++
+ void dw_hdmi_setup_rx_sense(struct dw_hdmi *hdmi, bool hpd, bool rx_sense);
+ 
+ void dw_hdmi_set_sample_rate(struct dw_hdmi *hdmi, unsigned int rate);
+
+From 32ff754888ae0b3e620d3624f340b9ab2d6f461e Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Tue, 4 Jun 2019 13:42:07 -0700
+Subject: [PATCH] drm/rockchip: dw_hdmi: Handle suspend/resume
+
+On Rockchip rk3288-based Chromebooks when you do a suspend/resume
+cycle:
+
+1. You lose the ability to detect an HDMI device being plugged in.
+
+2. If you're using the i2c bus built in to dw_hdmi then it stops
+working.
+
+Let's call the core dw-hdmi's suspend/resume functions to restore
+things.
+
+NOTE: in downstream Chrome OS (based on kernel 3.14) we used the
+"late/early" versions of suspend/resume because we found that the VOP
+was sometimes resuming before dw_hdmi and then calling into us before
+we were fully resumed.  For now I have gone back to the normal
+suspend/resume because I can't reproduce the problems.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Sean Paul <seanpaul@chromium.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190604204207.168085-2-dianders@chromium.org
+(cherry picked from commit 27c9130baef5438b6cebdce3014afe8f751b390b)
+---
+ drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+index 4cdc9f86c2e5..7bb0f922b303 100644
+--- a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
++++ b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+@@ -542,11 +542,25 @@ static int dw_hdmi_rockchip_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int __maybe_unused dw_hdmi_rockchip_resume(struct device *dev)
++{
++	struct rockchip_hdmi *hdmi = dev_get_drvdata(dev);
++
++	dw_hdmi_resume(hdmi->hdmi);
++
++	return 0;
++}
++
++static const struct dev_pm_ops dw_hdmi_rockchip_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(NULL, dw_hdmi_rockchip_resume)
++};
++
+ struct platform_driver dw_hdmi_rockchip_pltfm_driver = {
+ 	.probe  = dw_hdmi_rockchip_probe,
+ 	.remove = dw_hdmi_rockchip_remove,
+ 	.driver = {
+ 		.name = "dwhdmi-rockchip",
++		.pm = &dw_hdmi_rockchip_pm,
+ 		.of_match_table = dw_hdmi_rockchip_dt_ids,
+ 	},
+ };
+
+From 3e74634c3de9192da8724167180d25caa09a04b6 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Yannick=20Fertr=C3=A9?= <yannick.fertre@st.com>
+Date: Mon, 27 May 2019 12:21:38 +0200
+Subject: [PATCH] drm/bridge/synopsys: dsi: add power on/off optional phy ops
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Add power on & off optional physical operation functions, helpful to
+program specific registers of the DSI physical part.
+
+Signed-off-by: Yannick Fertré <yannick.fertre@st.com>
+Reviewed-by: Philippe Cornu <philippe.cornu@st.com>
+Tested-by: Philippe Cornu <philippe.cornu@st.com>
+Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
+Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1558952499-15418-2-git-send-email-yannick.fertre@st.com
+(cherry picked from commit a3e69b86cf04b7c0b624572c181678ea74e83400)
+---
+ drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 8 ++++++++
+ include/drm/bridge/dw_mipi_dsi.h              | 2 ++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+index e915ae8c9a92..5bb676fb00a7 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+@@ -775,6 +775,10 @@ static void dw_mipi_dsi_clear_err(struct dw_mipi_dsi *dsi)
+ static void dw_mipi_dsi_bridge_post_disable(struct drm_bridge *bridge)
+ {
+ 	struct dw_mipi_dsi *dsi = bridge_to_dsi(bridge);
++	const struct dw_mipi_dsi_phy_ops *phy_ops = dsi->plat_data->phy_ops;
++
++	if (phy_ops->power_off)
++		phy_ops->power_off(dsi->plat_data->priv_data);
+ 
+ 	/*
+ 	 * Switch to command mode before panel-bridge post_disable &
+@@ -874,11 +878,15 @@ static void dw_mipi_dsi_bridge_mode_set(struct drm_bridge *bridge,
+ static void dw_mipi_dsi_bridge_enable(struct drm_bridge *bridge)
+ {
+ 	struct dw_mipi_dsi *dsi = bridge_to_dsi(bridge);
++	const struct dw_mipi_dsi_phy_ops *phy_ops = dsi->plat_data->phy_ops;
+ 
+ 	/* Switch to video mode for panel-bridge enable & panel enable */
+ 	dw_mipi_dsi_set_mode(dsi, MIPI_DSI_MODE_VIDEO);
+ 	if (dsi->slave)
+ 		dw_mipi_dsi_set_mode(dsi->slave, MIPI_DSI_MODE_VIDEO);
++
++	if (phy_ops->power_on)
++		phy_ops->power_on(dsi->plat_data->priv_data);
+ }
+ 
+ static enum drm_mode_status
+diff --git a/include/drm/bridge/dw_mipi_dsi.h b/include/drm/bridge/dw_mipi_dsi.h
+index 7d3dd69a5caa..df6eda64963a 100644
+--- a/include/drm/bridge/dw_mipi_dsi.h
++++ b/include/drm/bridge/dw_mipi_dsi.h
+@@ -14,6 +14,8 @@ struct dw_mipi_dsi;
+ 
+ struct dw_mipi_dsi_phy_ops {
+ 	int (*init)(void *priv_data);
++	void (*power_on)(void *priv_data);
++	void (*power_off)(void *priv_data);
+ 	int (*get_lane_mbps)(void *priv_data,
+ 			     const struct drm_display_mode *mode,
+ 			     unsigned long mode_flags, u32 lanes, u32 format,
+
+From b75deaa8c167bf0ea769effa5f0558515c5cc021 Mon Sep 17 00:00:00 2001
+From: Sean Paul <seanpaul@chromium.org>
+Date: Tue, 11 Jun 2019 12:08:20 -0400
+Subject: [PATCH] drm/rockchip: Use dirtyfb helper
+
+Instead of flushing all vops every time we get a dirtyfb call, use the
+damage helper to kick off an atomic commit. Even though we don't use
+damage clips, the helper commit will force us through the normal
+psr_inhibit_get/put sequence.
+
+Changes in v3:
+- Added to the set
+Changes in v4:
+- None
+Changes in v5:
+- None
+
+Link to v3: https://patchwork.freedesktop.org/patch/msgid/20190502194956.218441-7-sean@poorly.run
+Link to v4: https://patchwork.freedesktop.org/patch/msgid/20190508160920.144739-7-sean@poorly.run
+
+Suggested-by: Daniel Vetter <daniel@ffwll.ch>
+Tested-by: Heiko Stuebner <heiko@sntech.de>
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Sean Paul <seanpaul@chromium.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190611160844.257498-7-sean@poorly.run
+(cherry picked from commit 6c83ca795f2c09649a3c3ac3c04563a60146e2d7)
+---
+ drivers/gpu/drm/rockchip/rockchip_drm_fb.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_fb.c b/drivers/gpu/drm/rockchip/rockchip_drm_fb.c
+index 97438bbbe389..02e81ca2d933 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_fb.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_fb.c
+@@ -16,6 +16,7 @@
+ #include <drm/drm.h>
+ #include <drm/drmP.h>
+ #include <drm/drm_atomic.h>
++#include <drm/drm_damage_helper.h>
+ #include <drm/drm_fb_helper.h>
+ #include <drm/drm_gem_framebuffer_helper.h>
+ #include <drm/drm_probe_helper.h>
+@@ -25,20 +26,10 @@
+ #include "rockchip_drm_gem.h"
+ #include "rockchip_drm_psr.h"
+ 
+-static int rockchip_drm_fb_dirty(struct drm_framebuffer *fb,
+-				 struct drm_file *file,
+-				 unsigned int flags, unsigned int color,
+-				 struct drm_clip_rect *clips,
+-				 unsigned int num_clips)
+-{
+-	rockchip_drm_psr_flush_all(fb->dev);
+-	return 0;
+-}
+-
+ static const struct drm_framebuffer_funcs rockchip_drm_fb_funcs = {
+ 	.destroy       = drm_gem_fb_destroy,
+ 	.create_handle = drm_gem_fb_create_handle,
+-	.dirty	       = rockchip_drm_fb_dirty,
++	.dirty	       = drm_atomic_helper_dirtyfb,
+ };
+ 
+ static struct drm_framebuffer *
+
+From 7b1ca182085cb24e014d5585082d8c706ca2b4ab Mon Sep 17 00:00:00 2001
+From: Ezequiel Garcia <ezequiel@collabora.com>
+Date: Fri, 7 Jun 2019 21:35:01 -0300
+Subject: [PATCH] arm64: dts: rockchip: Enable HDMI audio on Rock Pi
+
+This commit enables the hdmi-sound device needed to have
+audio over HDMI on the Rock Pi board.
+
+Fixes: 1b5715c602fda ("arm64: dts: rockchip: add ROCK Pi 4 DTS support")
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 549dcdafe793000fbe38914a1f231d3c6034a6ec)
+---
+ arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts
+index 55e74f4d5cd0..1ae1ebd4efdd 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dts
+@@ -178,6 +178,10 @@
+ 	status = "okay";
+ };
+ 
++&hdmi_sound {
++	status = "okay";
++};
++
+ &i2c0 {
+ 	clock-frequency = <400000>;
+ 	i2c-scl-rising-time-ns = <168>;
+
+From 7aa64a5b28e9371a54d78e71f10433a060df0748 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Mon, 10 Jun 2019 16:51:44 -0700
+Subject: [PATCH] ARM: dts: rockchip: Configure BT_HOST_WAKE as wake-up signal
+ on veyron
+
+This enables wake up on Bluetooth activity when the device is
+suspended. The BT_HOST_WAKE signal is only connected on devices
+with BT module that are connected through UART.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit f497ab6b4bb813aca439b7f3a72a060b58b147c4)
+---
+ arch/arm/boot/dts/rk3288-veyron.dtsi | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
+index 3257ca90f0e8..e2635ad574e7 100644
+--- a/arch/arm/boot/dts/rk3288-veyron.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
+@@ -23,6 +23,31 @@
+ 		reg = <0x0 0x0 0x0 0x80000000>;
+ 	};
+ 
++	bt_activity: bt-activity {
++		compatible = "gpio-keys";
++		pinctrl-names = "default";
++		pinctrl-0 = <&bt_host_wake>;
++
++		/*
++		 * HACK: until we have an LPM driver, we'll use an
++		 * ugly GPIO key to allow Bluetooth to wake from S3.
++		 * This is expected to only be used by BT modules that
++		 * use UART for comms.  For BT modules that talk over
++		 * SDIO we should use a wakeup mechanism related to SDIO.
++		 *
++		 * Use KEY_RESERVED here since that will work as a wakeup but
++		 * doesn't get reported to higher levels (so doesn't confuse
++		 * Chrome).
++		 */
++		bt-wake {
++			label = "BT Wakeup";
++			gpios = <&gpio4 RK_PD7 GPIO_ACTIVE_HIGH>;
++			linux,code = <KEY_RESERVED>;
++			wakeup-source;
++		};
++
++	};
++
+ 	power_button: power-button {
+ 		compatible = "gpio-keys";
+ 		pinctrl-names = "default";
+@@ -549,6 +574,10 @@
+ 			rockchip,pins = <4 RK_PD5 RK_FUNC_GPIO &pcfg_pull_none>;
+ 		};
+ 
++		bt_host_wake: bt-host-wake {
++			rockchip,pins = <4 RK_PD7 RK_FUNC_GPIO &pcfg_pull_down>;
++		};
++
+ 		/*
+ 		 * We run sdio0 at max speed; bump up drive strength.
+ 		 * We also have external pulls, so disable the internal ones.
+
+From b816c0e5ca3680b21359c6d779198d2f52222eb1 Mon Sep 17 00:00:00 2001
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+Date: Wed, 22 May 2019 22:46:29 +0000
+Subject: [PATCH] drm/rockchip: dw_hdmi: add basic rk3228 support
+
+Like the RK3328, RK322x SoCs offer a Synopsis DesignWare HDMI transmitter
+and an Innosilicon HDMI PHY.
+
+Add a new dw_hdmi_plat_data struct, rk3228_hdmi_drv_data.
+Assign a set of mostly generic rk3228_hdmi_phy_ops functions.
+Add dw_hdmi_rk3228_setup_hpd() to enable the HDMI HPD and DDC lines.
+
+Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190522224631.25164-1-justin.swartz@risingedge.co.za
+(cherry picked from commit 53ffa1ee8de2cdfb0fcbef798486ba9c7f9316fd)
+---
+ .../bindings/display/rockchip/dw_hdmi-rockchip.txt |  1 +
+ drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c        | 53 ++++++++++++++++++++++
+ 2 files changed, 54 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/rockchip/dw_hdmi-rockchip.txt b/Documentation/devicetree/bindings/display/rockchip/dw_hdmi-rockchip.txt
+index 8346bac81f1c..3d32ce137e7f 100644
+--- a/Documentation/devicetree/bindings/display/rockchip/dw_hdmi-rockchip.txt
++++ b/Documentation/devicetree/bindings/display/rockchip/dw_hdmi-rockchip.txt
+@@ -12,6 +12,7 @@ following device-specific properties.
+ Required properties:
+ 
+ - compatible: should be one of the following:
++		"rockchip,rk3228-dw-hdmi"
+ 		"rockchip,rk3288-dw-hdmi"
+ 		"rockchip,rk3328-dw-hdmi"
+ 		"rockchip,rk3399-dw-hdmi"
+diff --git a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+index 7bb0f922b303..d7629ffd026a 100644
+--- a/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
++++ b/drivers/gpu/drm/rockchip/dw_hdmi-rockchip.c
+@@ -23,6 +23,14 @@
+ #include "rockchip_drm_drv.h"
+ #include "rockchip_drm_vop.h"
+ 
++#define RK3228_GRF_SOC_CON2		0x0408
++#define RK3228_HDMI_SDAIN_MSK		BIT(14)
++#define RK3228_HDMI_SCLIN_MSK		BIT(13)
++#define RK3228_GRF_SOC_CON6		0x0418
++#define RK3228_HDMI_HPD_VSEL		BIT(6)
++#define RK3228_HDMI_SDA_VSEL		BIT(5)
++#define RK3228_HDMI_SCL_VSEL		BIT(4)
++
+ #define RK3288_GRF_SOC_CON6		0x025C
+ #define RK3288_HDMI_LCDC_SEL		BIT(4)
+ #define RK3328_GRF_SOC_CON2		0x0408
+@@ -325,6 +333,25 @@ static void dw_hdmi_rockchip_genphy_disable(struct dw_hdmi *dw_hdmi, void *data)
+ 	phy_power_off(hdmi->phy);
+ }
+ 
++static void dw_hdmi_rk3228_setup_hpd(struct dw_hdmi *dw_hdmi, void *data)
++{
++	struct rockchip_hdmi *hdmi = (struct rockchip_hdmi *)data;
++
++	dw_hdmi_phy_setup_hpd(dw_hdmi, data);
++
++	regmap_write(hdmi->regmap,
++		RK3228_GRF_SOC_CON6,
++		HIWORD_UPDATE(RK3228_HDMI_HPD_VSEL | RK3228_HDMI_SDA_VSEL |
++			      RK3228_HDMI_SCL_VSEL,
++			      RK3228_HDMI_HPD_VSEL | RK3228_HDMI_SDA_VSEL |
++			      RK3228_HDMI_SCL_VSEL));
++
++	regmap_write(hdmi->regmap,
++		RK3228_GRF_SOC_CON2,
++		HIWORD_UPDATE(RK3228_HDMI_SDAIN_MSK | RK3228_HDMI_SCLIN_MSK,
++			      RK3228_HDMI_SDAIN_MSK | RK3228_HDMI_SCLIN_MSK));
++}
++
+ static enum drm_connector_status
+ dw_hdmi_rk3328_read_hpd(struct dw_hdmi *dw_hdmi, void *data)
+ {
+@@ -370,6 +397,29 @@ static void dw_hdmi_rk3328_setup_hpd(struct dw_hdmi *dw_hdmi, void *data)
+ 			      RK3328_HDMI_HPD_IOE));
+ }
+ 
++static const struct dw_hdmi_phy_ops rk3228_hdmi_phy_ops = {
++	.init		= dw_hdmi_rockchip_genphy_init,
++	.disable	= dw_hdmi_rockchip_genphy_disable,
++	.read_hpd	= dw_hdmi_phy_read_hpd,
++	.update_hpd	= dw_hdmi_phy_update_hpd,
++	.setup_hpd	= dw_hdmi_rk3228_setup_hpd,
++};
++
++static struct rockchip_hdmi_chip_data rk3228_chip_data = {
++	.lcdsel_grf_reg = -1,
++};
++
++static const struct dw_hdmi_plat_data rk3228_hdmi_drv_data = {
++	.mode_valid = dw_hdmi_rockchip_mode_valid,
++	.mpll_cfg = rockchip_mpll_cfg,
++	.cur_ctr = rockchip_cur_ctr,
++	.phy_config = rockchip_phy_config,
++	.phy_data = &rk3228_chip_data,
++	.phy_ops = &rk3228_hdmi_phy_ops,
++	.phy_name = "inno_dw_hdmi_phy2",
++	.phy_force_vendor = true,
++};
++
+ static struct rockchip_hdmi_chip_data rk3288_chip_data = {
+ 	.lcdsel_grf_reg = RK3288_GRF_SOC_CON6,
+ 	.lcdsel_big = HIWORD_UPDATE(0, RK3288_HDMI_LCDC_SEL),
+@@ -422,6 +472,9 @@ static const struct dw_hdmi_plat_data rk3399_hdmi_drv_data = {
+ };
+ 
+ static const struct of_device_id dw_hdmi_rockchip_dt_ids[] = {
++	{ .compatible = "rockchip,rk3228-dw-hdmi",
++	  .data = &rk3228_hdmi_drv_data
++	},
+ 	{ .compatible = "rockchip,rk3288-dw-hdmi",
+ 	  .data = &rk3288_hdmi_drv_data
+ 	},
+
+From c98b230e85d8cfe685939c243897361a340a9587 Mon Sep 17 00:00:00 2001
+From: Sandor Yu <Sandor.yu@nxp.com>
+Date: Wed, 5 Jun 2019 16:04:24 +0800
+Subject: [PATCH] drm/rockchip: cdn-dp: correct rate in the struct drm_dp_link
+ assignment
+
+The value stored in the rate field of struct drm_dp_link should
+be the actual link-rate and not the bw_code.
+
+Right now the driver stores the code and converts it to the rate.
+So fixup the driver to store the rate itself.
+
+Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190605080424.28731-1-sandor.yu@nxp.com
+(cherry picked from commit de85ec271a864c05e99ad5ffbed9e95d1b65c757)
+---
+ drivers/gpu/drm/rockchip/cdn-dp-reg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/rockchip/cdn-dp-reg.c b/drivers/gpu/drm/rockchip/cdn-dp-reg.c
+index 6c8b14fb1d2f..0a2aebecc151 100644
+--- a/drivers/gpu/drm/rockchip/cdn-dp-reg.c
++++ b/drivers/gpu/drm/rockchip/cdn-dp-reg.c
+@@ -543,7 +543,7 @@ static int cdn_dp_get_training_status(struct cdn_dp_device *dp)
+ 	if (ret)
+ 		goto err_get_training_status;
+ 
+-	dp->link.rate = status[0];
++	dp->link.rate = drm_dp_bw_code_to_link_rate(status[0]);
+ 	dp->link.num_lanes = status[1];
+ 
+ err_get_training_status:
+@@ -647,7 +647,7 @@ int cdn_dp_config_video(struct cdn_dp_device *dp)
+ 	bit_per_pix = (video->color_fmt == YCBCR_4_2_2) ?
+ 		      (video->color_depth * 2) : (video->color_depth * 3);
+ 
+-	link_rate = drm_dp_bw_code_to_link_rate(dp->link.rate) / 1000;
++	link_rate = dp->link.rate / 1000;
+ 
+ 	ret = cdn_dp_reg_write(dp, BND_HSYNC2VSYNC, VIF_BYPASS_INTERLACE);
+ 	if (ret)
+
+From 10deab846321f4fc44f05cb88995b6479ce77cab Mon Sep 17 00:00:00 2001
+From: Nick Xie <nick@khadas.com>
+Date: Mon, 10 Jun 2019 15:57:53 +0800
+Subject: [PATCH] arm64: dts: rockchip: Add support for Khadas
+ Edge/Edge-V/Captain boards
+
+Add devicetree support for Khadas Edge/Edge-V/Captain boards.
+Khadas Edge is an expandable Rockchip RK3399 board with goldfinger.
+Khadas Captain is the carrier board for Khadas Edge.
+Khadas Edge-V is a Khadas VIM form factor Rockchip RK3399 board.
+
+Signed-off-by: Nick Xie <nick@khadas.com>
+[edge-captain and edge-v contain different components that are supposed
+ to get added in future patches, so should stay separate while looking
+ somewhat similar right now]
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit c2aacceedc86af87428d998e23a1aca24fd8aa2e)
+---
+ .../devicetree/bindings/arm/rockchip.yaml          |   8 +
+ arch/arm64/boot/dts/rockchip/Makefile              |   3 +
+ .../dts/rockchip/rk3399-khadas-edge-captain.dts    |  27 +
+ .../boot/dts/rockchip/rk3399-khadas-edge-v.dts     |  27 +
+ .../arm64/boot/dts/rockchip/rk3399-khadas-edge.dts |  13 +
+ .../boot/dts/rockchip/rk3399-khadas-edge.dtsi      | 804 +++++++++++++++++++++
+ 6 files changed, 882 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-khadas-edge-captain.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-khadas-edge-v.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
+
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index 5c6bbf10abc9..eef822ce2ad4 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -316,6 +316,14 @@ properties:
+           - const: haoyu,marsboard-rk3066
+           - const: rockchip,rk3066a
+ 
++      - description: Khadas Edge series boards
++        items:
++          - enum:
++              - khadas,edge
++              - khadas,edge-captain
++              - khadas,edge-v
++          - const: rockchip,rk3399
++
+       - description: mqmaker MiQi
+         items:
+           - const: mqmaker,miqi
+diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+index 5f2687acbf94..b50889af49c3 100644
+--- a/arch/arm64/boot/dts/rockchip/Makefile
++++ b/arch/arm64/boot/dts/rockchip/Makefile
+@@ -16,6 +16,9 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-bob.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-kevin.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-scarlet-inx.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-scarlet-kd.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge-captain.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge-v.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopc-t4.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-neo4.dtb
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge-captain.dts b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge-captain.dts
+new file mode 100644
+index 000000000000..8302e51def52
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge-captain.dts
+@@ -0,0 +1,27 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2019 Shenzhen Wesion Technology Co., Ltd.
++ * (https://www.khadas.com)
++ */
++
++/dts-v1/;
++#include "rk3399-khadas-edge.dtsi"
++
++/ {
++	model = "Khadas Edge-Captain";
++	compatible = "khadas,edge-captain", "rockchip,rk3399";
++};
++
++&gmac {
++	status = "okay";
++};
++
++&pcie_phy {
++	status = "okay";
++};
++
++&pcie0 {
++	ep-gpios = <&gpio1 RK_PA3 GPIO_ACTIVE_HIGH>;
++	num-lanes = <4>;
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge-v.dts b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge-v.dts
+new file mode 100644
+index 000000000000..f5dcb99dc349
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge-v.dts
+@@ -0,0 +1,27 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2019 Shenzhen Wesion Technology Co., Ltd.
++ * (https://www.khadas.com)
++ */
++
++/dts-v1/;
++#include "rk3399-khadas-edge.dtsi"
++
++/ {
++	model = "Khadas Edge-V";
++	compatible = "khadas,edge-v", "rockchip,rk3399";
++};
++
++&gmac {
++	status = "okay";
++};
++
++&pcie_phy {
++	status = "okay";
++};
++
++&pcie0 {
++	ep-gpios = <&gpio1 RK_PA3 GPIO_ACTIVE_HIGH>;
++	num-lanes = <4>;
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dts b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dts
+new file mode 100644
+index 000000000000..31616e7ad89d
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dts
+@@ -0,0 +1,13 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2019 Shenzhen Wesion Technology Co., Ltd.
++ * (https://www.khadas.com)
++ */
++
++/dts-v1/;
++#include "rk3399-khadas-edge.dtsi"
++
++/ {
++	model = "Khadas Edge";
++	compatible = "khadas,edge", "rockchip,rk3399";
++};
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
+new file mode 100644
+index 000000000000..4944d78a0a1c
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3399-khadas-edge.dtsi
+@@ -0,0 +1,804 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2019 Shenzhen Wesion Technology Co., Ltd.
++ * (https://www.khadas.com)
++ */
++
++/dts-v1/;
++#include <dt-bindings/input/linux-event-codes.h>
++#include <dt-bindings/pwm/pwm.h>
++#include "rk3399.dtsi"
++#include "rk3399-opp.dtsi"
++
++/ {
++	chosen {
++		stdout-path = "serial2:1500000n8";
++	};
++
++	clkin_gmac: external-gmac-clock {
++		compatible = "fixed-clock";
++		clock-frequency = <125000000>;
++		clock-output-names = "clkin_gmac";
++		#clock-cells = <0>;
++	};
++
++	sdio_pwrseq: sdio-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		clocks = <&rk808 1>;
++		clock-names = "ext_clock";
++		pinctrl-names = "default";
++		pinctrl-0 = <&wifi_enable_h>;
++
++		/*
++		 * On the module itself this is one of these (depending
++		 * on the actual card populated):
++		 * - SDIO_RESET_L_WL_REG_ON
++		 * - PDN (power down when low)
++		 */
++		reset-gpios = <&gpio2 RK_PD4 GPIO_ACTIVE_LOW>;
++	};
++
++	/* switched by pmic_sleep */
++	vcc1v8_s3: vcca1v8_s3: vcc1v8-s3 {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc1v8_s3";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		vin-supply = <&vcc_1v8>;
++	};
++
++	vcc3v3_pcie: vcc3v3-pcie-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc3v3_pcie";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&vsys_3v3>;
++	};
++
++	/* Actually 3 regulators (host0, 1, 2) controlled by the same gpio */
++	vcc5v0_host: vcc5v0-host-regulator {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&gpio4 RK_PD1 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&vcc5v0_host_en>;
++		regulator-name = "vcc5v0_host";
++		regulator-always-on;
++		vin-supply = <&vsys_5v0>;
++	};
++
++	vdd_log: vdd-log {
++		compatible = "pwm-regulator";
++		pwms = <&pwm2 0 25000 1>;
++		regulator-name = "vdd_log";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <800000>;
++		regulator-max-microvolt = <1400000>;
++		vin-supply = <&vsys_3v3>;
++	};
++
++	vsys: vsys {
++		compatible = "regulator-fixed";
++		regulator-name = "vsys";
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
++	vsys_3v3: vsys-3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "vsys_3v3";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&vsys>;
++	};
++
++	vsys_5v0: vsys-5v0 {
++		compatible = "regulator-fixed";
++		regulator-name = "vsys_5v0";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		vin-supply = <&vsys>;
++	};
++
++	adc-keys {
++		compatible = "adc-keys";
++		io-channels = <&saradc 1>;
++		io-channel-names = "buttons";
++		keyup-threshold-microvolt = <1800000>;
++		poll-interval = <100>;
++
++		recovery {
++			label = "Recovery";
++			linux,code = <KEY_VENDOR>;
++			press-threshold-microvolt = <18000>;
++		};
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++		autorepeat;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pwrbtn>;
++
++		power {
++			debounce-interval = <100>;
++			gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_LOW>;
++			label = "GPIO Key Power";
++			linux,code = <KEY_POWER>;
++			wakeup-source;
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++		pinctrl-names = "default";
++		pinctrl-0 = <&sys_led_gpio>, <&user_led_gpio>;
++
++		sys-led {
++			label = "sys_led";
++			linux,default-trigger = "heartbeat";
++			gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_HIGH>;
++		};
++
++		user-led {
++			label = "user_led";
++			default-state = "off";
++			gpios = <&gpio4 RK_PD0 GPIO_ACTIVE_HIGH>;
++		};
++	};
++
++	fan: pwm-fan {
++		compatible = "pwm-fan";
++		cooling-levels = <0 150 200 255>;
++		#cooling-cells = <2>;
++		fan-supply = <&vsys_5v0>;
++		pwms = <&pwm0 0 40000 0>;
++	};
++};
++
++&cpu_l0 {
++	cpu-supply = <&vdd_cpu_l>;
++};
++
++&cpu_l1 {
++	cpu-supply = <&vdd_cpu_l>;
++};
++
++&cpu_l2 {
++	cpu-supply = <&vdd_cpu_l>;
++};
++
++&cpu_l3 {
++	cpu-supply = <&vdd_cpu_l>;
++};
++
++&cpu_b0 {
++	cpu-supply = <&vdd_cpu_b>;
++};
++
++&cpu_b1 {
++	cpu-supply = <&vdd_cpu_b>;
++};
++
++&cpu_thermal {
++	trips {
++		cpu_warm: cpu_warm {
++			temperature = <55000>;
++			hysteresis = <2000>;
++			type = "active";
++		};
++
++		cpu_hot: cpu_hot {
++			temperature = <65000>;
++			hysteresis = <2000>;
++			type = "active";
++		};
++	};
++
++	cooling-maps {
++		map2 {
++			trip = <&cpu_warm>;
++			cooling-device = <&fan THERMAL_NO_LIMIT 1>;
++		};
++
++		map3 {
++			trip = <&cpu_hot>;
++			cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
++		};
++	};
++};
++
++&emmc_phy {
++	status = "okay";
++};
++
++&gmac {
++	assigned-clocks = <&cru SCLK_RMII_SRC>;
++	assigned-clock-parents = <&clkin_gmac>;
++	clock_in_out = "input";
++	phy-supply = <&vcc_lan>;
++	phy-mode = "rgmii";
++	pinctrl-names = "default";
++	pinctrl-0 = <&rgmii_pins>;
++	snps,reset-gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
++	snps,reset-active-low;
++	snps,reset-delays-us = <0 10000 50000>;
++	tx_delay = <0x28>;
++	rx_delay = <0x11>;
++};
++
++&gpu {
++	mali-supply = <&vdd_gpu>;
++	status = "okay";
++};
++
++&gpu_thermal {
++	trips {
++		gpu_warm: gpu_warm {
++			temperature = <55000>;
++			hysteresis = <2000>;
++			type = "active";
++		};
++
++		gpu_hot: gpu_hot {
++			temperature = <65000>;
++			hysteresis = <2000>;
++			type = "active";
++		};
++	};
++
++	cooling-maps {
++		map1 {
++			trip = <&gpu_warm>;
++			cooling-device = <&fan THERMAL_NO_LIMIT 1>;
++		};
++
++		map2 {
++			trip = <&gpu_hot>;
++			cooling-device = <&fan 2 THERMAL_NO_LIMIT>;
++		};
++	};
++};
++
++&hdmi {
++	ddc-i2c-bus = <&i2c3>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&hdmi_cec>;
++	status = "okay";
++};
++
++&hdmi_sound {
++	status = "okay";
++};
++
++&i2c3 {
++	i2c-scl-rising-time-ns = <450>;
++	i2c-scl-falling-time-ns = <15>;
++	status = "okay";
++};
++
++&i2c4 {
++	clock-frequency = <400000>;
++	i2c-scl-rising-time-ns = <168>;
++	i2c-scl-falling-time-ns = <4>;
++	status = "okay";
++
++	rk808: pmic@1b {
++		compatible = "rockchip,rk808";
++		reg = <0x1b>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <RK_PC6 IRQ_TYPE_LEVEL_LOW>;
++		#clock-cells = <1>;
++		clock-output-names = "xin32k", "rk808-clkout2";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pmic_int_l>;
++		rockchip,system-power-controller;
++		wakeup-source;
++
++		vcc1-supply = <&vsys_3v3>;
++		vcc2-supply = <&vsys_3v3>;
++		vcc3-supply = <&vsys_3v3>;
++		vcc4-supply = <&vsys_3v3>;
++		vcc6-supply = <&vsys_3v3>;
++		vcc7-supply = <&vsys_3v3>;
++		vcc8-supply = <&vsys_3v3>;
++		vcc9-supply = <&vsys_3v3>;
++		vcc10-supply = <&vsys_3v3>;
++		vcc11-supply = <&vsys_3v3>;
++		vcc12-supply = <&vsys_3v3>;
++		vddio-supply = <&vcc_1v8>;
++
++		regulators {
++			vdd_center: DCDC_REG1 {
++				regulator-name = "vdd_center";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <750000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-ramp-delay = <6001>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_cpu_l: DCDC_REG2 {
++				regulator-name = "vdd_cpu_l";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <750000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-ramp-delay = <6001>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_ddr: DCDC_REG3 {
++				regulator-name = "vcc_ddr";
++				regulator-always-on;
++				regulator-boot-on;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++				};
++			};
++
++			vcc_1v8: DCDC_REG4 {
++				regulator-name = "vcc_1v8";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			vcc1v8_apio2: LDO_REG1 {
++				regulator-name = "vcc1v8_apio2";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_vldo2: LDO_REG2 {
++				regulator-name = "vcc_vldo2";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3000000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc1v8_pmupll: LDO_REG3 {
++				regulator-name = "vcc1v8_pmupll";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			vccio_sd: LDO_REG4 {
++				regulator-name = "vccio_sd";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3000000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3000000>;
++				};
++			};
++
++			vcc_vldo5: LDO_REG5 {
++				regulator-name = "vcc_vldo5";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3000000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_1v5: LDO_REG6 {
++				regulator-name = "vcc_1v5";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1500000>;
++				regulator-max-microvolt = <1500000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1500000>;
++				};
++			};
++
++			vcc1v8_codec: LDO_REG7 {
++				regulator-name = "vcc1v8_codec";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_3v0: LDO_REG8 {
++				regulator-name = "vcc_3v0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3000000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3000000>;
++				};
++			};
++
++			vcc3v3_s3: vcc_lan: SWITCH_REG1 {
++				regulator-name = "vcc3v3_s3";
++				regulator-always-on;
++				regulator-boot-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc3v3_s0: SWITCH_REG2 {
++				regulator-name = "vcc3v3_s0";
++				regulator-always-on;
++				regulator-boot-on;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++		};
++	};
++
++	vdd_cpu_b: regulator@40 {
++		compatible = "silergy,syr827";
++		reg = <0x40>;
++		fcs,suspend-voltage-selector = <1>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&cpu_b_sleep>;
++		regulator-name = "vdd_cpu_b";
++		regulator-min-microvolt = <712500>;
++		regulator-max-microvolt = <1500000>;
++		regulator-ramp-delay = <1000>;
++		regulator-always-on;
++		regulator-boot-on;
++		vin-supply = <&vsys_3v3>;
++
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++
++	vdd_gpu: regulator@41 {
++		compatible = "silergy,syr828";
++		reg = <0x41>;
++		fcs,suspend-voltage-selector = <1>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&gpu_sleep>;
++		regulator-name = "vdd_gpu";
++		regulator-min-microvolt = <712500>;
++		regulator-max-microvolt = <1500000>;
++		regulator-ramp-delay = <1000>;
++		regulator-always-on;
++		regulator-boot-on;
++		vin-supply = <&vsys_3v3>;
++
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++};
++
++&i2c8 {
++	clock-frequency = <400000>;
++	i2c-scl-rising-time-ns = <160>;
++	i2c-scl-falling-time-ns = <30>;
++	status = "okay";
++};
++
++&i2s0 {
++	rockchip,playback-channels = <8>;
++	rockchip,capture-channels = <8>;
++	status = "okay";
++};
++
++&i2s1 {
++	rockchip,playback-channels = <2>;
++	rockchip,capture-channels = <2>;
++	status = "okay";
++};
++
++&i2s2 {
++	status = "okay";
++};
++
++&io_domains {
++	bt656-supply = <&vcc1v8_apio2>;
++	audio-supply = <&vcc1v8_codec>;
++	sdmmc-supply = <&vccio_sd>;
++	gpio1830-supply = <&vcc_3v0>;
++	status = "okay";
++};
++
++&pmu_io_domains {
++	pmu1830-supply = <&vcc_1v8>;
++	status = "okay";
++};
++
++&pinctrl {
++	bt {
++		bt_host_wake_l: bt-host-wake-l {
++			rockchip,pins = <0 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		bt_reg_on_h: bt-reg-on-h {
++			rockchip,pins = <2 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		bt_wake_l: bt-wake-l {
++			rockchip,pins = <2 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	buttons {
++		pwrbtn: pwrbtn {
++			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++
++	leds {
++		sys_led_gpio: sys_led-gpio {
++			rockchip,pins = <0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		user_led_gpio: user_led-gpio {
++			rockchip,pins = <4 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	pmic {
++		pmic_int_l: pmic-int-l {
++			rockchip,pins = <1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++
++		cpu_b_sleep: cpu-b-sleep {
++			rockchip,pins = <1 RK_PB5 RK_FUNC_GPIO &pcfg_pull_down>;
++		};
++
++		gpu_sleep: gpu-sleep {
++			rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_down>;
++		};
++	};
++
++	sdio-pwrseq {
++		wifi_enable_h: wifi-enable-h {
++			rockchip,pins = <2 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	usb2 {
++		vcc5v0_host_en: vcc5v0-host-en {
++			rockchip,pins = <4 RK_PD1 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	wifi {
++		wifi_host_wake_l: wifi-host-wake-l {
++			rockchip,pins = <0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++};
++
++&pwm0 {
++	status = "okay";
++};
++
++&pwm2 {
++	status = "okay";
++};
++
++&saradc {
++	vref-supply = <&vcca1v8_s3>;
++	status = "okay";
++};
++
++&sdio0 {
++	/* WiFi & BT combo module Ampak AP6356S */
++	bus-width = <4>;
++	cap-sdio-irq;
++	cap-sd-highspeed;
++	keep-power-in-suspend;
++	mmc-pwrseq = <&sdio_pwrseq>;
++	non-removable;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdio0_bus4 &sdio0_cmd &sdio0_clk>;
++	sd-uhs-sdr104;
++	vqmmc-supply = <&vcc1v8_s3>;
++	vmmc-supply = <&vccio_sd>;
++	status = "okay";
++
++	brcmf: wifi@1 {
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpio0>;
++		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
++		interrupt-names = "host-wake";
++		brcm,drive-strength = <5>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&wifi_host_wake_l>;
++	};
++};
++
++&sdmmc {
++	bus-width = <4>;
++	cap-mmc-highspeed;
++	cap-sd-highspeed;
++	cd-gpios = <&gpio0 RK_PA7 GPIO_ACTIVE_LOW>;
++	disable-wp;
++	max-frequency = <150000000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_bus4>;
++	status = "okay";
++};
++
++&sdhci {
++	bus-width = <8>;
++	mmc-hs400-1_8v;
++	mmc-hs400-enhanced-strobe;
++	non-removable;
++	status = "okay";
++};
++
++&tcphy0 {
++	status = "okay";
++};
++
++&tcphy1 {
++	status = "okay";
++};
++
++&tsadc {
++	/* tshut mode 0:CRU 1:GPIO */
++	rockchip,hw-tshut-mode = <1>;
++	/* tshut polarity 0:LOW 1:HIGH */
++	rockchip,hw-tshut-polarity = <1>;
++	status = "okay";
++};
++
++&u2phy0 {
++	status = "okay";
++
++	u2phy0_otg: otg-port {
++		status = "okay";
++	};
++
++	u2phy0_host: host-port {
++		phy-supply = <&vcc5v0_host>;
++		status = "okay";
++	};
++};
++
++&u2phy1 {
++	status = "okay";
++
++	u2phy1_otg: otg-port {
++		status = "okay";
++	};
++
++	u2phy1_host: host-port {
++		phy-supply = <&vcc5v0_host>;
++		status = "okay";
++	};
++};
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_xfer &uart0_rts &uart0_cts>;
++	status = "okay";
++
++	bluetooth {
++		compatible = "brcm,bcm43438-bt";
++		clocks = <&rk808 1>;
++		clock-names = "lpo";
++		device-wakeup-gpios = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
++		host-wakeup-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
++		shutdown-gpios = <&gpio2 RK_PD3 GPIO_ACTIVE_HIGH>;
++		max-speed = <4000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&bt_reg_on_h &bt_host_wake_l &bt_wake_l>;
++		vbat-supply = <&vsys_3v3>;
++		vddio-supply = <&vcc_1v8>;
++	};
++};
++
++&uart2 {
++	status = "okay";
++};
++
++&usb_host0_ehci {
++	status = "okay";
++};
++
++&usb_host0_ohci {
++	status = "okay";
++};
++
++&usb_host1_ehci {
++	status = "okay";
++};
++
++&usb_host1_ohci {
++	status = "okay";
++};
++
++&usbdrd3_0 {
++	status = "okay";
++};
++
++&usbdrd_dwc3_0 {
++	status = "okay";
++	dr_mode = "otg";
++};
++
++&usbdrd3_1 {
++	status = "okay";
++};
++
++&usbdrd_dwc3_1 {
++	status = "okay";
++	dr_mode = "host";
++};
++
++&vopb {
++	status = "okay";
++};
++
++&vopb_mmu {
++	status = "okay";
++};
++
++&vopl {
++	status = "okay";
++};
++
++&vopl_mmu {
++	status = "okay";
++};
+
+From d99fa31abcdeacd7932095056faa5cb4c52d8860 Mon Sep 17 00:00:00 2001
+From: Heiko Stuebner <heiko@sntech.de>
+Date: Thu, 6 Jun 2019 10:05:40 +0200
+Subject: [PATCH] clk: rockchip: add a type from SGRF-controlled gate clocks
+
+Some clk gates on Rockchip SoCs are part of the SGRF (secure general
+register files) and thus only controllable from secure mode, with the
+most prominent example being the watchdog.
+
+In most cases we still want to define this as a real clock though,
+to have complete clock tree and not reference the generic base-clock
+from the devicetree.
+
+So far we've just defined this as factor-1-1 clocks in the clock init,
+so define a special clock-type for it so that this definition can be
+part of the general tree-definition and save some boilerplate code.
+
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit b3b723d8c485af81663b5331459885536006d7fa)
+---
+ drivers/clk/rockchip/clk.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/clk/rockchip/clk.h b/drivers/clk/rockchip/clk.h
+index 1b5270755431..2a911923cf81 100644
+--- a/drivers/clk/rockchip/clk.h
++++ b/drivers/clk/rockchip/clk.h
+@@ -820,6 +820,10 @@ struct rockchip_clk_branch {
+ 		.gate_offset	= -1,				\
+ 	}
+ 
++/* SGRF clocks are only accessible from secure mode, so not controllable */
++#define SGRF_GATE(_id, cname, pname)				\
++		FACTOR(_id, cname, pname, 0, 1, 1)
++
+ struct rockchip_clk_provider *rockchip_clk_init(struct device_node *np,
+ 			void __iomem *base, unsigned long nr_clks);
+ void rockchip_clk_of_add_provider(struct device_node *np,
+
+From 305f9ae7403d8438861af4a51d9f3822396b25e3 Mon Sep 17 00:00:00 2001
+From: Heiko Stuebner <heiko@sntech.de>
+Date: Thu, 6 Jun 2019 10:20:32 +0200
+Subject: [PATCH] clk: rockchip: convert pclk_wdt boilerplat to new SGRF_GATE
+ macro
+
+Convert the boilerplate code for manual addition of the watchdog clock
+to the new SGRF_GATE macro for all affected socs.
+
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit e4488e45e240c4906119dfda24996701632bdb4d)
+---
+ drivers/clk/rockchip/clk-px30.c   | 12 +++---------
+ drivers/clk/rockchip/clk-rk3288.c | 12 +++---------
+ drivers/clk/rockchip/clk-rk3368.c | 12 +++---------
+ drivers/clk/rockchip/clk-rk3399.c | 12 +++---------
+ 4 files changed, 12 insertions(+), 36 deletions(-)
+
+diff --git a/drivers/clk/rockchip/clk-px30.c b/drivers/clk/rockchip/clk-px30.c
+index 601a77f1af78..da5c54c5f1ca 100644
+--- a/drivers/clk/rockchip/clk-px30.c
++++ b/drivers/clk/rockchip/clk-px30.c
+@@ -802,6 +802,9 @@ static struct rockchip_clk_branch px30_clk_branches[] __initdata = {
+ 	GATE(ACLK_GIC, "aclk_gic", "aclk_bus_pre", CLK_IGNORE_UNUSED, PX30_CLKGATE_CON(13), 12, GFLAGS),
+ 	GATE(ACLK_DCF, "aclk_dcf", "aclk_bus_pre", 0, PX30_CLKGATE_CON(13), 15, GFLAGS),
+ 
++	/* aclk_dmac is controlled by sgrf_soc_con1[11]. */
++	SGRF_GATE(ACLK_DMAC, "aclk_dmac", "aclk_bus_pre"),
++
+ 	GATE(0, "hclk_bus_niu", "hclk_bus_pre", CLK_IGNORE_UNUSED, PX30_CLKGATE_CON(13), 9, GFLAGS),
+ 	GATE(0, "hclk_rom", "hclk_bus_pre", CLK_IGNORE_UNUSED, PX30_CLKGATE_CON(13), 14, GFLAGS),
+ 	GATE(HCLK_PDM, "hclk_pdm", "hclk_bus_pre", 0, PX30_CLKGATE_CON(14), 1, GFLAGS),
+@@ -965,7 +968,6 @@ static void __init px30_clk_init(struct device_node *np)
+ {
+ 	struct rockchip_clk_provider *ctx;
+ 	void __iomem *reg_base;
+-	struct clk *clk;
+ 
+ 	reg_base = of_iomap(np, 0);
+ 	if (!reg_base) {
+@@ -980,14 +982,6 @@ static void __init px30_clk_init(struct device_node *np)
+ 		return;
+ 	}
+ 
+-	/* aclk_dmac is controlled by sgrf_soc_con1[11]. */
+-	clk = clk_register_fixed_factor(NULL, "aclk_dmac", "aclk_bus_pre", 0, 1, 1);
+-	if (IS_ERR(clk))
+-		pr_warn("%s: could not register clock aclk_dmac: %ld\n",
+-			__func__, PTR_ERR(clk));
+-	else
+-		rockchip_clk_add_lookup(ctx, clk, ACLK_DMAC);
+-
+ 	rockchip_clk_register_plls(ctx, px30_pll_clks,
+ 				   ARRAY_SIZE(px30_pll_clks),
+ 				   PX30_GRF_SOC_STATUS0);
+diff --git a/drivers/clk/rockchip/clk-rk3288.c b/drivers/clk/rockchip/clk-rk3288.c
+index 72a0605a435b..1bdec12988c8 100644
+--- a/drivers/clk/rockchip/clk-rk3288.c
++++ b/drivers/clk/rockchip/clk-rk3288.c
+@@ -774,6 +774,9 @@ static struct rockchip_clk_branch rk3288_clk_branches[] __initdata = {
+ 	GATE(PCLK_GRF, "pclk_grf", "pclk_pd_alive", CLK_IGNORE_UNUSED, RK3288_CLKGATE_CON(14), 11, GFLAGS),
+ 	GATE(0, "pclk_alive_niu", "pclk_pd_alive", 0, RK3288_CLKGATE_CON(14), 12, GFLAGS),
+ 
++	/* Watchdog pclk is controlled by RK3288_SGRF_SOC_CON0[1]. */
++	SGRF_GATE(PCLK_WDT, "pclk_wdt", "pclk_pd_alive"),
++
+ 	/* pclk_pd_pmu gates */
+ 	GATE(PCLK_PMU, "pclk_pmu", "pclk_pd_pmu", CLK_IGNORE_UNUSED, RK3288_CLKGATE_CON(17), 0, GFLAGS),
+ 	GATE(0, "pclk_intmem1", "pclk_pd_pmu", CLK_IGNORE_UNUSED, RK3288_CLKGATE_CON(17), 1, GFLAGS),
+@@ -922,7 +925,6 @@ static struct syscore_ops rk3288_clk_syscore_ops = {
+ static void __init rk3288_clk_init(struct device_node *np)
+ {
+ 	struct rockchip_clk_provider *ctx;
+-	struct clk *clk;
+ 
+ 	rk3288_cru_base = of_iomap(np, 0);
+ 	if (!rk3288_cru_base) {
+@@ -937,14 +939,6 @@ static void __init rk3288_clk_init(struct device_node *np)
+ 		return;
+ 	}
+ 
+-	/* Watchdog pclk is controlled by RK3288_SGRF_SOC_CON0[1]. */
+-	clk = clk_register_fixed_factor(NULL, "pclk_wdt", "pclk_pd_alive", 0, 1, 1);
+-	if (IS_ERR(clk))
+-		pr_warn("%s: could not register clock pclk_wdt: %ld\n",
+-			__func__, PTR_ERR(clk));
+-	else
+-		rockchip_clk_add_lookup(ctx, clk, PCLK_WDT);
+-
+ 	rockchip_clk_register_plls(ctx, rk3288_pll_clks,
+ 				   ARRAY_SIZE(rk3288_pll_clks),
+ 				   RK3288_GRF_SOC_STATUS1);
+diff --git a/drivers/clk/rockchip/clk-rk3368.c b/drivers/clk/rockchip/clk-rk3368.c
+index 7c4d242f19c1..ef64af3effb0 100644
+--- a/drivers/clk/rockchip/clk-rk3368.c
++++ b/drivers/clk/rockchip/clk-rk3368.c
+@@ -819,6 +819,9 @@ static struct rockchip_clk_branch rk3368_clk_branches[] __initdata = {
+ 	GATE(PCLK_GPIO2, "pclk_gpio2", "pclk_pd_alive", 0, RK3368_CLKGATE_CON(22), 2, GFLAGS),
+ 	GATE(PCLK_GPIO1, "pclk_gpio1", "pclk_pd_alive", 0, RK3368_CLKGATE_CON(22), 1, GFLAGS),
+ 
++	/* Watchdog pclk is controlled by sgrf_soc_con3[7]. */
++	SGRF_GATE(PCLK_WDT, "pclk_wdt", "pclk_pd_alive"),
++
+ 	/*
+ 	 * pclk_vio gates
+ 	 * pclk_vio comes from the exactly same source as hclk_vio
+@@ -870,7 +873,6 @@ static void __init rk3368_clk_init(struct device_node *np)
+ {
+ 	struct rockchip_clk_provider *ctx;
+ 	void __iomem *reg_base;
+-	struct clk *clk;
+ 
+ 	reg_base = of_iomap(np, 0);
+ 	if (!reg_base) {
+@@ -885,14 +887,6 @@ static void __init rk3368_clk_init(struct device_node *np)
+ 		return;
+ 	}
+ 
+-	/* Watchdog pclk is controlled by sgrf_soc_con3[7]. */
+-	clk = clk_register_fixed_factor(NULL, "pclk_wdt", "pclk_pd_alive", 0, 1, 1);
+-	if (IS_ERR(clk))
+-		pr_warn("%s: could not register clock pclk_wdt: %ld\n",
+-			__func__, PTR_ERR(clk));
+-	else
+-		rockchip_clk_add_lookup(ctx, clk, PCLK_WDT);
+-
+ 	rockchip_clk_register_plls(ctx, rk3368_pll_clks,
+ 				   ARRAY_SIZE(rk3368_pll_clks),
+ 				   RK3368_GRF_SOC_STATUS0);
+diff --git a/drivers/clk/rockchip/clk-rk3399.c b/drivers/clk/rockchip/clk-rk3399.c
+index 5a628148f3f0..d29da5dda570 100644
+--- a/drivers/clk/rockchip/clk-rk3399.c
++++ b/drivers/clk/rockchip/clk-rk3399.c
+@@ -1303,6 +1303,9 @@ static struct rockchip_clk_branch rk3399_clk_branches[] __initdata = {
+ 	GATE(PCLK_PMU_INTR_ARB, "pclk_pmu_intr_arb", "pclk_alive", CLK_IGNORE_UNUSED, RK3399_CLKGATE_CON(31), 9, GFLAGS),
+ 	GATE(PCLK_SGRF, "pclk_sgrf", "pclk_alive", CLK_IGNORE_UNUSED, RK3399_CLKGATE_CON(31), 10, GFLAGS),
+ 
++	/* Watchdog pclk is controlled by RK3399 SECURE_GRF_SOC_CON3[8]. */
++	SGRF_GATE(PCLK_WDT, "pclk_wdt", "pclk_alive"),
++
+ 	GATE(SCLK_MIPIDPHY_REF, "clk_mipidphy_ref", "xin24m", 0, RK3399_CLKGATE_CON(11), 14, GFLAGS),
+ 	GATE(SCLK_DPHY_PLL, "clk_dphy_pll", "clk_mipidphy_ref", CLK_IGNORE_UNUSED, RK3399_CLKGATE_CON(21), 0, GFLAGS),
+ 
+@@ -1530,7 +1533,6 @@ static void __init rk3399_clk_init(struct device_node *np)
+ {
+ 	struct rockchip_clk_provider *ctx;
+ 	void __iomem *reg_base;
+-	struct clk *clk;
+ 
+ 	reg_base = of_iomap(np, 0);
+ 	if (!reg_base) {
+@@ -1545,14 +1547,6 @@ static void __init rk3399_clk_init(struct device_node *np)
+ 		return;
+ 	}
+ 
+-	/* Watchdog pclk is controlled by RK3399 SECURE_GRF_SOC_CON3[8]. */
+-	clk = clk_register_fixed_factor(NULL, "pclk_wdt", "pclk_alive", 0, 1, 1);
+-	if (IS_ERR(clk))
+-		pr_warn("%s: could not register clock pclk_wdt: %ld\n",
+-			__func__, PTR_ERR(clk));
+-	else
+-		rockchip_clk_add_lookup(ctx, clk, PCLK_WDT);
+-
+ 	rockchip_clk_register_plls(ctx, rk3399_pll_clks,
+ 				   ARRAY_SIZE(rk3399_pll_clks), -1);
+ 
+
+From 4a972d22dd39a7dc013c5bda092f9c90d7ac3b2a Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Fri, 14 Jun 2019 15:47:29 -0700
+Subject: [PATCH] drm/rockchip: Properly adjust to a true clock in
+ adjusted_mode
+
+When fixing up the clock in vop_crtc_mode_fixup() we're not doing it
+quite correctly.  Specifically if we've got the true clock 266666667 Hz,
+we'll perform this calculation:
+   266666667 / 1000 => 266666
+
+Later when we try to set the clock we'll do clk_set_rate(266666 *
+1000).  The common clock framework won't actually pick the proper clock
+in this case since it always wants clocks <= the specified one.
+
+Let's solve this by using DIV_ROUND_UP.
+
+Fixes: b59b8de31497 ("drm/rockchip: return a true clock rate to adjusted_mode")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Sean Paul <seanpaul@chromium.org>
+Reviewed-by: Yakir Yang <ykk@rock-chips.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190614224730.98622-1-dianders@chromium.org
+(cherry picked from commit 99b9683f2142b20bad78e61f7f829e8714e45685)
+---
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+index 3bb242f7d32f..fd8fbfc4469b 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+@@ -1019,7 +1019,8 @@ static bool vop_crtc_mode_fixup(struct drm_crtc *crtc,
+ 	struct vop *vop = to_vop(crtc);
+ 
+ 	adjusted_mode->clock =
+-		clk_round_rate(vop->dclk, mode->clock * 1000) / 1000;
++		DIV_ROUND_UP(clk_round_rate(vop->dclk, mode->clock * 1000),
++			     1000);
+ 
+ 	return true;
+ }
+
+From bfe4e6a86389e3cb37fb49acaeeeb9131bbbf82c Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Fri, 14 Jun 2019 15:47:30 -0700
+Subject: [PATCH] drm/rockchip: Base adjustments of the mode based on prev
+ adjustments
+
+In vop_crtc_mode_fixup() we fixup the mode to show what we actually
+will be able to achieve.  However we should base our adjustments on
+any previous adjustments that were made.
+
+As an example, the dw_hdmi driver may wish to make some small
+adjustments to clock rates in its atomic_check() function.  If it
+does, it will update the adjusted_mode.  We shouldn't throw away those
+adjustments.
+
+NOTE: the version of the dw_hdmi driver upstream doesn't _actually_
+make such adjustments, but downstream in Chrome OS it does.  It is
+plausible that one day we'll figure out how to cleanly make that
+happen in an upstream-friendly way, so we should prepare by using the
+right mode.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20190614224730.98622-2-dianders@chromium.org
+(cherry picked from commit 527e4ca3b6d13c62340d7a8e2ac3d24800f72f4b)
+---
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+index fd8fbfc4469b..b79687746143 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+@@ -1019,8 +1019,8 @@ static bool vop_crtc_mode_fixup(struct drm_crtc *crtc,
+ 	struct vop *vop = to_vop(crtc);
+ 
+ 	adjusted_mode->clock =
+-		DIV_ROUND_UP(clk_round_rate(vop->dclk, mode->clock * 1000),
+-			     1000);
++		DIV_ROUND_UP(clk_round_rate(vop->dclk,
++					    adjusted_mode->clock * 1000), 1000);
+ 
+ 	return true;
+ }
+
+From d3dd95504b44762a45670184d8bb438d501a03e5 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 17 Jun 2019 13:03:51 +0200
+Subject: [PATCH] ASoC: rockchip: pdm: select CONFIG_RATIONAL
+
+Without this, we get a link error:
+
+sound/soc/rockchip/rockchip_pdm.o: In function `rockchip_pdm_hw_params':
+rockchip_pdm.c:(.text+0x754): undefined reference to `rational_best_approximation'
+
+Fixes: 624e8e00acaf ("ASoC: rockchip: pdm: fixup pdm fractional div")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+(cherry picked from commit 41d92e0c835bff7dec343bf41e79d24b326d94c1)
+---
+ sound/soc/rockchip/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+index 957046ac6c8c..d88555e0c389 100644
+--- a/sound/soc/rockchip/Kconfig
++++ b/sound/soc/rockchip/Kconfig
+@@ -19,6 +19,7 @@ config SND_SOC_ROCKCHIP_PDM
+ 	tristate "Rockchip PDM Controller Driver"
+ 	depends on CLKDEV_LOOKUP && SND_SOC_ROCKCHIP
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
++	select RATIONAL
+ 	help
+ 	  Say Y or M if you want to add support for PDM driver for
+ 	  Rockchip PDM Controller. The Controller supports up to maximum of
+
+From 99ed7894b9349280d94921e7b180bab20ac4e3ad Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Mon, 20 May 2019 10:56:05 -0700
+Subject: [PATCH] ARM: dts: rockchip: Allow wakeup from rk3288-veyron's dwc2
+ USB ports
+
+We want to be able to wake from USB if a device is plugged in that
+wants remote wakeup.  Enable it on both dwc2 controllers.
+
+NOTE: this is added specifically to veyron and not to rk3288 in
+general since it's not known whether all rk3288 boards are designed to
+support USB wakeup.  It is plausible that some boards could shut down
+important rails in S3.
+
+Also note that currently wakeup doesn't seem to happen unless you use
+the "deep" suspend mode (where SDRAM is turned off).  Presumably the
+shallow suspend mode is gating some sort of clock that's important but
+I couldn't easily figure out how to get it working.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Felipe Balbi <felipe.balbi@linux.intel.com>
+(cherry picked from commit 1d390437f605db28596ad4c4bfeca2fed052c025)
+---
+ arch/arm/boot/dts/rk3288-veyron.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
+index e2635ad574e7..1b5b2bdd558c 100644
+--- a/arch/arm/boot/dts/rk3288-veyron.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
+@@ -456,6 +456,7 @@
+ 
+ &usb_host1 {
+ 	status = "okay";
++	snps,need-phy-for-wake;
+ };
+ 
+ &usb_otg {
+@@ -464,6 +465,7 @@
+ 	assigned-clocks = <&cru SCLK_USBPHY480M_SRC>;
+ 	assigned-clock-parents = <&usbphy0>;
+ 	dr_mode = "host";
++	snps,need-phy-for-wake;
+ };
+ 
+ &vopb {
+
+From 03733b912e4abb6ca8d693f0294d56be7e9c0970 Mon Sep 17 00:00:00 2001
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Date: Fri, 21 Jun 2019 17:58:08 +0200
+Subject: [PATCH] ASoC: rk3399_gru_sound: Support 32, 44.1 and 88.2 kHz sample
+ rates
+
+According to the datasheet the max98357a also supports 32, 44.1 and
+88.2 kHz sample rate. This support was also introduced recently by
+commit fdf34366d324 ("ASoC: max98357a: add missing supported rates").
+
+Actually the machine driver validates the supported sample rates but
+this is not really needed because the component driver can all apply
+whatever constraints are needed and do their own validation. So, remove
+the checks from the machine driver as are not needed at all. This way,
+we also support 32, 44.1 and 88.2 kHz sample rates and we get rid of the
+errors like the below.
+
+  rk3399-gru-sound sound: rockchip_sound_max98357a_hw_params() doesn't support this sample rate: 44100
+  rk3399-gru-sound sound: ASoC: machine hw_params failed: -22
+
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+(cherry picked from commit 30b233b1cb4291d39ca08a95566721e8a52e5ee3)
+---
+ sound/soc/rockchip/rk3399_gru_sound.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
+
+diff --git a/sound/soc/rockchip/rk3399_gru_sound.c b/sound/soc/rockchip/rk3399_gru_sound.c
+index f2a51ae2b674..0bd97dbc2faa 100644
+--- a/sound/soc/rockchip/rk3399_gru_sound.c
++++ b/sound/soc/rockchip/rk3399_gru_sound.c
+@@ -66,19 +66,7 @@ static int rockchip_sound_max98357a_hw_params(struct snd_pcm_substream *substrea
+ 	unsigned int mclk;
+ 	int ret;
+ 
+-	/* max98357a supports these sample rates */
+-	switch (params_rate(params)) {
+-	case 8000:
+-	case 16000:
+-	case 48000:
+-	case 96000:
+-		mclk = params_rate(params) * SOUND_FS;
+-		break;
+-	default:
+-		dev_err(rtd->card->dev, "%s() doesn't support this sample rate: %d\n",
+-				__func__, params_rate(params));
+-		return -EINVAL;
+-	}
++	mclk = params_rate(params) * SOUND_FS;
+ 
+ 	ret = snd_soc_dai_set_sysclk(rtd->cpu_dai, 0, mclk, 0);
+ 	if (ret) {
+
+From 572b23feacc179fba71a904cea2b4b7ffb45aff0 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Wed, 19 Jun 2019 11:34:25 -0700
+Subject: [PATCH] ARM: dts: rockchip: Configure BT_DEV_WAKE in on rk3288-veyron
+
+This is the other half of the hacky solution from commit f497ab6b4bb8
+("ARM: dts: rockchip: Configure BT_HOST_WAKE as wake-up signal on
+veyron").  Specifically the LPM driver that the Broadcom Bluetooth
+expects to have (but is missing in mainline) has two halves of the
+equation: BT_HOST_WAKE and BT_DEV_WAKE.  The BT_HOST_WAKE (which was
+handled in the previous commit) is the one that lets the Bluetooth
+wake the system up.  The BT_DEV_WAKE (this patch) tells the Bluetooth
+that it's OK to go into a low power mode.  That means we were burning
+a bit of extra power in S3 without this patch.  Measurements are a bit
+noisy, but it appears to be a few mA worth of difference.
+
+NOTE: Though these pins don't do much on systems with Marvell
+Bluetooth, downstream kernels set it on all veyron boards so we'll do
+the same.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 4db11c378ab1e170c3a197ea3719ffe54cd06637)
+---
+ arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi |  2 ++
+ arch/arm/boot/dts/rk3288-veyron.dtsi            | 20 ++++++++++++++++++++
+ 2 files changed, 22 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+index 5727017f34b2..1cadb522fd0d 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
+@@ -237,6 +237,7 @@
+ 
+ 		/* Wake only */
+ 		&suspend_l_wake
++		&bt_dev_wake_awake
+ 	>;
+ 	pinctrl-1 = <
+ 		/* Common for sleep and wake, but no owners */
+@@ -246,6 +247,7 @@
+ 
+ 		/* Sleep only */
+ 		&suspend_l_sleep
++		&bt_dev_wake_sleep
+ 	>;
+ 
+ 	backlight {
+diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
+index 1b5b2bdd558c..8fc8eac699bf 100644
+--- a/arch/arm/boot/dts/rk3288-veyron.dtsi
++++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
+@@ -487,12 +487,18 @@
+ 		&ddr0_retention
+ 		&ddrio_pwroff
+ 		&global_pwroff
++
++		/* Wake only */
++		&bt_dev_wake_awake
+ 	>;
+ 	pinctrl-1 = <
+ 		/* Common for sleep and wake, but no owners */
+ 		&ddr0_retention
+ 		&ddrio_pwroff
+ 		&global_pwroff
++
++		/* Sleep only */
++		&bt_dev_wake_sleep
+ 	>;
+ 
+ 	pcfg_pull_none_drv_8ma: pcfg-pull-none-drv-8ma {
+@@ -598,6 +604,20 @@
+ 		sdio0_clk: sdio0-clk {
+ 			rockchip,pins = <4 RK_PD1 1 &pcfg_pull_none_drv_8ma>;
+ 		};
++
++		/*
++		 * These pins are only present on very new veyron boards; on
++		 * older boards bt_dev_wake is simply always high.  Note that
++		 * gpio4_D2 is a NC on old veyron boards, so it doesn't hurt
++		 * to map this pin everywhere
++		 */
++		bt_dev_wake_sleep: bt-dev-wake-sleep {
++			rockchip,pins = <4 RK_PD2 RK_FUNC_GPIO &pcfg_output_low>;
++		};
++
++		bt_dev_wake_awake: bt-dev-wake-awake {
++			rockchip,pins = <4 RK_PD2 RK_FUNC_GPIO &pcfg_output_high>;
++		};
+ 	};
+ 
+ 	tpm {
+
+From 0cecc5c28ec4c1711149be47a759b230c0cfe036 Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Tue, 18 Jun 2019 11:45:31 -0700
+Subject: [PATCH] Revert "ARM: dts: rockchip: set PWM delay backlight settings
+ for Minnie"
+
+This reverts commit 288ceb85b505c19abe1895df068dda5ed20cf482.
+
+The commit assumes that the minnie panel is a AUO B101EAN01.1 (LVDS
+interface), however it is a AUO B101EAN01.8 (eDP interface). The eDP
+panel doesn't need the 200 ms delay.
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit fe32553c8704fe15effd6945afd5de893d417a80)
+---
+ arch/arm/boot/dts/rk3288-veyron-minnie.dts | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/arm/boot/dts/rk3288-veyron-minnie.dts b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+index b2cc70a08554..9008e703c07e 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-minnie.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+@@ -106,8 +106,6 @@
+ 			240 241 242 243 244 245 246 247
+ 			248 249 250 251 252 253 254 255>;
+ 	power-supply = <&backlight_regulator>;
+-	post-pwm-on-delay-ms = <200>;
+-	pwm-off-delay-ms = <200>;
+ };
+ 
+ &i2c_tunnel {
+
+From b4d27269b4bf6c8f988a9c90870d662ffe28a6ba Mon Sep 17 00:00:00 2001
+From: Peter Geis <pgwipeout@gmail.com>
+Date: Wed, 26 Jun 2019 13:04:43 +0000
+Subject: [PATCH] arm64: dts: rockchip: improve rk3328-roc-cc rgmii
+ performance.
+
+Currently the rk3328-roc-cc ethernet is enabled using "snps,force_thresh_dma_mode".
+While this works, the performance leaves a lot to be desired.
+A previous attempt to improve performance used "snps,txpbl = <0x4>".
+This also allowed networking to function, but performance varied between boards.
+
+This patch takes that one step further.
+Set txpbl and rxpbl to 0x4.
+This can also be accomplished with "snps,pbl =<0x4>" which affects both.
+Also set "snps,aal" which forces address aligned DMA mode.
+
+Fixes: 4bc4d6013b7f (arm64: dts: rockchip: fix rk3328-roc-cc gmac2io stability issues)
+Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+Tested-by: Leonidas P. Papadakos <papadakospan@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 393f3875c385cc6ae3b6069c3a88fe8e24d681ae)
+---
+ arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
+index 5d499c9086fb..bb40c163b05d 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
+@@ -141,10 +141,12 @@
+ 	phy-mode = "rgmii";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&rgmiim1_pins>;
+-	snps,force_thresh_dma_mode;
++	snps,aal;
+ 	snps,reset-gpio = <&gpio1 RK_PC2 GPIO_ACTIVE_LOW>;
+ 	snps,reset-active-low;
+ 	snps,reset-delays-us = <0 10000 50000>;
++	snps,rxpbl = <0x4>;
++	snps,txpbl = <0x4>;
+ 	tx_delay = <0x24>;
+ 	rx_delay = <0x18>;
+ 	status = "okay";
+
+From 086cdc30730d8de20164f74efeea79385d9ea1ee Mon Sep 17 00:00:00 2001
+From: Jianqun Xu <jay.xu@rock-chips.com>
+Date: Thu, 30 May 2019 08:08:48 +0800
+Subject: [PATCH] arm64: dts: rockchip: add core dtsi file for RK3399Pro SoCs
+
+This patch adds core dtsi file for Rockchip RK3399Pro SoCs,
+include rk3399.dtsi. Also enable pciei0/pcie_phy for AP to
+talk to NPU part inside SoC.
+
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 587b4ee24fc7200fea5c630c5d981b2cca35149f)
+---
+ arch/arm64/boot/dts/rockchip/rk3399pro.dtsi | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399pro.dtsi
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399pro.dtsi b/arch/arm64/boot/dts/rockchip/rk3399pro.dtsi
+new file mode 100644
+index 000000000000..bb5ebf6608b9
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3399pro.dtsi
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++// Copyright (c) 2019 Fuzhou Rockchip Electronics Co., Ltd.
++
++#include "rk3399.dtsi"
++
++/ {
++	compatible = "rockchip,rk3399pro";
++};
++
++/* Default to enabled since AP talk to NPU part over pcie */
++&pcie_phy {
++	status = "okay";
++};
++
++/* Default to enabled since AP talk to NPU part over pcie */
++&pcie0 {
++	ep-gpios = <&gpio0 RK_PB4 GPIO_ACTIVE_HIGH>;
++	num-lanes = <4>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pcie_clkreqn_cpm>;
++	status = "okay";
++};
+
+From 3b1054afd1356c86dd01299b1a1de42a1d7a7174 Mon Sep 17 00:00:00 2001
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+Date: Tue, 4 Jun 2019 18:57:57 +0200
+Subject: [PATCH] arm64: dts: rockchip: Fix multiple thermal zones conflict in
+ rk3399.dtsi
+
+Currently the common thermal zones definitions for the rk3399 assumes
+multiple thermal zones are supported by the governors. This is not the
+case and each thermal zone has its own governor instance acting
+individually without collaboration with other governors.
+
+As the cooling device for the CPU and the GPU thermal zones is the
+same, each governors take different decisions for the same cooling
+device leading to conflicting instructions and an erratic behavior.
+
+As the cooling-maps is about to become an optional property, let's
+remove the cpu cooling device map from the GPU thermal zone.
+
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 95f231f801ae1b1d630f03c3348873f7e1bd6f18)
+---
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 89594a7276f4..621292f23ded 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -821,15 +821,6 @@
+ 					type = "critical";
+ 				};
+ 			};
+-
+-			cooling-maps {
+-				map0 {
+-					trip = <&gpu_alert0>;
+-					cooling-device =
+-						<&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-						<&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+-				};
+-			};
+ 		};
+ 	};
+ 
+
+From b8c425f46c6116e74d7e0e4c553bd899f089f0cd Mon Sep 17 00:00:00 2001
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+Date: Tue, 4 Jun 2019 18:57:58 +0200
+Subject: [PATCH] arm64: dts: rockchip: Define values for the IPA governor for
+ rock960
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Currently the default thermal values for the rk3399-rock960 board is
+inherited from the generic definition in rk3399.dtsi.
+
+In order to ensure the rock960 has more room for througput before
+being capped by the thermal framework and is correctly supported by
+the IPA governor, let's define the power values and the right trip
+points for better performances:
+
+ - sustainable power is tested to be 1550mW
+
+ - increase the first mitigation point to 75°C in order to get better
+   performances
+
+ - the first trip point is 65°C in order to let the IPA to collect
+   enough data for the PID regulation when it reaches 75°C
+
+ - restrict the cooling device to the big CPUs as the little CPUs
+   contribution to the heating effect can be considered negligible
+
+The intelligent power allocator PID coefficient to be set in sysfs
+are:
+
+    k_d: 0
+    k_po: 79
+    k_i: 10
+    k_pu: 50
+
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit cd21c54ad9c4c838e96d4d6e1bc9694eac1aa798)
+---
+ arch/arm64/boot/dts/rockchip/rk3399-rock960.dts | 39 +++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
+index c624b4e73129..437a75f31ad4 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
+@@ -124,6 +124,45 @@
+ 	status = "okay";
+ };
+ 
++&thermal_zones {
++	cpu_thermal: cpu {
++		polling-delay-passive = <100>;
++		polling-delay = <1000>;
++		thermal-sensors = <&tsadc 0>;
++		sustainable-power = <1550>;
++
++		trips {
++			cpu_alert0: cpu_alert0 {
++				    temperature = <65000>;
++				    hysteresis = <2000>;
++				    type = "passive";
++			};
++
++			cpu_alert1: cpu_alert1 {
++				    temperature = <75000>;
++				    hysteresis = <2000>;
++				    type = "passive";
++			};
++
++			cpu_crit: cpu_crit {
++				  temperature = <95000>;
++				  hysteresis = <2000>;
++				  type = "critical";
++			};
++		};
++
++		cooling-maps {
++			     map0 {
++
++			     trip = <&cpu_alert1>;
++			     cooling-device =
++					<&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++					<&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++			};
++		};
++	};
++};
++
+ &usbdrd_dwc3_0 {
+ 	dr_mode = "otg";
+ };
+
+From 6dc1fc4058679857ae36d62b545470650fe3e4f7 Mon Sep 17 00:00:00 2001
+From: Vivek Unune <npcomplete13@gmail.com>
+Date: Fri, 21 Jun 2019 16:53:08 -0400
+Subject: [PATCH] arm64: dts: rockchip: Add support for Hugsun X99 TV Box
+
+Add devicetree support for Hugsun X99 TV Box based on RK3399 SoC
+
+Tested with LibreElec running kernel v5.1.2.
+Following peripherals tested and work:
+
+Peripheral works:
+- UART2 debug
+- eMMC
+- USB 3.0 port
+- USB 2.0 port
+- sdio, sd-card
+- HDMI
+- Ethernet
+- WiFi/BT
+
+Not tested:
+- Type-C port
+- OPTICAL
+- IR
+
+Signed-off-by: Vivek Unune <npcomplete13@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 3222bcf5f1155dde0ba6c596253439dece3f8262)
+---
+ .../devicetree/bindings/arm/rockchip.yaml          |   5 +
+ arch/arm64/boot/dts/rockchip/Makefile              |   1 +
+ arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts | 733 +++++++++++++++++++++
+ 3 files changed, 739 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
+
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index eef822ce2ad4..34865042f4e4 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -316,6 +316,11 @@ properties:
+           - const: haoyu,marsboard-rk3066
+           - const: rockchip,rk3066a
+ 
++      - description: Hugsun X99 TV Box
++        items:
++          - const: hugsun,x99
++          - const: rockchip,rk3399
++
+       - description: Khadas Edge series boards
+         items:
+           - enum:
+diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+index b50889af49c3..daa2c78e22c3 100644
+--- a/arch/arm64/boot/dts/rockchip/Makefile
++++ b/arch/arm64/boot/dts/rockchip/Makefile
+@@ -16,6 +16,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-bob.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-kevin.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-scarlet-inx.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-scarlet-kd.dtb
++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-hugsun-x99.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge-captain.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge-v.dtb
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
+new file mode 100644
+index 000000000000..0d1f5f9a0de9
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
+@@ -0,0 +1,733 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/dts-v1/;
++#include <dt-bindings/pwm/pwm.h>
++#include <dt-bindings/input/input.h>
++#include "rk3399.dtsi"
++#include "rk3399-opp.dtsi"
++
++/ {
++	model = "Hugsun X99 TV BOX";
++	compatible = "hugsun,x99", "rockchip,rk3399";
++
++	chosen {
++		stdout-path = "serial2:1500000n8";
++	};
++
++	clkin_gmac: external-gmac-clock {
++		compatible = "fixed-clock";
++		clock-frequency = <125000000>;
++		clock-output-names = "clkin_gmac";
++		#clock-cells = <0>;
++	};
++
++	dc_5v: dc-5v {
++		compatible = "regulator-fixed";
++		regulator-name = "dc_5v";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++	};
++
++	vcc_sys: vcc-sys {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_sys";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		regulator-always-on;
++		vin-supply = <&dc_5v>;
++	};
++
++	vcc_phy: vcc-phy-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_phy";
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
++	vcc1v8_s0: vcc1v8-s0 {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc1v8_s0";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-always-on;
++	};
++
++	vcc3v3_sys: vcc3v3-sys {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc3v3_sys";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-always-on;
++		vin-supply = <&vcc_sys>;
++	};
++
++	vcc5v0_host: vcc5v0-host-regulator {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&gpio4 RK_PD2 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&host_vbus_drv>;
++		regulator-name = "vcc5v0_host";
++		regulator-always-on;
++	};
++
++	vcc5v0_typec: vcc5v0-typec-regulator {
++		compatible = "regulator-fixed";
++		enable-active-high;
++		gpio = <&gpio1 RK_PA3 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&vcc5v0_typec_en>;
++		regulator-name = "vcc5v0_typec";
++		regulator-always-on;
++		vin-supply = <&vcc5v0_usb>;
++	};
++
++	vcc5v0_usb: vcc5v0-usb {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc5v0_usb";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		vin-supply = <&dc_5v>;
++	};
++
++	vdd_log: vdd-log {
++		compatible = "pwm-regulator";
++		pwms = <&pwm2 0 25000 1>;
++		pwm-supply = <&vcc_sys>;
++		regulator-name = "vdd_log";
++		regulator-min-microvolt = <800000>;
++		regulator-max-microvolt = <1400000>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
++	sdio_pwrseq: sdio-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		clocks = <&rk808 1>;
++		clock-names = "ext_clock";
++		pinctrl-names = "default";
++		pinctrl-0 = <&wifi_reg_on_h>;
++		reset-gpios = <&gpio0 RK_PB2 GPIO_ACTIVE_LOW>;
++	};
++
++};
++
++&cpu_l0 {
++	cpu-supply = <&vdd_cpu_l>;
++};
++
++&cpu_l1 {
++	cpu-supply = <&vdd_cpu_l>;
++};
++
++&cpu_l2 {
++	cpu-supply = <&vdd_cpu_l>;
++};
++
++&cpu_l3 {
++	cpu-supply = <&vdd_cpu_l>;
++};
++
++&cpu_b0 {
++	cpu-supply = <&vdd_cpu_b>;
++};
++
++&cpu_b1 {
++	cpu-supply = <&vdd_cpu_b>;
++};
++
++&emmc_phy {
++	status = "okay";
++};
++
++&gmac {
++	assigned-clocks = <&cru SCLK_RMII_SRC>;
++	assigned-clock-parents = <&clkin_gmac>;
++	clock_in_out = "input";
++	phy-supply = <&vcc_phy>;
++	phy-mode = "rgmii";
++	pinctrl-names = "default";
++	pinctrl-0 = <&rgmii_pins>;
++	snps,reset-gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
++	snps,reset-active-low;
++	snps,reset-delays-us = <0 10000 50000>;
++	tx_delay = <0x28>;
++	rx_delay = <0x11>;
++	status = "okay";
++};
++
++&gpu {
++	status = "okay";
++	mali-supply = <&vdd_gpu>;
++};
++
++&hdmi {
++	ddc-i2c-bus = <&i2c3>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&hdmi_cec>;
++	status = "okay";
++};
++
++&hdmi_sound {
++	status = "okay";
++};
++
++&i2c0 {
++	status = "okay";
++	i2c-scl-rising-time-ns = <180>;
++	i2c-scl-falling-time-ns = <30>;
++	clock-frequency = <400000>;
++
++	vdd_cpu_b: syr827@40 {
++		compatible = "silergy,syr827";
++		reg = <0x40>;
++		regulator-compatible = "fan53555-reg";
++		pinctrl-0 = <&vsel1_gpio>;
++		regulator-name = "vdd_cpu_b";
++		regulator-min-microvolt = <712500>;
++		regulator-max-microvolt = <1500000>;
++		regulator-ramp-delay = <1000>;
++		fcs,suspend-voltage-selector = <1>;
++		regulator-always-on;
++		regulator-boot-on;
++		vin-supply = <&vcc_sys>;
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++
++	vdd_gpu: syr828@41 {
++		compatible = "silergy,syr828";
++		reg = <0x41>;
++		regulator-compatible = "fan53555-reg";
++		pinctrl-0 = <&vsel2_gpio>;
++		regulator-name = "vdd_gpu";
++		regulator-min-microvolt = <712500>;
++		regulator-max-microvolt = <1500000>;
++		regulator-ramp-delay = <1000>;
++		fcs,suspend-voltage-selector = <1>;
++		regulator-always-on;
++		regulator-boot-on;
++		vin-supply = <&vcc_sys>;
++		regulator-initial-mode = <1>;
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++
++	rk808: pmic@1b {
++		compatible = "rockchip,rk808";
++		reg = <0x1b>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <21 IRQ_TYPE_LEVEL_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pmic_int_l>;
++		rockchip,system-power-controller;
++		wakeup-source;
++		#clock-cells = <1>;
++		clock-output-names = "xin32k", "rtc_clko_wifi";
++
++		vcc1-supply = <&vcc_sys>;
++		vcc2-supply = <&vcc_sys>;
++		vcc3-supply = <&vcc_sys>;
++		vcc4-supply = <&vcc_sys>;
++		vcc6-supply = <&vcc_sys>;
++		vcc7-supply = <&vcc_sys>;
++		vcc8-supply = <&vcc3v3_sys>;
++		vcc9-supply = <&vcc_sys>;
++		vcc10-supply = <&vcc_sys>;
++		vcc11-supply = <&vcc_sys>;
++		vcc12-supply = <&vcc3v3_sys>;
++		vddio-supply = <&vcc_1v8>;
++
++		regulators {
++			vdd_center: DCDC_REG1 {
++				regulator-name = "vdd_center";
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <900000>;
++				regulator-ramp-delay = <6001>;
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_cpu_l: DCDC_REG2 {
++				regulator-name = "vdd_cpu_l";
++				regulator-min-microvolt = <750000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-ramp-delay = <6001>;
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_ddr: DCDC_REG3 {
++				regulator-name = "vcc_ddr";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++				};
++			};
++
++			vcc_1v8: DCDC_REG4 {
++				regulator-name = "vcc_1v8";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			vcc1v8_dvp: LDO_REG1 {
++				regulator-name = "vcc1v8_dvp";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			vcca1v8_hdmi: LDO_REG2 {
++				regulator-name = "vcca1v8_hdmi";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			vcca_1v8: LDO_REG3 {
++				regulator-name = "vcca_1v8";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			vcc_sd: LDO_REG4 {
++				regulator-name = "vcc_sd";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++				};
++			};
++
++			vcc3v0_sd: LDO_REG5 {
++				regulator-name = "vcc3v0_sd";
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3000000>;
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3000000>;
++				};
++			};
++
++			vcc_1v5: LDO_REG6 {
++				regulator-name = "vcc_1v5";
++				regulator-min-microvolt = <1500000>;
++				regulator-max-microvolt = <1500000>;
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1500000>;
++				};
++			};
++
++			vcca0v9_hdmi: LDO_REG7 {
++				regulator-name = "vcca0v9_hdmi";
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <900000>;
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <900000>;
++				};
++			};
++
++			vcc_3v0: LDO_REG8 {
++				regulator-name = "vcc_3v0";
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3000000>;
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3000000>;
++				};
++			};
++
++			vcc3v3_s3: SWITCH_REG1 {
++				regulator-name = "vcc3v3_s3";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++				};
++			};
++
++			vcc3v3_s0: SWITCH_REG2 {
++				regulator-name = "vcc3v3_s0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-state-mem {
++					regulator-on-in-suspend;
++				};
++			};
++		};
++	};
++};
++
++&i2c1 {
++	i2c-scl-rising-time-ns = <300>;
++	i2c-scl-falling-time-ns = <15>;
++	status = "okay";
++};
++
++&i2c3 {
++	i2c-scl-rising-time-ns = <450>;
++	i2c-scl-falling-time-ns = <15>;
++	status = "okay";
++};
++
++&i2c4 {
++	i2c-scl-rising-time-ns = <600>;
++	i2c-scl-falling-time-ns = <40>;
++	status = "okay";
++
++	fusb0: typec-portc@22 {
++		compatible = "fcs,fusb302";
++		reg = <0x22>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <RK_PA2 IRQ_TYPE_LEVEL_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&fusb0_int>;
++		vbus-supply = <&vcc5v0_typec>;
++		status = "okay";
++	};
++};
++
++&i2c7 {
++	status = "okay";
++};
++
++&i2s0 {
++	rockchip,playback-channels = <8>;
++	rockchip,capture-channels = <8>;
++	status = "okay";
++};
++
++&i2s1 {
++	rockchip,playback-channels = <2>;
++	rockchip,capture-channels = <2>;
++	status = "okay";
++};
++
++&i2s2 {
++	status = "okay";
++};
++
++&io_domains {
++	status = "okay";
++	audio-supply = <&vcc1v8_s0>;
++	bt656-supply = <&vcc1v8_s0>;
++	gpio1830-supply = <&vcc_3v0>;
++	sdmmc-supply = <&vcc_sd>;
++};
++
++&pmu_io_domains {
++	status = "okay";
++	pmu1830-supply = <&vcc_1v8>;
++};
++
++&pinctrl {
++	fusb30x {
++		fusb0_int: fusb0-int {
++			rockchip,pins =
++				<1 RK_PA2 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++
++	gmac {
++		rgmii_sleep_pins: rgmii-sleep-pins {
++			rockchip,pins =
++				<3 RK_PB7 RK_FUNC_GPIO &pcfg_output_low>;
++		};
++	};
++
++	pmic {
++		pmic_int_l: pmic-int-l {
++			rockchip,pins =
++				<1 RK_PC5 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++
++		vsel1_gpio: vsel1-gpio {
++			rockchip,pins =
++				<1 RK_PC1 RK_FUNC_GPIO &pcfg_pull_down>;
++		};
++
++		vsel2_gpio: vsel2-gpio {
++			rockchip,pins =
++				<1 RK_PB6 RK_FUNC_GPIO &pcfg_pull_down>;
++		};
++	};
++
++	sdio {
++		bt_host_wake_l: bt-host-wake-l {
++			rockchip,pins = <0 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		bt_reg_on_h: bt-reg-on-h {
++			/* external pullup to VCC1V8_PMUPLL */
++			rockchip,pins = <0 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		bt_wake_l: bt-wake-l {
++			rockchip,pins = <2 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++
++		wifi_reg_on_h: wifi-reg_on-h {
++			rockchip,pins = <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	wifi {
++		wifi_host_wake_l: wifi-host-wake-l {
++			rockchip,pins = <0 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++
++	usb-typec {
++		vcc5v0_typec_en: vcc5v0_typec_en {
++			rockchip,pins = <1 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++
++	usb2 {
++		host_vbus_drv: host-vbus-drv {
++			rockchip,pins =
++				<4 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
++		};
++	};
++};
++
++&pwm0 {
++	status = "okay";
++};
++
++&pwm2 {
++	status = "okay";
++	pinctrl-0 = <&pwm2_pin_pull_down>;
++};
++
++&saradc {
++	vref-supply = <&vcc1v8_s0>;
++	status = "okay";
++};
++
++&sdmmc {
++	clock-frequency = <150000000>;
++	clock-freq-min-max = <200000 150000000>;
++	supports-sd;
++	bus-width = <4>;
++	cap-mmc-highspeed;
++	cap-sd-highspeed;
++	disable-wp;
++	vqmmc-supply = <&vcc_sd>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd &sdmmc_bus4>;
++	card-detect-delay = <800>;
++	status = "okay";
++};
++
++&sdhci {
++	bus-width = <8>;
++	mmc-hs400-1_8v;
++	mmc-hs400-enhanced-strobe;
++	supports-emmc;
++	non-removable;
++	keep-power-in-suspend;
++	status = "okay";
++};
++
++&sdio0 {
++	bus-width = <4>;
++	clock-frequency = <50000000>;
++	cap-sdio-irq;
++	cap-sd-highspeed;
++	keep-power-in-suspend;
++	mmc-pwrseq = <&sdio_pwrseq>;
++	non-removable;
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdio0_bus4 &sdio0_cmd &sdio0_clk>;
++	sd-uhs-sdr104;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	brcmf: wifi@1 {
++		compatible = "brcm,bcm4329-fmac";
++		reg = <1>;
++		interrupt-parent = <&gpio0>;
++		interrupts = <RK_PA3 GPIO_ACTIVE_HIGH>;
++		interrupt-names = "host-wake";
++		pinctrl-names = "default";
++		pinctrl-0 = <&wifi_host_wake_l>;
++	};
++};
++
++&spdif {
++	status = "okay";
++	pinctrl-0 = <&spdif_bus_1>;
++	#sound-dai-cells = <0>;
++};
++
++&spi1 {
++	status = "okay";
++	max-freq = <10000000>;
++
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0>;
++		spi-max-frequency = <10000000>;
++	};
++};
++
++&tcphy0 {
++	status = "okay";
++};
++
++&tcphy1 {
++	status = "okay";
++};
++
++&tsadc {
++	/* tshut mode 0:CRU 1:GPIO */
++	rockchip,hw-tshut-mode = <1>;
++	/* tshut polarity 0:LOW 1:HIGH */
++	rockchip,hw-tshut-polarity = <1>;
++	rockchip,hw-tshut-temp = <110000>;
++	status = "okay";
++};
++
++&u2phy0 {
++	status = "okay";
++
++	u2phy0_host: host-port {
++		phy-supply = <&vcc5v0_host>;
++		status = "okay";
++	};
++
++	u2phy0_otg: otg-port {
++		status = "okay";
++	};
++};
++
++&u2phy1 {
++	status = "okay";
++
++	u2phy1_host: host-port {
++		phy-supply = <&vcc5v0_host>;
++		status = "okay";
++	};
++
++	u2phy1_otg: otg-port {
++		status = "okay";
++	};
++};
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_xfer &uart0_rts &uart0_cts>;
++	status = "okay";
++
++	bluetooth {
++		compatible = "brcm,bcm43438-bt";
++		clocks = <&rk808 1>;
++		clock-names = "ext_clock";
++		device-wakeup-gpios = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
++		host-wakeup-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
++		shutdown-gpios = <&gpio0 RK_PB1 GPIO_ACTIVE_HIGH>;
++		max-speed = <4000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&bt_reg_on_h &bt_host_wake_l &bt_wake_l>;
++		vbat-supply = <&vcc3v3_sys>;
++		vddio-supply = <&vcc_1v8>;
++	};
++};
++
++&uart2 {
++	status = "okay";
++};
++
++&usb_host0_ehci {
++	status = "okay";
++};
++
++&usb_host0_ohci {
++	status = "okay";
++};
++
++&usb_host1_ehci {
++	status = "okay";
++};
++
++&usb_host1_ohci {
++	status = "okay";
++};
++
++&usbdrd3_0 {
++	status = "okay";
++};
++
++&usbdrd_dwc3_0 {
++	status = "okay";
++	dr_mode = "otg";
++};
++
++&usbdrd3_1 {
++	status = "okay";
++};
++
++&usbdrd_dwc3_1 {
++	status = "okay";
++	dr_mode = "host";
++};
++
++&vopb {
++	status = "okay";
++};
++
++&vopb_mmu {
++	status = "okay";
++};
+
+From 17f299a6e845170ae808313f927f334e6a2ba38b Mon Sep 17 00:00:00 2001
+From: Heiko Stuebner <heiko@sntech.de>
+Date: Sat, 15 Jun 2019 14:18:17 +0200
+Subject: [PATCH] clk: rockchip: add clock id for watchdog pclk on rk3328
+
+Needed to export that added clock.
+
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 0dc14b013f7982de6e81b5b2931a2131d20cbb6d)
+---
+ include/dt-bindings/clock/rk3328-cru.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/dt-bindings/clock/rk3328-cru.h b/include/dt-bindings/clock/rk3328-cru.h
+index bcaa4559ab1b..6ad54c39f8da 100644
+--- a/include/dt-bindings/clock/rk3328-cru.h
++++ b/include/dt-bindings/clock/rk3328-cru.h
+@@ -173,6 +173,7 @@
+ #define PCLK_DCF		233
+ #define PCLK_SARADC		234
+ #define PCLK_ACODECPHY		235
++#define PCLK_WDT		236
+ 
+ /* hclk gates */
+ #define HCLK_PERI		308
+
+From 37a3ec95a90f9b3513bc63d91e6c528bf1b4eb41 Mon Sep 17 00:00:00 2001
+From: Heiko Stuebner <heiko@sntech.de>
+Date: Fri, 14 Jun 2019 10:58:04 +0200
+Subject: [PATCH] clk: rockchip: add clock id for hdmi_phy special clock on
+ rk3228
+
+Add the needed clock id to enable clock settings from devicetree.
+
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Tested-by: Justin Swartz <justin.swartz@risingedge.co.za>
+(cherry picked from commit dbc08f18ea49bd1952fb1158a56d400b77117403)
+---
+ include/dt-bindings/clock/rk3228-cru.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/dt-bindings/clock/rk3228-cru.h b/include/dt-bindings/clock/rk3228-cru.h
+index 55655ab0a4c4..a0422f62c040 100644
+--- a/include/dt-bindings/clock/rk3228-cru.h
++++ b/include/dt-bindings/clock/rk3228-cru.h
+@@ -73,6 +73,7 @@
+ #define SCLK_WIFI		141
+ #define SCLK_OTGPHY0		142
+ #define SCLK_OTGPHY1		143
++#define SCLK_HDMI_PHY		144
+ 
+ /* dclk gates */
+ #define DCLK_VOP		190
+
+From 8a641c0025790c0f4dcdd4d848d5fd9568098c9e Mon Sep 17 00:00:00 2001
+From: Heiko Stuebner <heiko@sntech.de>
+Date: Sat, 15 Jun 2019 14:23:28 +0200
+Subject: [PATCH] clk: rockchip: add watchdog pclk on rk3328
+
+The watchdog pclk is controlled from the secure GRF but we still
+want to mention it explicitly to not use arbitary parent clocks
+in the devicetree wdt node, so add a SGRF_GATE for it.
+
+Suggested-by: Leonidas P. Papadakos <papadakospan@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit d59fca075cf829bb972359f48b9b5b2cee863432)
+---
+ drivers/clk/rockchip/clk-rk3328.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/clk/rockchip/clk-rk3328.c b/drivers/clk/rockchip/clk-rk3328.c
+index f12142d9cea2..2feb22a87886 100644
+--- a/drivers/clk/rockchip/clk-rk3328.c
++++ b/drivers/clk/rockchip/clk-rk3328.c
+@@ -799,6 +799,9 @@ static struct rockchip_clk_branch rk3328_clk_branches[] __initdata = {
+ 	GATE(PCLK_SARADC, "pclk_saradc", "pclk_bus", 0, RK3328_CLKGATE_CON(17), 15, GFLAGS),
+ 	GATE(0, "pclk_pmu", "pclk_bus", CLK_IGNORE_UNUSED, RK3328_CLKGATE_CON(28), 3, GFLAGS),
+ 
++	/* Watchdog pclk is controlled from the secure GRF */
++	SGRF_GATE(PCLK_WDT, "pclk_wdt", "pclk_bus"),
++
+ 	GATE(PCLK_USB3PHY_OTG, "pclk_usb3phy_otg", "pclk_phy_pre", 0, RK3328_CLKGATE_CON(28), 1, GFLAGS),
+ 	GATE(PCLK_USB3PHY_PIPE, "pclk_usb3phy_pipe", "pclk_phy_pre", 0, RK3328_CLKGATE_CON(28), 2, GFLAGS),
+ 	GATE(PCLK_USB3_GRF, "pclk_usb3_grf", "pclk_phy_pre", CLK_IGNORE_UNUSED, RK3328_CLKGATE_CON(17), 2, GFLAGS),
+
+From 44136e415aa6ef3eca7a1d5c4d54333c076f6740 Mon Sep 17 00:00:00 2001
+From: Heiko Stuebner <heiko@sntech.de>
+Date: Fri, 14 Jun 2019 10:59:48 +0200
+Subject: [PATCH] clk: rockchip: export HDMIPHY clock on rk3228
+
+Export the hdmiphy clock mux via the newly added clock-id.
+
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Tested-by: Justin Swartz <justin.swartz@risingedge.co.za>
+(cherry picked from commit 794e94ca83450c436313df18291e139cf5f9121f)
+---
+ drivers/clk/rockchip/clk-rk3228.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/rockchip/clk-rk3228.c b/drivers/clk/rockchip/clk-rk3228.c
+index b85730565edd..9e1536075d9e 100644
+--- a/drivers/clk/rockchip/clk-rk3228.c
++++ b/drivers/clk/rockchip/clk-rk3228.c
+@@ -255,7 +255,7 @@ static struct rockchip_clk_branch rk3228_clk_branches[] __initdata = {
+ 			RK2928_CLKGATE_CON(4), 0, GFLAGS),
+ 
+ 	/* PD_MISC */
+-	MUX(0, "hdmiphy", mux_hdmiphy_p, CLK_SET_RATE_PARENT,
++	MUX(SCLK_HDMI_PHY, "hdmiphy", mux_hdmiphy_p, CLK_SET_RATE_PARENT,
+ 			RK2928_MISC_CON, 13, 1, MFLAGS),
+ 	MUX(0, "usb480m_phy", mux_usb480m_phy_p, CLK_SET_RATE_PARENT,
+ 			RK2928_MISC_CON, 14, 1, MFLAGS),
+
+From c99ec3aee419228c6db5a7fec282301b62e7a317 Mon Sep 17 00:00:00 2001
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+Date: Fri, 14 Jun 2019 11:05:12 +0200
+Subject: [PATCH] ARM: dts: rockchip: fix vop iommu-cells on rk322x
+
+iommu-cells obviously needs to start with a "#".
+
+Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 836e2abff0021b4c20ec31f743d95be2a3d5869f)
+---
+ arch/arm/boot/dts/rk322x.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
+index da102fff96a2..b19e7939f3ea 100644
+--- a/arch/arm/boot/dts/rk322x.dtsi
++++ b/arch/arm/boot/dts/rk322x.dtsi
+@@ -579,7 +579,7 @@
+ 		interrupt-names = "vop_mmu";
+ 		clocks = <&cru ACLK_VOP>, <&cru HCLK_VOP>;
+ 		clock-names = "aclk", "iface";
+-		iommu-cells = <0>;
++		#iommu-cells = <0>;
+ 		status = "disabled";
+ 	};
+ 
+
+From 578d978b71db22d411546f5f64db0da56137b50a Mon Sep 17 00:00:00 2001
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+Date: Thu, 13 Jun 2019 10:13:04 +0000
+Subject: [PATCH] ARM: dts: rockchip: add display nodes for rk322x
+
+Add display_subsystem, hdmi_phy, vop, and hdmi device nodes plus
+a few hdmi pinctrl entries to allow for HDMI output.
+
+Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+[added assigned-clock settings for hdmiphy output]
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit 519574e3259c8d7e5d78366ef513cfaaf650784f)
+---
+ arch/arm/boot/dts/rk322x.dtsi | 83 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 83 insertions(+)
+
+diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
+index b19e7939f3ea..340ed6ccb08f 100644
+--- a/arch/arm/boot/dts/rk322x.dtsi
++++ b/arch/arm/boot/dts/rk322x.dtsi
+@@ -143,6 +143,11 @@
+ 		#clock-cells = <0>;
+ 	};
+ 
++	display_subsystem: display-subsystem {
++		compatible = "rockchip,display-subsystem";
++		ports = <&vop_out>;
++	};
++
+ 	i2s1: i2s1@100b0000 {
+ 		compatible = "rockchip,rk3228-i2s", "rockchip,rk3066-i2s";
+ 		reg = <0x100b0000 0x4000>;
+@@ -529,6 +534,17 @@
+ 		status = "disabled";
+ 	};
+ 
++	hdmi_phy: hdmi-phy@12030000 {
++		compatible = "rockchip,rk3228-hdmi-phy";
++		reg = <0x12030000 0x10000>;
++		clocks = <&cru PCLK_HDMI_PHY>, <&xin24m>, <&cru DCLK_HDMI_PHY>;
++		clock-names = "sysclk", "refoclk", "refpclk";
++		#clock-cells = <0>;
++		clock-output-names = "hdmiphy_phy";
++		#phy-cells = <0>;
++		status = "disabled";
++	};
++
+ 	gpu: gpu@20000000 {
+ 		compatible = "rockchip,rk3228-mali", "arm,mali-400";
+ 		reg = <0x20000000 0x10000>;
+@@ -572,6 +588,28 @@
+ 		status = "disabled";
+ 	};
+ 
++	vop: vop@20050000 {
++		compatible = "rockchip,rk3228-vop";
++		reg = <0x20050000 0x1ffc>;
++		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru ACLK_VOP>, <&cru DCLK_VOP>, <&cru HCLK_VOP>;
++		clock-names = "aclk_vop", "dclk_vop", "hclk_vop";
++		resets = <&cru SRST_VOP_A>, <&cru SRST_VOP_H>, <&cru SRST_VOP_D>;
++		reset-names = "axi", "ahb", "dclk";
++		iommus = <&vop_mmu>;
++		status = "disabled";
++
++		vop_out: port {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			vop_out_hdmi: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&hdmi_in_vop>;
++			};
++		};
++	};
++
+ 	vop_mmu: iommu@20053f00 {
+ 		compatible = "rockchip,iommu";
+ 		reg = <0x20053f00 0x100>;
+@@ -594,6 +632,36 @@
+ 		status = "disabled";
+ 	};
+ 
++	hdmi: hdmi@200a0000 {
++		compatible = "rockchip,rk3228-dw-hdmi";
++		reg = <0x200a0000 0x20000>;
++		reg-io-width = <4>;
++		interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
++		assigned-clocks = <&cru SCLK_HDMI_PHY>;
++		assigned-clock-parents = <&hdmi_phy>;
++		clocks = <&cru SCLK_HDMI_HDCP>, <&cru PCLK_HDMI_CTRL>, <&cru SCLK_HDMI_CEC>;
++		clock-names = "isfr", "iahb", "cec";
++		pinctrl-names = "default";
++		pinctrl-0 = <&hdmii2c_xfer &hdmi_hpd &hdmi_cec>;
++		resets = <&cru SRST_HDMI_P>;
++		reset-names = "hdmi";
++		phys = <&hdmi_phy>;
++		phy-names = "hdmi";
++		rockchip,grf = <&grf>;
++		status = "disabled";
++
++		ports {
++			hdmi_in: port {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				hdmi_in_vop: endpoint@0 {
++					reg = <0>;
++					remote-endpoint = <&vop_out_hdmi>;
++				};
++			};
++		};
++	};
++
+ 	sdmmc: dwmmc@30000000 {
+ 		compatible = "rockchip,rk3228-dw-mshc", "rockchip,rk3288-dw-mshc";
+ 		reg = <0x30000000 0x4000>;
+@@ -922,6 +990,21 @@
+ 			};
+ 		};
+ 
++		hdmi {
++			hdmi_hpd: hdmi-hpd {
++				rockchip,pins = <0 RK_PB7 1 &pcfg_pull_down>;
++			};
++
++			hdmii2c_xfer: hdmii2c-xfer {
++				rockchip,pins = <0 RK_PA6 2 &pcfg_pull_none>,
++						<0 RK_PA7 2 &pcfg_pull_none>;
++			};
++
++			hdmi_cec: hdmi-cec {
++				rockchip,pins = <0 RK_PC4 1 &pcfg_pull_none>;
++			};
++		};
++
+ 		i2c0 {
+ 			i2c0_xfer: i2c0-xfer {
+ 				rockchip,pins = <0 RK_PA0 1 &pcfg_pull_none>,
+
+From 2d92ad765b3b10a5d68b3867a5e0f79267243829 Mon Sep 17 00:00:00 2001
+From: "Leonidas P. Papadakos" <papadakospan@gmail.com>
+Date: Thu, 6 Jun 2019 02:57:14 +0300
+Subject: [PATCH] arm64: dts: rockchip: enable rk3328 watchdog clock
+
+Add the missing clock property for the watchdog on rk3328.
+
+Signed-off-by: Leonidas P. Papadakos <papadakospan@gmail.com>
+[set wdt node to always enabled, as it is not board-specific]
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit c9a8af804d4b6743c068975a25ec1d15ac7f9da0)
+---
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index 994468671b19..e9fefd8a7e02 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -407,6 +407,7 @@
+ 		compatible = "snps,dw-wdt";
+ 		reg = <0x0 0xff1a0000 0x0 0x100>;
+ 		interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&cru PCLK_WDT>;
+ 	};
+ 
+ 	pwm0: pwm@ff1b0000 {
+
+From f712784fd866d565862060727cf5132002b09ef3 Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date: Thu, 20 Jun 2019 04:39:00 -0400
+Subject: [PATCH] media: cec-notifier: rename variables, check kstrdup and
+ n->conn_name
+
+dev -> hdmi_dev
+conn -> conn_name
+
+Check if n->conn_name is not NULL before calling strcmp.
+Check the result of kstrdup, and clean up on error.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+(cherry picked from commit 3d51dc03a4eeb78eac676a559ee984f4f1bb455c)
+---
+ drivers/media/cec/cec-notifier.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/media/cec/cec-notifier.c b/drivers/media/cec/cec-notifier.c
+index 9598c7778871..f72b19c351dd 100644
+--- a/drivers/media/cec/cec-notifier.c
++++ b/drivers/media/cec/cec-notifier.c
+@@ -21,8 +21,8 @@ struct cec_notifier {
+ 	struct mutex lock;
+ 	struct list_head head;
+ 	struct kref kref;
+-	struct device *dev;
+-	const char *conn;
++	struct device *hdmi_dev;
++	const char *conn_name;
+ 	struct cec_adapter *cec_adap;
+ 	void (*callback)(struct cec_adapter *adap, u16 pa);
+ 
+@@ -32,14 +32,16 @@ struct cec_notifier {
+ static LIST_HEAD(cec_notifiers);
+ static DEFINE_MUTEX(cec_notifiers_lock);
+ 
+-struct cec_notifier *cec_notifier_get_conn(struct device *dev, const char *conn)
++struct cec_notifier *
++cec_notifier_get_conn(struct device *hdmi_dev, const char *conn_name)
+ {
+ 	struct cec_notifier *n;
+ 
+ 	mutex_lock(&cec_notifiers_lock);
+ 	list_for_each_entry(n, &cec_notifiers, head) {
+-		if (n->dev == dev &&
+-		    (!conn || !strcmp(n->conn, conn))) {
++		if (n->hdmi_dev == hdmi_dev &&
++		    (!conn_name ||
++		     (n->conn_name && !strcmp(n->conn_name, conn_name)))) {
+ 			kref_get(&n->kref);
+ 			mutex_unlock(&cec_notifiers_lock);
+ 			return n;
+@@ -48,10 +50,17 @@ struct cec_notifier *cec_notifier_get_conn(struct device *dev, const char *conn)
+ 	n = kzalloc(sizeof(*n), GFP_KERNEL);
+ 	if (!n)
+ 		goto unlock;
+-	n->dev = dev;
+-	if (conn)
+-		n->conn = kstrdup(conn, GFP_KERNEL);
++	n->hdmi_dev = hdmi_dev;
++	if (conn_name) {
++		n->conn_name = kstrdup(conn_name, GFP_KERNEL);
++		if (!n->conn_name) {
++			kfree(n);
++			n = NULL;
++			goto unlock;
++		}
++	}
+ 	n->phys_addr = CEC_PHYS_ADDR_INVALID;
++
+ 	mutex_init(&n->lock);
+ 	kref_init(&n->kref);
+ 	list_add_tail(&n->head, &cec_notifiers);
+@@ -67,7 +76,7 @@ static void cec_notifier_release(struct kref *kref)
+ 		container_of(kref, struct cec_notifier, kref);
+ 
+ 	list_del(&n->head);
+-	kfree(n->conn);
++	kfree(n->conn_name);
+ 	kfree(n);
+ }
+ 
+
+From cd945471c91086d2f25118330d3be0c1c676b02d Mon Sep 17 00:00:00 2001
+From: Dariusz Marcinkiewicz <darekm@google.com>
+Date: Thu, 20 Jun 2019 05:17:18 -0400
+Subject: [PATCH] media: cec: add struct cec_connector_info support
+
+Define struct cec_connector_info in media/cec.h and define
+CEC_CAP_CONNECTOR_INFO. In a later patch this will be moved to
+uapi/linux/cec.h.
+
+The CEC_CAP_CONNECTOR_INFO capability can be set by drivers, but
+cec_allocate_adapter() will remove it again until the public API
+for this can be enabled once all drm drivers wire this up correctly.
+
+Also add the cec_fill_conn_info_from_drm and cec_s_conn_info functions,
+which are needed by drm drivers to fill in the cec_connector info
+based on a drm_connector.
+
+The cec_notifier_(un)register and cec_register_cec_notifier
+prototypes were moved from cec-notifier.h to cec.h since cec.h no longer
+includes cec-notifier.h. These headers included each other before,
+which caused various problems.
+
+Due to these changes the seco-cec driver was changed as well: it
+should include cec-notifier.h, not cec.h.
+
+Signed-off-by: Dariusz Marcinkiewicz <darekm@google.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+(cherry picked from commit 32a847f9fa40ec1b03ead2c514862764983ff9ca)
+---
+ drivers/media/cec/cec-adap.c               | 29 +++++++++
+ drivers/media/cec/cec-core.c               |  5 ++
+ drivers/media/platform/seco-cec/seco-cec.c |  2 +-
+ include/media/cec-notifier.h               | 39 ------------
+ include/media/cec.h                        | 98 +++++++++++++++++++++++++++++-
+ 5 files changed, 132 insertions(+), 41 deletions(-)
+
+diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
+index ac3683a7b2ab..451c61bde4d4 100644
+--- a/drivers/media/cec/cec-adap.c
++++ b/drivers/media/cec/cec-adap.c
+@@ -16,7 +16,10 @@
+ #include <linux/string.h>
+ #include <linux/types.h>
+ 
++#include <drm/drm_connector.h>
++#include <drm/drm_device.h>
+ #include <drm/drm_edid.h>
++#include <drm/drm_file.h>
+ 
+ #include "cec-priv.h"
+ 
+@@ -75,6 +78,16 @@ u16 cec_get_edid_phys_addr(const u8 *edid, unsigned int size,
+ }
+ EXPORT_SYMBOL_GPL(cec_get_edid_phys_addr);
+ 
++void cec_fill_conn_info_from_drm(struct cec_connector_info *conn_info,
++				 const struct drm_connector *connector)
++{
++	memset(conn_info, 0, sizeof(*conn_info));
++	conn_info->type = CEC_CONNECTOR_TYPE_DRM;
++	conn_info->drm.card_no = connector->dev->primary->index;
++	conn_info->drm.connector_id = connector->base.id;
++}
++EXPORT_SYMBOL_GPL(cec_fill_conn_info_from_drm);
++
+ /*
+  * Queue a new event for this filehandle. If ts == 0, then set it
+  * to the current time.
+@@ -1598,6 +1611,22 @@ void cec_s_phys_addr_from_edid(struct cec_adapter *adap,
+ }
+ EXPORT_SYMBOL_GPL(cec_s_phys_addr_from_edid);
+ 
++void cec_s_conn_info(struct cec_adapter *adap,
++		     const struct cec_connector_info *conn_info)
++{
++	if (!(adap->capabilities & CEC_CAP_CONNECTOR_INFO))
++		return;
++
++	mutex_lock(&adap->lock);
++	if (conn_info)
++		adap->conn_info = *conn_info;
++	else
++		memset(&adap->conn_info, 0, sizeof(adap->conn_info));
++	cec_post_state_event(adap);
++	mutex_unlock(&adap->lock);
++}
++EXPORT_SYMBOL_GPL(cec_s_conn_info);
++
+ /*
+  * Called from either the ioctl or a driver to set the logical addresses.
+  *
+diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
+index db7adffcdc76..9c610e1e99b8 100644
+--- a/drivers/media/cec/cec-core.c
++++ b/drivers/media/cec/cec-core.c
+@@ -257,6 +257,11 @@ struct cec_adapter *cec_allocate_adapter(const struct cec_adap_ops *ops,
+ 	struct cec_adapter *adap;
+ 	int res;
+ 
++	/*
++	 * Disable this capability until the connector info public API
++	 * is ready.
++	 */
++	caps &= ~CEC_CAP_CONNECTOR_INFO;
+ #ifndef CONFIG_MEDIA_CEC_RC
+ 	caps &= ~CEC_CAP_RC;
+ #endif
+diff --git a/drivers/media/platform/seco-cec/seco-cec.c b/drivers/media/platform/seco-cec/seco-cec.c
+index a425a10540c1..7d4ac6ee03a9 100644
+--- a/drivers/media/platform/seco-cec/seco-cec.c
++++ b/drivers/media/platform/seco-cec/seco-cec.c
+@@ -18,7 +18,7 @@
+ #include <linux/platform_device.h>
+ 
+ /* CEC Framework */
+-#include <media/cec.h>
++#include <media/cec-notifier.h>
+ 
+ #include "seco-cec.h"
+ 
+diff --git a/include/media/cec-notifier.h b/include/media/cec-notifier.h
+index 57b3a9f6ea1d..0e3bd3415724 100644
+--- a/include/media/cec-notifier.h
++++ b/include/media/cec-notifier.h
+@@ -63,30 +63,6 @@ void cec_notifier_set_phys_addr(struct cec_notifier *n, u16 pa);
+ void cec_notifier_set_phys_addr_from_edid(struct cec_notifier *n,
+ 					  const struct edid *edid);
+ 
+-/**
+- * cec_notifier_register - register a callback with the notifier
+- * @n: the CEC notifier
+- * @adap: the CEC adapter, passed as argument to the callback function
+- * @callback: the callback function
+- */
+-void cec_notifier_register(struct cec_notifier *n,
+-			   struct cec_adapter *adap,
+-			   void (*callback)(struct cec_adapter *adap, u16 pa));
+-
+-/**
+- * cec_notifier_unregister - unregister the callback from the notifier.
+- * @n: the CEC notifier
+- */
+-void cec_notifier_unregister(struct cec_notifier *n);
+-
+-/**
+- * cec_register_cec_notifier - register the notifier with the cec adapter.
+- * @adap: the CEC adapter
+- * @notifier: the CEC notifier
+- */
+-void cec_register_cec_notifier(struct cec_adapter *adap,
+-			       struct cec_notifier *notifier);
+-
+ /**
+  * cec_notifier_parse_hdmi_phandle - find the hdmi device from "hdmi-phandle"
+  * @dev: the device with the "hdmi-phandle" device tree property
+@@ -119,21 +95,6 @@ static inline void cec_notifier_set_phys_addr_from_edid(struct cec_notifier *n,
+ {
+ }
+ 
+-static inline void cec_notifier_register(struct cec_notifier *n,
+-			 struct cec_adapter *adap,
+-			 void (*callback)(struct cec_adapter *adap, u16 pa))
+-{
+-}
+-
+-static inline void cec_notifier_unregister(struct cec_notifier *n)
+-{
+-}
+-
+-static inline void cec_register_cec_notifier(struct cec_adapter *adap,
+-					     struct cec_notifier *notifier)
+-{
+-}
+-
+ static inline struct device *cec_notifier_parse_hdmi_phandle(struct device *dev)
+ {
+ 	return ERR_PTR(-ENODEV);
+diff --git a/include/media/cec.h b/include/media/cec.h
+index 707411ef8ba2..4d59387bc61b 100644
+--- a/include/media/cec.h
++++ b/include/media/cec.h
+@@ -17,7 +17,9 @@
+ #include <linux/timer.h>
+ #include <linux/cec-funcs.h>
+ #include <media/rc-core.h>
+-#include <media/cec-notifier.h>
++
++/* CEC_ADAP_G_CONNECTOR_INFO is available */
++#define CEC_CAP_CONNECTOR_INFO	(1 << 8)
+ 
+ #define CEC_CAP_DEFAULTS (CEC_CAP_LOG_ADDRS | CEC_CAP_TRANSMIT | \
+ 			  CEC_CAP_PASSTHROUGH | CEC_CAP_RC)
+@@ -53,6 +55,7 @@ struct cec_devnode {
+ struct cec_adapter;
+ struct cec_data;
+ struct cec_pin;
++struct cec_notifier;
+ 
+ struct cec_data {
+ 	struct list_head list;
+@@ -144,6 +147,34 @@ struct cec_adap_ops {
+  */
+ #define CEC_MAX_MSG_TX_QUEUE_SZ		(18 * 1)
+ 
++/**
++ * struct cec_drm_connector_info - tells which drm connector is
++ * associated with the CEC adapter.
++ * @card_no: drm card number
++ * @connector_id: drm connector ID
++ */
++struct cec_drm_connector_info {
++	__u32 card_no;
++	__u32 connector_id;
++};
++
++#define CEC_CONNECTOR_TYPE_NO_CONNECTOR	0
++#define CEC_CONNECTOR_TYPE_DRM		1
++
++/**
++ * struct cec_connector_info - tells if and which connector is
++ * associated with the CEC adapter.
++ * @type: connector type (if any)
++ * @drm: drm connector info
++ */
++struct cec_connector_info {
++	__u32 type;
++	union {
++		struct cec_drm_connector_info drm;
++		__u32 raw[16];
++	};
++};
++
+ struct cec_adapter {
+ 	struct module *owner;
+ 	char name[32];
+@@ -182,6 +213,7 @@ struct cec_adapter {
+ 	struct cec_fh *cec_initiator;
+ 	bool passthrough;
+ 	struct cec_log_addrs log_addrs;
++	struct cec_connector_info conn_info;
+ 
+ 	u32 tx_timeouts;
+ 
+@@ -233,6 +265,7 @@ static inline bool cec_is_registered(const struct cec_adapter *adap)
+ 	((pa) >> 12), ((pa) >> 8) & 0xf, ((pa) >> 4) & 0xf, (pa) & 0xf
+ 
+ struct edid;
++struct drm_connector;
+ 
+ #if IS_REACHABLE(CONFIG_CEC_CORE)
+ struct cec_adapter *cec_allocate_adapter(const struct cec_adap_ops *ops,
+@@ -247,6 +280,8 @@ void cec_s_phys_addr(struct cec_adapter *adap, u16 phys_addr,
+ 		     bool block);
+ void cec_s_phys_addr_from_edid(struct cec_adapter *adap,
+ 			       const struct edid *edid);
++void cec_s_conn_info(struct cec_adapter *adap,
++		     const struct cec_connector_info *conn_info);
+ int cec_transmit_msg(struct cec_adapter *adap, struct cec_msg *msg,
+ 		     bool block);
+ 
+@@ -331,6 +366,9 @@ void cec_queue_pin_5v_event(struct cec_adapter *adap, bool is_high, ktime_t ts);
+ u16 cec_get_edid_phys_addr(const u8 *edid, unsigned int size,
+ 			   unsigned int *offset);
+ 
++void cec_fill_conn_info_from_drm(struct cec_connector_info *conn_info,
++				 const struct drm_connector *connector);
++
+ #else
+ 
+ static inline int cec_register_adapter(struct cec_adapter *adap,
+@@ -365,6 +403,64 @@ static inline u16 cec_get_edid_phys_addr(const u8 *edid, unsigned int size,
+ 	return CEC_PHYS_ADDR_INVALID;
+ }
+ 
++static inline void cec_s_conn_info(struct cec_adapter *adap,
++				   const struct cec_connector_info *conn_info)
++{
++}
++
++static inline void
++cec_fill_conn_info_from_drm(struct cec_connector_info *conn_info,
++			    const struct drm_connector *connector)
++{
++	memset(conn_info, 0, sizeof(*conn_info));
++}
++
++#endif
++
++#if IS_REACHABLE(CONFIG_CEC_CORE) && IS_ENABLED(CONFIG_CEC_NOTIFIER)
++
++/**
++ * cec_notifier_register - register a callback with the notifier
++ * @n: the CEC notifier
++ * @adap: the CEC adapter, passed as argument to the callback function
++ * @callback: the callback function
++ */
++void cec_notifier_register(struct cec_notifier *n,
++			   struct cec_adapter *adap,
++			   void (*callback)(struct cec_adapter *adap, u16 pa));
++
++/**
++ * cec_notifier_unregister - unregister the callback from the notifier.
++ * @n: the CEC notifier
++ */
++void cec_notifier_unregister(struct cec_notifier *n);
++
++/**
++ * cec_register_cec_notifier - register the notifier with the cec adapter.
++ * @adap: the CEC adapter
++ * @notifier: the CEC notifier
++ */
++void cec_register_cec_notifier(struct cec_adapter *adap,
++			       struct cec_notifier *notifier);
++
++#else
++
++static inline void
++cec_notifier_register(struct cec_notifier *n,
++		      struct cec_adapter *adap,
++		      void (*callback)(struct cec_adapter *adap, u16 pa))
++{
++}
++
++static inline void cec_notifier_unregister(struct cec_notifier *n)
++{
++}
++
++static inline void cec_register_cec_notifier(struct cec_adapter *adap,
++					     struct cec_notifier *notifier)
++{
++}
++
+ #endif
+ 
+ /**
+
+From ed21c4effa00b5aab18d7e5811b64f153b33d68b Mon Sep 17 00:00:00 2001
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date: Thu, 20 Jun 2019 06:10:00 -0400
+Subject: [PATCH] media: cec-notifier: add new notifier functions
+
+In order to support multiple CEC devices for an HDMI connector,
+and to support cec_connector_info, drivers should use either a
+cec_notifier_conn_(un)register pair of functions (HDMI drivers)
+or a cec_notifier_cec_adap_(un)register pair (CEC adapter drivers).
+
+This replaces cec_notifier_get_conn/cec_notifier_put.
+
+For CEC adapters it is also no longer needed to call cec_notifier_register,
+cec_register_cec_notifier and cec_notifier_unregister. This is now
+all handled internally by the new functions.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+(cherry picked from commit b48cb35c6a7babdc317edb4c752ecf3da0691228)
+---
+ drivers/media/cec/cec-notifier.c | 85 ++++++++++++++++++++++++++++++++++++++++
+ include/media/cec-notifier.h     | 78 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 163 insertions(+)
+
+diff --git a/drivers/media/cec/cec-notifier.c b/drivers/media/cec/cec-notifier.c
+index f72b19c351dd..52a867bde15f 100644
+--- a/drivers/media/cec/cec-notifier.c
++++ b/drivers/media/cec/cec-notifier.c
+@@ -22,6 +22,7 @@ struct cec_notifier {
+ 	struct list_head head;
+ 	struct kref kref;
+ 	struct device *hdmi_dev;
++	struct cec_connector_info conn_info;
+ 	const char *conn_name;
+ 	struct cec_adapter *cec_adap;
+ 	void (*callback)(struct cec_adapter *adap, u16 pa);
+@@ -88,6 +89,84 @@ void cec_notifier_put(struct cec_notifier *n)
+ }
+ EXPORT_SYMBOL_GPL(cec_notifier_put);
+ 
++struct cec_notifier *
++cec_notifier_conn_register(struct device *hdmi_dev, const char *conn_name,
++			   const struct cec_connector_info *conn_info)
++{
++	struct cec_notifier *n = cec_notifier_get_conn(hdmi_dev, conn_name);
++
++	if (!n)
++		return n;
++
++	mutex_lock(&n->lock);
++	n->phys_addr = CEC_PHYS_ADDR_INVALID;
++	if (conn_info)
++		n->conn_info = *conn_info;
++	else
++		memset(&n->conn_info, 0, sizeof(n->conn_info));
++	if (n->cec_adap) {
++		cec_phys_addr_invalidate(n->cec_adap);
++		cec_s_conn_info(n->cec_adap, conn_info);
++	}
++	mutex_unlock(&n->lock);
++	return n;
++}
++EXPORT_SYMBOL_GPL(cec_notifier_conn_register);
++
++void cec_notifier_conn_unregister(struct cec_notifier *n)
++{
++	if (!n)
++		return;
++
++	mutex_lock(&n->lock);
++	memset(&n->conn_info, 0, sizeof(n->conn_info));
++	n->phys_addr = CEC_PHYS_ADDR_INVALID;
++	if (n->cec_adap) {
++		cec_phys_addr_invalidate(n->cec_adap);
++		cec_s_conn_info(n->cec_adap, NULL);
++	}
++	mutex_unlock(&n->lock);
++	cec_notifier_put(n);
++}
++EXPORT_SYMBOL_GPL(cec_notifier_conn_unregister);
++
++struct cec_notifier *
++cec_notifier_cec_adap_register(struct device *hdmi_dev, const char *conn_name,
++			       struct cec_adapter *adap)
++{
++	struct cec_notifier *n;
++
++	if (WARN_ON(!adap))
++		return NULL;
++
++	n = cec_notifier_get_conn(hdmi_dev, conn_name);
++	if (!n)
++		return n;
++
++	mutex_lock(&n->lock);
++	n->cec_adap = adap;
++	adap->conn_info = n->conn_info;
++	adap->notifier = n;
++	cec_s_phys_addr(adap, n->phys_addr, false);
++	mutex_unlock(&n->lock);
++	return n;
++}
++EXPORT_SYMBOL_GPL(cec_notifier_cec_adap_register);
++
++void cec_notifier_cec_adap_unregister(struct cec_notifier *n)
++{
++	if (!n)
++		return;
++
++	mutex_lock(&n->lock);
++	n->cec_adap->notifier = NULL;
++	n->cec_adap = NULL;
++	n->callback = NULL;
++	mutex_unlock(&n->lock);
++	cec_notifier_put(n);
++}
++EXPORT_SYMBOL_GPL(cec_notifier_cec_adap_unregister);
++
+ void cec_notifier_set_phys_addr(struct cec_notifier *n, u16 pa)
+ {
+ 	if (n == NULL)
+@@ -97,6 +176,8 @@ void cec_notifier_set_phys_addr(struct cec_notifier *n, u16 pa)
+ 	n->phys_addr = pa;
+ 	if (n->callback)
+ 		n->callback(n->cec_adap, n->phys_addr);
++	else if (n->cec_adap)
++		cec_s_phys_addr(n->cec_adap, n->phys_addr, false);
+ 	mutex_unlock(&n->lock);
+ }
+ EXPORT_SYMBOL_GPL(cec_notifier_set_phys_addr);
+@@ -131,6 +212,10 @@ EXPORT_SYMBOL_GPL(cec_notifier_register);
+ 
+ void cec_notifier_unregister(struct cec_notifier *n)
+ {
++	/* Do nothing unless cec_notifier_register was called first */
++	if (!n->callback)
++		return;
++
+ 	mutex_lock(&n->lock);
+ 	n->callback = NULL;
+ 	mutex_unlock(&n->lock);
+diff --git a/include/media/cec-notifier.h b/include/media/cec-notifier.h
+index 0e3bd3415724..f161f8a493ac 100644
+--- a/include/media/cec-notifier.h
++++ b/include/media/cec-notifier.h
+@@ -42,6 +42,60 @@ struct cec_notifier *cec_notifier_get_conn(struct device *dev,
+  */
+ void cec_notifier_put(struct cec_notifier *n);
+ 
++/**
++ * cec_notifier_conn_register - find or create a new cec_notifier for the given
++ * HDMI device and connector tuple.
++ * @hdmi_dev: HDMI device that sends the events.
++ * @conn_name: the connector name from which the event occurs. May be NULL
++ * if there is always only one HDMI connector created by the HDMI device.
++ * @conn_info: the connector info from which the event occurs (may be NULL)
++ *
++ * If a notifier for device @dev and connector @conn_name already exists, then
++ * increase the refcount and return that notifier.
++ *
++ * If it doesn't exist, then allocate a new notifier struct and return a
++ * pointer to that new struct.
++ *
++ * Return NULL if the memory could not be allocated.
++ */
++struct cec_notifier *
++cec_notifier_conn_register(struct device *hdmi_dev, const char *conn_name,
++			   const struct cec_connector_info *conn_info);
++
++/**
++ * cec_notifier_conn_unregister - decrease refcount and delete when the
++ * refcount reaches 0.
++ * @n: notifier. If NULL, then this function does nothing.
++ */
++void cec_notifier_conn_unregister(struct cec_notifier *n);
++
++/**
++ * cec_notifier_cec_adap_register - find or create a new cec_notifier for the
++ * given device.
++ * @hdmi_dev: HDMI device that sends the events.
++ * @conn_name: the connector name from which the event occurs. May be NULL
++ * if there is always only one HDMI connector created by the HDMI device.
++ * @adap: the cec adapter that registered this notifier.
++ *
++ * If a notifier for device @dev and connector @conn_name already exists, then
++ * increase the refcount and return that notifier.
++ *
++ * If it doesn't exist, then allocate a new notifier struct and return a
++ * pointer to that new struct.
++ *
++ * Return NULL if the memory could not be allocated.
++ */
++struct cec_notifier *
++cec_notifier_cec_adap_register(struct device *hdmi_dev, const char *conn_name,
++			       struct cec_adapter *adap);
++
++/**
++ * cec_notifier_cec_adap_unregister - decrease refcount and delete when the
++ * refcount reaches 0.
++ * @n: notifier. If NULL, then this function does nothing.
++ */
++void cec_notifier_cec_adap_unregister(struct cec_notifier *n);
++
+ /**
+  * cec_notifier_set_phys_addr - set a new physical address.
+  * @n: the CEC notifier
+@@ -86,6 +140,30 @@ static inline void cec_notifier_put(struct cec_notifier *n)
+ {
+ }
+ 
++static inline struct cec_notifier *
++cec_notifier_conn_register(struct device *hdmi_dev, const char *conn_name,
++			   const struct cec_connector_info *conn_info)
++{
++	/* A non-NULL pointer is expected on success */
++	return (struct cec_notifier *)0xdeadfeed;
++}
++
++static inline void cec_notifier_conn_unregister(struct cec_notifier *n)
++{
++}
++
++static inline struct cec_notifier *
++cec_notifier_cec_adap_register(struct device *hdmi_dev, const char *conn_name,
++			       struct cec_adapter *adap)
++{
++	/* A non-NULL pointer is expected on success */
++	return (struct cec_notifier *)0xdeadfeed;
++}
++
++static inline void cec_notifier_cec_adap_unregister(struct cec_notifier *n)
++{
++}
++
+ static inline void cec_notifier_set_phys_addr(struct cec_notifier *n, u16 pa)
+ {
+ }
+
+From 8711e144ec47576ab39ef01dad3d2f215fa3d50d Mon Sep 17 00:00:00 2001
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Date: Thu, 13 Jun 2019 18:27:45 +0200
+Subject: [PATCH] arm64: dts: rockchip: Update DWC3 modules on RK3399 SoCs
+
+As per binding documentation [1], the DWC3 core should have the "ref",
+"bus_early" and "suspend" clocks. As explained in the binding, those
+clocks are required for new platforms but not for existing platforms
+before commit fe8abf332b8f ("usb: dwc3: support clocks and resets for
+DWC3 core").
+
+However, as those clocks are really treated as required, this ends with
+having some annoying messages when the "rockchip,rk3399-dwc3" is used:
+
+[    1.724107] dwc3 fe800000.dwc3: Failed to get clk 'ref': -2
+[    1.731893] dwc3 fe900000.dwc3: Failed to get clk 'ref': -2
+[    2.495937] dwc3 fe800000.dwc3: Failed to get clk 'ref': -2
+[    2.647239] dwc3 fe900000.dwc3: Failed to get clk 'ref': -2
+
+In order to remove those annoying messages, update the DWC3 hardware
+module node and add all the required clocks. With this change, both, the
+glue node and the DWC3 core node, have the clocks defined, but that's
+not really a problem and there isn't a side effect on do this. So, we
+can get rid of the annoying get clk error messages.
+
+[1] Documentation/devicetree/bindings/usb/dwc3.txt
+
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit e6d237fdc13a790c1f73b74f7a9e85529b9ed44b)
+---
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 621292f23ded..cede1ad81be2 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -414,6 +414,9 @@
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0xfe800000 0x0 0x100000>;
+ 			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH 0>;
++			clocks = <&cru SCLK_USB3OTG0_REF>, <&cru ACLK_USB3OTG0>,
++				 <&cru SCLK_USB3OTG0_SUSPEND>;
++			clock-names = "ref", "bus_early", "suspend";
+ 			dr_mode = "otg";
+ 			phys = <&u2phy0_otg>, <&tcphy0_usb3>;
+ 			phy-names = "usb2-phy", "usb3-phy";
+@@ -447,6 +450,9 @@
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0xfe900000 0x0 0x100000>;
+ 			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH 0>;
++			clocks = <&cru SCLK_USB3OTG1_REF>, <&cru ACLK_USB3OTG1>,
++				 <&cru SCLK_USB3OTG1_SUSPEND>;
++			clock-names = "ref", "bus_early", "suspend";
+ 			dr_mode = "otg";
+ 			phys = <&u2phy1_otg>, <&tcphy1_usb3>;
+ 			phy-names = "usb2-phy", "usb3-phy";
+
+From 8c3dbd5f54b78c6711cf2ff6c4b7f00cdf462315 Mon Sep 17 00:00:00 2001
+From: Vicente Bergas <vicencb@gmail.com>
+Date: Thu, 27 Jun 2019 15:12:28 +0200
+Subject: [PATCH] arm64: dts: rockchip: Fix USB3 Type-C on rk3399-sapphire
+
+Before this patch, the Type-C port on the Sapphire board is dead.
+If setting the 'regulator-always-on' property to 'vcc5v0_typec0'
+then the port works for about 4 seconds at start-up. This is a
+sample trace with a memory stick plugged in:
+1.- The memory stick LED lights on and kernel reports:
+[    4.782999] scsi 0:0:0:0: Direct-Access USB DISK PMAP PQ: 0 ANSI: 4
+[    5.904580] sd 0:0:0:0: [sdb] 3913344 512-byte logical blocks: (2.00 GB/1.87 GiB)
+[    5.906860] sd 0:0:0:0: [sdb] Write Protect is off
+[    5.908973] sd 0:0:0:0: [sdb] Mode Sense: 23 00 00 00
+[    5.909122] sd 0:0:0:0: [sdb] No Caching mode page found
+[    5.911214] sd 0:0:0:0: [sdb] Assuming drive cache: write through
+[    5.951585]  sdb: sdb1
+[    5.954816] sd 0:0:0:0: [sdb] Attached SCSI removable disk
+2.- 4 seconds later the memory stick LED lights off and kernel reports:
+[    9.082822] phy phy-ff770000.syscon:usb2-phy@e450.2: charger = USB_DCP_CHARGER
+3.- After a minute the kernel reports:
+[   71.666761] usb 5-1: USB disconnect, device number 2
+It has been checked that, although the LED is off, VBUS is present.
+
+If, instead, the dr_mode is changed to host and the phy-supply changed
+accordingly, then it works. It has only been tested in host mode.
+
+Signed-off-by: Vicente Bergas <vicencb@gmail.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+(cherry picked from commit e1d9149e8389f1690cdd4e4056766dd26488a0fe)
+---
+ arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
+index 04623e52ac5d..1bc1579674e5 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
+@@ -565,12 +565,11 @@
+ 	status = "okay";
+ 
+ 	u2phy0_otg: otg-port {
+-		phy-supply = <&vcc5v0_typec0>;
+ 		status = "okay";
+ 	};
+ 
+ 	u2phy0_host: host-port {
+-		phy-supply = <&vcc5v0_host>;
++		phy-supply = <&vcc5v0_typec0>;
+ 		status = "okay";
+ 	};
+ };
+@@ -620,7 +619,7 @@
+ 
+ &usbdrd_dwc3_0 {
+ 	status = "okay";
+-	dr_mode = "otg";
++	dr_mode = "host";
+ };
+ 
+ &usbdrd3_1 {
+
+From 14cb4e02d9d5a66d42e97c0672260704137c5664 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Wed, 15 May 2019 15:18:55 +0200
 Subject: [PATCH] ASoC: dapm: allow muxes to force a disconnect
@@ -3548,10 +8421,10 @@ Signed-off-by: Mark Brown <broonie@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 0382a47b30bd..0e3bda80f531 100644
+index 5d9d7678e4fa..dc2e6093e81b 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -2244,7 +2244,7 @@ static int soc_dapm_mux_update_power(struct snd_soc_card *card,
+@@ -2247,7 +2247,7 @@ static int soc_dapm_mux_update_power(struct snd_soc_card *card,
  	dapm_kcontrol_for_each_path(path, kcontrol) {
  		found = 1;
  		/* we now need to match the string in the enum to the path */
@@ -3561,7 +8434,7 @@ index 0382a47b30bd..0e3bda80f531 100644
  		else
  			connect = false;
 
-From 69d8cdca6223dec2a637f3c0d2f8622c5785c27b Mon Sep 17 00:00:00 2001
+From 07d0c1190db94e24ab6195a718cb043ab4b7b261 Mon Sep 17 00:00:00 2001
 From: Uma Shankar <uma.shankar@intel.com>
 Date: Thu, 16 May 2019 19:40:06 +0530
 Subject: [PATCH] drm: Add HDR source metadata property
@@ -3796,7 +8669,7 @@ index 09d72966899a..9927efca12cf 100644
  #define DRM_MODE_PAGE_FLIP_ASYNC 0x02
  #define DRM_MODE_PAGE_FLIP_TARGET_ABSOLUTE 0x4
 
-From c25fa3a1d6bf46f14cd215607b669431ddc8a676 Mon Sep 17 00:00:00 2001
+From 00a636f474a7db909cc76d0c5cf1d85c545ed3a8 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Thu, 16 May 2019 19:40:07 +0530
 Subject: [PATCH] drm: Add reference counting on HDR metadata blob
@@ -3844,7 +8717,7 @@ index 59ffb6b9c745..e8efbcb7226d 100644
  EXPORT_SYMBOL(__drm_atomic_helper_connector_destroy_state);
  
 
-From 960d8adc6512cdc34b66bd007d8c208074d7d291 Mon Sep 17 00:00:00 2001
+From cda8901bcdfee335779fee58015c16e27c60d608 Mon Sep 17 00:00:00 2001
 From: Uma Shankar <uma.shankar@intel.com>
 Date: Thu, 16 May 2019 19:40:08 +0530
 Subject: [PATCH] drm: Parse HDR metadata info from EDID
@@ -3881,10 +8754,10 @@ Link: https://patchwork.freedesktop.org/patch/msgid/1558015817-12025-4-git-send-
  1 file changed, 51 insertions(+)
 
 diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index eb95b1e7d420..1189ef19328c 100644
+index c53e65b2bfcd..422729cd0001 100644
 --- a/drivers/gpu/drm/drm_edid.c
 +++ b/drivers/gpu/drm/drm_edid.c
-@@ -2859,6 +2859,7 @@ add_detailed_modes(struct drm_connector *connector, struct edid *edid,
+@@ -2898,6 +2898,7 @@ add_detailed_modes(struct drm_connector *connector, struct edid *edid,
  #define VIDEO_BLOCK     0x02
  #define VENDOR_BLOCK    0x03
  #define SPEAKER_BLOCK	0x04
@@ -3892,7 +8765,7 @@ index eb95b1e7d420..1189ef19328c 100644
  #define USE_EXTENDED_TAG 0x07
  #define EXT_VIDEO_CAPABILITY_BLOCK 0x00
  #define EXT_VIDEO_DATA_BLOCK_420	0x0E
-@@ -3841,6 +3842,54 @@ static void fixup_detailed_cea_mode_clock(struct drm_display_mode *mode)
+@@ -3880,6 +3881,54 @@ static void fixup_detailed_cea_mode_clock(struct drm_display_mode *mode)
  	mode->clock = clock;
  }
  
@@ -3947,7 +8820,7 @@ index eb95b1e7d420..1189ef19328c 100644
  static void
  drm_parse_hdmi_vsdb_audio(struct drm_connector *connector, const u8 *db)
  {
-@@ -4468,6 +4517,8 @@ static void drm_parse_cea_ext(struct drm_connector *connector,
+@@ -4507,6 +4556,8 @@ static void drm_parse_cea_ext(struct drm_connector *connector,
  			drm_parse_y420cmdb_bitmap(connector, db);
  		if (cea_db_is_vcdb(db))
  			drm_parse_vcdb(connector, db);
@@ -3957,7 +8830,7 @@ index eb95b1e7d420..1189ef19328c 100644
  }
  
 
-From 744cff434de53a8d7ddba8cf41c6436a8a5ed94c Mon Sep 17 00:00:00 2001
+From d7025b103c021f3f1c2a8ed2796f34c290e01a04 Mon Sep 17 00:00:00 2001
 From: Uma Shankar <uma.shankar@intel.com>
 Date: Thu, 16 May 2019 19:40:09 +0530
 Subject: [PATCH] drm: Enable HDR infoframe support
@@ -4013,10 +8886,10 @@ Link: https://patchwork.freedesktop.org/patch/msgid/1558015817-12025-5-git-send-
  4 files changed, 295 insertions(+)
 
 diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index 1189ef19328c..e8dde7372c41 100644
+index 422729cd0001..4e6826044f5b 100644
 --- a/drivers/gpu/drm/drm_edid.c
 +++ b/drivers/gpu/drm/drm_edid.c
-@@ -4911,6 +4911,78 @@ static bool is_hdmi2_sink(struct drm_connector *connector)
+@@ -4950,6 +4950,78 @@ static bool is_hdmi2_sink(struct drm_connector *connector)
  		connector->display_info.color_formats & DRM_COLOR_FORMAT_YCRCB420;
  }
  
@@ -4332,7 +9205,7 @@ index 799ae49774f5..481f0367dfd3 100644
  }
  EXPORT_SYMBOL(hdmi_infoframe_log);
 diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-index 9d3b5b93102c..0e21e91c4314 100644
+index c9ca0be54d9a..f461fc0bdad7 100644
 --- a/include/drm/drm_edid.h
 +++ b/include/drm/drm_edid.h
 @@ -25,6 +25,7 @@
@@ -4421,7 +9294,7 @@ index 6780476dcbff..bcf3c6c3499e 100644
  
  ssize_t hdmi_infoframe_pack(union hdmi_infoframe *frame, void *buffer,
 
-From 1d0f115e51eff1cc6b5d91d0da3fb2d0eac02dfd Mon Sep 17 00:00:00 2001
+From 18ca02a609984f565f2b6809f6dc52255b83e7ca Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
 Date: Thu, 16 May 2019 19:40:12 +0530
 Subject: [PATCH] drm: Add HLG EOTF
@@ -4455,10 +9328,10 @@ Link: https://patchwork.freedesktop.org/patch/msgid/1558015817-12025-8-git-send-
  2 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index e8dde7372c41..a6ed6cc2ab50 100644
+index 4e6826044f5b..145ecbf8641f 100644
 --- a/drivers/gpu/drm/drm_edid.c
 +++ b/drivers/gpu/drm/drm_edid.c
-@@ -3861,7 +3861,8 @@ static uint8_t eotf_supported(const u8 *edid_ext)
+@@ -3900,7 +3900,8 @@ static uint8_t eotf_supported(const u8 *edid_ext)
  	return edid_ext[2] &
  		(BIT(HDMI_EOTF_TRADITIONAL_GAMMA_SDR) |
  		 BIT(HDMI_EOTF_TRADITIONAL_GAMMA_HDR) |
@@ -4481,7 +9354,7 @@ index bcf3c6c3499e..ee55ba589cdc 100644
  
  struct hdmi_avi_infoframe {
 
-From 2fe4343857e629b3bbc89a0c393a080ea3fb7379 Mon Sep 17 00:00:00 2001
+From c48392a61ffe3c2fb9dae6a180dc308279337969 Mon Sep 17 00:00:00 2001
 From: Uma Shankar <uma.shankar@intel.com>
 Date: Thu, 16 May 2019 19:40:16 +0530
 Subject: [PATCH] video/hdmi: Add Unpack function for DRM infoframe
@@ -4589,7 +9462,7 @@ index 481f0367dfd3..b99ba01dfed5 100644
  		ret = hdmi_spd_infoframe_unpack(&frame->spd, buffer, size);
  		break;
 
-From 05322634fb22dbc9243355f0ca39bf8b98be737b Mon Sep 17 00:00:00 2001
+From 16c57b8ac5697e054a6a93514089f04cce8325f4 Mon Sep 17 00:00:00 2001
 From: Sean Paul <seanpaul@chromium.org>
 Date: Thu, 23 May 2019 09:54:58 -0400
 Subject: [PATCH] drm/edid: Fix docbook in
@@ -4625,10 +9498,10 @@ Link: https://patchwork.freedesktop.org/patch/msgid/20190523135504.184354-1-sean
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index a6ed6cc2ab50..c21b7c5ba880 100644
+index 145ecbf8641f..9a67d4ea24b5 100644
 --- a/drivers/gpu/drm/drm_edid.c
 +++ b/drivers/gpu/drm/drm_edid.c
-@@ -4921,7 +4921,7 @@ static inline bool is_eotf_supported(u8 output_eotf, u8 sink_eotf)
+@@ -4960,7 +4960,7 @@ static inline bool is_eotf_supported(u8 output_eotf, u8 sink_eotf)
   * drm_hdmi_infoframe_set_hdr_metadata() - fill an HDMI DRM infoframe with
   *                                         HDR metadata from userspace
   * @frame: HDMI DRM infoframe
@@ -4638,7 +9511,7 @@ index a6ed6cc2ab50..c21b7c5ba880 100644
   * Return: 0 on success or a negative error code on failure.
   */
 
-From 79f2f889670a8a718d1d8593ebb9f7137206f2d2 Mon Sep 17 00:00:00 2001
+From aa23bad133eaaefcd333959eef18b5b838c4ac72 Mon Sep 17 00:00:00 2001
 From: Uma Shankar <uma.shankar@intel.com>
 Date: Thu, 30 May 2019 01:29:01 +0530
 Subject: [PATCH] drm: Drop a redundant unused variable
@@ -4669,7 +9542,7 @@ index eda59a6a858b..1896abe854f8 100644
  };
  
 
-From 4073a9a1292dba468288143ae9a30862e8fb8702 Mon Sep 17 00:00:00 2001
+From fed22ca808a506ddca209d12df6ed31bf62a3a5b Mon Sep 17 00:00:00 2001
 From: Uma Shankar <uma.shankar@intel.com>
 Date: Thu, 30 May 2019 01:29:03 +0530
 Subject: [PATCH] drm: Fixed doc warnings in drm uapi header
@@ -4754,7 +9627,7 @@ index 9927efca12cf..b86d17028e6c 100644
   */
  struct drm_mode_revoke_lease {
 
-From 967a29578981fefe18333596927c762b893db859 Mon Sep 17 00:00:00 2001
+From bd8d27bc50c9734cd795f711576b5b294647b5dc Mon Sep 17 00:00:00 2001
 From: Uma Shankar <uma.shankar@intel.com>
 Date: Tue, 4 Jun 2019 16:47:02 +0530
 Subject: [PATCH] drm: Fix docbook warnings in hdr metadata helper structures
@@ -5029,7 +9902,7 @@ index b86d17028e6c..806b4582b6df 100644
  		struct hdr_metadata_infoframe hdmi_metadata_type1;
  	};
 
-From 034bd6f8fa173cd0ad0cabbb6adb9fbc87fac671 Mon Sep 17 00:00:00 2001
+From ddcfca2e8dd3d4f9edd37a908713e21e12c8748e Mon Sep 17 00:00:00 2001
 From: Uma Shankar <uma.shankar@intel.com>
 Date: Mon, 3 Jun 2019 18:38:50 +0530
 Subject: [PATCH] video/hdmi: Dropped static functions from kernel doc
@@ -5118,333 +9991,7 @@ index b99ba01dfed5..b939bc28d886 100644
  hdmi_vendor_any_infoframe_log(const char *level,
  			      struct device *dev,
 
-From 4851b6f78ea694cc463ea40b460944bcb7387d1b Mon Sep 17 00:00:00 2001
-From: Douglas Anderson <dianders@chromium.org>
-Date: Thu, 2 May 2019 15:53:34 -0700
-Subject: [PATCH] ARM: dts: rockchip: Switch to builtin HDMI DDC bus on
- rk3288-veyron
-
-Downstream Chrome OS kernels use the builtin DDC bus from dw_hdmi on
-veyron.  This is the only way to get them to negotiate HDCP.
-
-Although HDCP isn't currently all supported upstream, it still seems
-like it makes sense to use dw_hdmi's builtin I2C.  Maybe eventually we
-can get HDCP negotiation working.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Sean Paul <sean@poorly.run>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-(cherry picked from commit bf09924f21767e6bb7cb3aae48c48c2c2ab8261a)
----
- arch/arm/boot/dts/rk3288-veyron.dtsi | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
-index 90c8312d01ff..99e2771d4d31 100644
---- a/arch/arm/boot/dts/rk3288-veyron.dtsi
-+++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
-@@ -175,7 +175,8 @@
- };
- 
- &hdmi {
--	ddc-i2c-bus = <&i2c5>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&hdmi_ddc>;
- 	status = "okay";
- };
- 
-@@ -346,14 +347,6 @@
- 	i2c-scl-rising-time-ns = <300>;		/* 225ns measured */
- };
- 
--&i2c5 {
--	status = "okay";
--
--	clock-frequency = <100000>;
--	i2c-scl-falling-time-ns = <300>;
--	i2c-scl-rising-time-ns = <1000>;
--};
--
- &io_domains {
- 	status = "okay";
- 
-
-From 47d43b2853fdd4bd598bc7e9166d45bc40075588 Mon Sep 17 00:00:00 2001
-From: Douglas Anderson <dianders@chromium.org>
-Date: Thu, 2 May 2019 15:53:35 -0700
-Subject: [PATCH] ARM: dts: rockchip: Add unwedge pinctrl entries for dw_hdmi
- on rk3288
-
-This adds the "unwedge" pinctrl entries introduced by a recent dw_hdmi
-change that can unwedge the dw_hdmi i2c bus in some cases.  It's
-expected that any boards using this would add:
-
-  pinctrl-names = "default", "unwedge";
-  pinctrl-0 = <&hdmi_ddc>;
-  pinctrl-1 = <&hdmi_ddc_unwedge>;
-
-Note that this isn't added by default because some boards may choose
-to mux i2c5 for their DDC bus (if that is more tested for them).
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Sean Paul <sean@poorly.run>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-(cherry picked from commit c077d9d717dc481a6a95f9ef2562ef6bda74fbdf)
----
- arch/arm/boot/dts/rk3288.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
-index 766d1cf51a5b..cc893e154fe5 100644
---- a/arch/arm/boot/dts/rk3288.dtsi
-+++ b/arch/arm/boot/dts/rk3288.dtsi
-@@ -1547,6 +1547,15 @@
- 				rockchip,pins = <7 RK_PC3 2 &pcfg_pull_none>,
- 						<7 RK_PC4 2 &pcfg_pull_none>;
- 			};
-+
-+			hdmi_ddc_unwedge: hdmi-ddc-unwedge {
-+				rockchip,pins = <7 RK_PC3 RK_FUNC_GPIO &pcfg_output_low>,
-+						<7 RK_PC4 2 &pcfg_pull_none>;
-+			};
-+		};
-+
-+		pcfg_output_low: pcfg-output-low {
-+			output-low;
- 		};
- 
- 		pcfg_pull_up: pcfg-pull-up {
-
-From f254ea18ce919359e5d65f2327ab42111493e49f Mon Sep 17 00:00:00 2001
-From: Douglas Anderson <dianders@chromium.org>
-Date: Thu, 2 May 2019 15:53:36 -0700
-Subject: [PATCH] ARM: dts: rockchip: Add HDMI i2c unwedging for rk3288-veyron
-
-Veyron uses the builtin i2c controller that's part of dw-hdmi.  Hook
-up the unwedging feature.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Sean Paul <sean@poorly.run>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-(cherry picked from commit cd6386087d826b9421ed97b778676f4177ffdfbd)
----
- arch/arm/boot/dts/rk3288-veyron.dtsi | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
-index 99e2771d4d31..c574844a6bb2 100644
---- a/arch/arm/boot/dts/rk3288-veyron.dtsi
-+++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
-@@ -175,8 +175,9 @@
- };
- 
- &hdmi {
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "unwedge";
- 	pinctrl-0 = <&hdmi_ddc>;
-+	pinctrl-1 = <&hdmi_ddc_unwedge>;
- 	status = "okay";
- };
- 
-
-From 2911c4561b72d382b69eea8c08d72b78f51946fe Mon Sep 17 00:00:00 2001
-From: Matthias Kaehlcke <mka@chromium.org>
-Date: Wed, 5 Jun 2019 13:43:19 -0700
-Subject: [PATCH] ARM: dts: rockchip: Split GPIO keys for veyron into multiple
- devices
-
-With a single device DT overrides can become messy, especially when
-keys are added or removed. Multiple devices also allow to
-enable/disable wakeup per key/group.
-
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-[used actual switch+event constants in new lid-switch entry]
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-(cherry picked from commit b8925b7c2f867df6ce3e20deb4b3e2b9b32b20ff)
----
- arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi | 27 ++++++++++--------
- arch/arm/boot/dts/rk3288-veyron-minnie.dts      | 38 +++++++++++++------------
- arch/arm/boot/dts/rk3288-veyron-pinky.dts       |  2 +-
- arch/arm/boot/dts/rk3288-veyron.dtsi            |  4 +--
- 4 files changed, 38 insertions(+), 33 deletions(-)
-
-diff --git a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
-index fbef34578100..5727017f34b2 100644
---- a/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
-+++ b/arch/arm/boot/dts/rk3288-veyron-chromebook.dtsi
-@@ -70,6 +70,21 @@
- 		pinctrl-0 = <&ac_present_ap>;
- 	};
- 
-+	lid_switch: lid-switch {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ap_lid_int_l>;
-+
-+		lid {
-+			label = "Lid";
-+			gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_LOW>;
-+			wakeup-source;
-+			linux,code = <SW_LID>;
-+			linux,input-type = <EV_SW>;
-+			debounce-interval = <1>;
-+		};
-+	};
-+
- 	panel: panel {
- 		compatible ="innolux,n116bge", "simple-panel";
- 		status = "okay";
-@@ -149,18 +164,6 @@
- 	status = "okay";
- };
- 
--&gpio_keys {
--	pinctrl-0 = <&pwr_key_l &ap_lid_int_l>;
--	lid {
--		label = "Lid";
--		gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_LOW>;
--		wakeup-source;
--		linux,code = <0>; /* SW_LID */
--		linux,input-type = <5>; /* EV_SW */
--		debounce-interval = <1>;
--	};
--};
--
- &pwm0 {
- 	status = "okay";
- };
-diff --git a/arch/arm/boot/dts/rk3288-veyron-minnie.dts b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
-index a65099b4aef1..b2cc70a08554 100644
---- a/arch/arm/boot/dts/rk3288-veyron-minnie.dts
-+++ b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
-@@ -48,6 +48,26 @@
- 		regulator-boot-on;
- 		vin-supply = <&vcc18_wl>;
- 	};
-+
-+	volume_buttons: volume-buttons {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&volum_down_l &volum_up_l>;
-+
-+		volum_down {
-+			label = "Volum_down";
-+			gpios = <&gpio5 RK_PB3 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_VOLUMEDOWN>;
-+			debounce-interval = <100>;
-+		};
-+
-+		volum_up {
-+			label = "Volum_up";
-+			gpios = <&gpio5 RK_PB2 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_VOLUMEUP>;
-+			debounce-interval = <100>;
-+		};
-+	};
- };
- 
- &backlight {
-@@ -90,24 +110,6 @@
- 	pwm-off-delay-ms = <200>;
- };
- 
--&gpio_keys {
--	pinctrl-0 = <&pwr_key_l &ap_lid_int_l &volum_down_l &volum_up_l>;
--
--	volum_down {
--		label = "Volum_down";
--		gpios = <&gpio5 RK_PB3 GPIO_ACTIVE_LOW>;
--		linux,code = <KEY_VOLUMEDOWN>;
--		debounce-interval = <100>;
--	};
--
--	volum_up {
--		label = "Volum_up";
--		gpios = <&gpio5 RK_PB2 GPIO_ACTIVE_LOW>;
--		linux,code = <KEY_VOLUMEUP>;
--		debounce-interval = <100>;
--	};
--};
--
- &i2c_tunnel {
- 	battery: bq27500@55 {
- 		compatible = "ti,bq27500";
-diff --git a/arch/arm/boot/dts/rk3288-veyron-pinky.dts b/arch/arm/boot/dts/rk3288-veyron-pinky.dts
-index 9645be7b3d8c..9b6f4d9b03b6 100644
---- a/arch/arm/boot/dts/rk3288-veyron-pinky.dts
-+++ b/arch/arm/boot/dts/rk3288-veyron-pinky.dts
-@@ -35,7 +35,7 @@
- 	force-hpd;
- };
- 
--&gpio_keys {
-+&lid_switch {
- 	pinctrl-0 = <&pwr_key_h &ap_lid_int_l>;
- 
- 	power {
-diff --git a/arch/arm/boot/dts/rk3288-veyron.dtsi b/arch/arm/boot/dts/rk3288-veyron.dtsi
-index c574844a6bb2..3257ca90f0e8 100644
---- a/arch/arm/boot/dts/rk3288-veyron.dtsi
-+++ b/arch/arm/boot/dts/rk3288-veyron.dtsi
-@@ -23,11 +23,11 @@
- 		reg = <0x0 0x0 0x0 0x80000000>;
- 	};
- 
--	gpio_keys: gpio-keys {
-+	power_button: power-button {
- 		compatible = "gpio-keys";
--
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pwr_key_l>;
-+
- 		power {
- 			label = "Power";
- 			gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_LOW>;
-
-From 3fa0dd5725b06e08b495e279545947ca7a7d9453 Mon Sep 17 00:00:00 2001
-From: Douglas Anderson <dianders@chromium.org>
-Date: Tue, 4 Jun 2019 15:31:59 -0700
-Subject: [PATCH] clk: rockchip: Remove 48 MHz PLL rate from rk3288
-
-The 48 MHz PLL rate is not present in the downstream chromeos-3.14
-tree.  Looking at history, it was originally removed in
-<https://crrev.com/c/265810> ("CHROMIUM: clk: rockchip: expand more
-clocks support") with no explanation.  Much of that patch was later
-reverted in <https://crrev.com/c/284595> ("CHROMIUM: clk: rockchip:
-Revert more questionable PLL rates"), but that patch left in the
-removal of 48 MHz.  What I wrote in that patch:
-
-> Note that the original change also removed the rate (48000000, 1,
-> 64, 32) from the table.  I have no idea why that was squashed in
-> there, but that rate was invalid anyway (it appears to have an out
-> of bounds NO).  I'm not putting that rate in.
-
-Reading the TRM I see that NO is defined as
-- NO: 1, 2-16 (even only)
-...and furthermore only 4 bits are assigned for NO-1, which means that
-the highest NO we could even represent is 16.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-(cherry picked from commit 7d2129310b8c1f22850d56b1725447aef88d8b1f)
----
- drivers/clk/rockchip/clk-rk3288.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/clk/rockchip/clk-rk3288.c b/drivers/clk/rockchip/clk-rk3288.c
-index 24baeb56a1b3..72a0605a435b 100644
---- a/drivers/clk/rockchip/clk-rk3288.c
-+++ b/drivers/clk/rockchip/clk-rk3288.c
-@@ -121,7 +121,6 @@ static struct rockchip_pll_rate_table rk3288_pll_rates[] = {
- 	RK3066_PLL_RATE( 160000000, 1, 80, 12),
- 	RK3066_PLL_RATE( 157500000, 1, 105, 16),
- 	RK3066_PLL_RATE( 126000000, 1, 84, 16),
--	RK3066_PLL_RATE(  48000000, 1, 64, 32),
- 	{ /* sentinel */ },
- };
- 
-
-From 079b043886d70dc2a711332372a4683bff23a80a Mon Sep 17 00:00:00 2001
+From bab51e801179ac7ccdb2ee5f6702360464efdbbc Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 9 Jun 2019 21:04:57 +0000
 Subject: [PATCH] Revert "drm/uapi: Remove unused DRM_DISPLAY_INFO_LEN"

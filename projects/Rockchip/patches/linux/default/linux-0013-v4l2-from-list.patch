@@ -1,4 +1,4 @@
-From 5cb58b718a2ea6102c542a8df1bf7bf1a50418a6 Mon Sep 17 00:00:00 2001
+From 4f0bc148b88af2fa3931dbf62208fc7e93873dfa Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Wed, 12 Jun 2019 11:42:08 +0200
 Subject: [PATCH] media: hantro: Add support for MPEG-2 decoding on RK3328
@@ -25,10 +25,10 @@ index be133bbaa68a..de77fe6554e7 100644
 -	  Enable support for RK3288 and RK3399 SoCs.
 +	  Enable support for RK3288, RK3328, and RK3399 SoCs.
 diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-index 1d3af881d088..d1f061dd8ede 100644
+index c3665f0e87a2..473b97771b41 100644
 --- a/drivers/staging/media/hantro/hantro_drv.c
 +++ b/drivers/staging/media/hantro/hantro_drv.c
-@@ -417,6 +417,7 @@ static const struct v4l2_file_operations hantro_fops = {
+@@ -419,6 +419,7 @@ static const struct v4l2_file_operations hantro_fops = {
  static const struct of_device_id of_hantro_match[] = {
  #ifdef CONFIG_VIDEO_HANTRO_ROCKCHIP
  	{ .compatible = "rockchip,rk3399-vpu", .data = &rk3399_vpu_variant, },

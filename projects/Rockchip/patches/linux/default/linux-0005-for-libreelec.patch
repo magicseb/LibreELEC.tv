@@ -1,4 +1,4 @@
-From 5f7e76932b93fb23f0b372d4e06cb1f9cae5c2e2 Mon Sep 17 00:00:00 2001
+From 921737f0a6162cd63dab0a632103f104d9b5c37f Mon Sep 17 00:00:00 2001
 From: William Wu <william.wu@rock-chips.com>
 Date: Mon, 4 Dec 2017 10:40:38 +0100
 Subject: [PATCH] dt-bindings: usb: add DT binding for RK3328 dwc3 controller
@@ -30,7 +30,7 @@ index c8c4b00ecb94..4ca357835a48 100644
  		clocks listed in clock-names
  - clock-names:	Should contain the following:
 
-From 340f8eda55cc6fe76cd8ddac4b27e9db1f5ad39d Mon Sep 17 00:00:00 2001
+From 74f93235e5962346b5d26980681d6883edd806d8 Mon Sep 17 00:00:00 2001
 From: William Wu <william.wu@rock-chips.com>
 Date: Mon, 4 Dec 2017 10:40:39 +0100
 Subject: [PATCH] arm64: dts: rockchip: add usb3 controller node for RK3328
@@ -48,10 +48,10 @@ Signed-off-by: Heiko Stuebner <heiko@sntech.de>
  1 file changed, 27 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index f5e9ef847872..1830c00b100e 100644
+index 587d240041ce..f2f7b767f8ad 100644
 --- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
 +++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -951,6 +951,33 @@
+@@ -952,6 +952,33 @@
  		status = "disabled";
  	};
  
@@ -86,7 +86,7 @@ index f5e9ef847872..1830c00b100e 100644
  		compatible = "syscon";
  		reg = <0x0 0xff778000 0x0 0x20>;
 
-From 15da232ffa0e1274573ddab07dfe933c39e213f3 Mon Sep 17 00:00:00 2001
+From 29ba0c8698e7789c3645de3ed3f6db5cd0e0aefb Mon Sep 17 00:00:00 2001
 From: Heiko Stuebner <heiko@sntech.de>
 Date: Mon, 4 Dec 2017 10:40:41 +0100
 Subject: [PATCH] arm64: dts: rockchip: enable usb3 nodes on rk3328-rock64
@@ -119,7 +119,7 @@ index 23ab61d59c0d..6310e185f3c7 100644
  	status = "okay";
  };
 
-From 450b313f5d41c0551ddefdefc64d15c91442038c Mon Sep 17 00:00:00 2001
+From d7ff93901b1ba0ff656666781f4fdd6f6b4d96f9 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Tue, 12 Mar 2019 19:42:03 +0000
 Subject: [PATCH] arm64: dts: rockchip: enable usb3 nodes on rk3328-roc-cc
@@ -132,10 +132,10 @@ Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
  1 file changed, 9 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
-index e4f22964e735..59e76164f6a5 100644
+index 07bcb01030f4..fe84de5d4b94 100644
 --- a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
 +++ b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
-@@ -414,6 +414,15 @@
+@@ -416,6 +416,15 @@
  	status = "okay";
  };
  
@@ -152,7 +152,7 @@ index e4f22964e735..59e76164f6a5 100644
  	status = "okay";
  };
 
-From 85a1dd3e9efe5503c950991f697d9422c1189c76 Mon Sep 17 00:00:00 2001
+From e107a290b6efeb8de8fe352941d88323b4780b00 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 12 May 2019 12:40:00 +0000
 Subject: [PATCH] arm64: dts: rockchip: enable usb3 nodes on rk3328-rockbox
@@ -182,7 +182,7 @@ index e86a64e1a26c..186276f767e3 100644
  	status = "okay";
  };
 
-From ff50b9f53b1957723d8a1c4b616e4c3a71316e0d Mon Sep 17 00:00:00 2001
+From 4e7ecdb8324ef008608c32e9e4bc5e7255f1847f Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Thu, 7 Feb 2019 22:03:15 +0000
 Subject: [PATCH] HACK: ARM: dts: rockchip: disable vopl node on rk3288
@@ -231,7 +231,7 @@ index f22eb8a49da5..eb7a73cc7245 100644
  	status = "okay";
  };
 
-From b4d6a5ae68f9a0396f71564153b7f9bfad11cf21 Mon Sep 17 00:00:00 2001
+From 390a893d1fd1b50e15b0ed7c6dc24547b99822e5 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Mon, 15 Apr 2019 05:06:50 +0000
 Subject: [PATCH] HACK: arm64: dts: rockchip: disable vopl node on rk3399
@@ -343,10 +343,10 @@ index eb5594062006..a0051d3832bf 100644
 -	status = "okay";
 -};
 diff --git a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
-index 04623e52ac5d..227571b36277 100644
+index 1bc1579674e5..c5f3e09b4243 100644
 --- a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
 +++ b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
-@@ -639,11 +639,3 @@
+@@ -638,11 +638,3 @@
  &vopb_mmu {
  	status = "okay";
  };
@@ -359,7 +359,7 @@ index 04623e52ac5d..227571b36277 100644
 -	status = "okay";
 -};
 
-From 88de7490d5ed9b7540e0c9c7eeb3a601d467a2b2 Mon Sep 17 00:00:00 2001
+From bc6ba0d4d02a139b8c570e65845b1bc40a901d67 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Thu, 7 Feb 2019 22:03:38 +0000
 Subject: [PATCH] HACK: ARM: dts: rockchip: rename hdmi sound card on
@@ -383,7 +383,7 @@ index eb7a73cc7245..60c19b23c576 100644
  
  		simple-audio-card,codec {
 
-From 8a5a6c01d4a6c3d697601599a1e891992f4a62e0 Mon Sep 17 00:00:00 2001
+From 1b38e66c140d16581724c9f76ab747d8dbc7f3c2 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 14 Apr 2019 21:16:31 +0000
 Subject: [PATCH] HACK: arm64: dts: rockchip: rename hdmi sound card on rk3399
@@ -393,10 +393,10 @@ Subject: [PATCH] HACK: arm64: dts: rockchip: rename hdmi sound card on rk3399
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index 89594a7276f4..9dc6efd9c04e 100644
+index cede1ad81be2..c5c58b1a4f38 100644
 --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
 +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -1729,7 +1729,7 @@
+@@ -1726,7 +1726,7 @@
  		compatible = "simple-audio-card";
  		simple-audio-card,format = "i2s";
  		simple-audio-card,mclk-fs = <256>;
@@ -406,7 +406,7 @@ index 89594a7276f4..9dc6efd9c04e 100644
  
  		simple-audio-card,cpu {
 
-From 1cb4c48021f4720ff89baef2695751ddcbf58002 Mon Sep 17 00:00:00 2001
+From 2a01752b8f7399297df091001bb745a7fd668318 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 21 Apr 2019 09:26:23 +0000
 Subject: [PATCH] HACK: arm64: dts: rockchip: split sound node on rk3328-rock64
@@ -447,7 +447,7 @@ index 6310e185f3c7..273edf4e44b3 100644
  
  	spdif-dit {
 
-From d112cfea2a7e3af09fd27a2072001b553f03c984 Mon Sep 17 00:00:00 2001
+From 43e33842431099900f776455f7872c3da8dd3004 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 21 Apr 2019 10:38:26 +0000
 Subject: [PATCH] HACK: arm64: dts: rockchip: split sound node on rk3328-roc-cc
@@ -457,7 +457,7 @@ Subject: [PATCH] HACK: arm64: dts: rockchip: split sound node on rk3328-roc-cc
  1 file changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
-index 59e76164f6a5..9d6986ae5fce 100644
+index fe84de5d4b94..52e45e7b7382 100644
 --- a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
 +++ b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
 @@ -99,12 +99,22 @@
@@ -488,7 +488,7 @@ index 59e76164f6a5..9d6986ae5fce 100644
  
  	spdif-dit {
 
-From d0f5208beb1e253eaec154fddf295b20ac3335e0 Mon Sep 17 00:00:00 2001
+From 92cad3bff82c45d2c7bfc6a26f0b13522c42084f Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 12 May 2019 12:40:00 +0000
 Subject: [PATCH] HACK: arm64: dts: rockchip: split sound node on
@@ -524,7 +524,7 @@ index 186276f767e3..c3979cb4e423 100644
  
  	spdif-dit {
 
-From e9fadd9536b66f92a86c35167425e195f2f0eef7 Mon Sep 17 00:00:00 2001
+From d71588de5f32b9aa9628607454e8fc700e5aa347 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 25 Mar 2018 17:47:26 +0200
 Subject: [PATCH] HACK: drm/bridge/synopsys: dw-hdmi: use underscan and full
@@ -535,10 +535,10 @@ Subject: [PATCH] HACK: drm/bridge/synopsys: dw-hdmi: use underscan and full
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-index 747c9bf0b1bc..338a8bca01da 100644
+index d67909e8d543..2ea316fd4993 100644
 --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
 +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-@@ -1501,7 +1501,7 @@ static void hdmi_config_AVI(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
+@@ -1576,7 +1576,7 @@ static void hdmi_config_AVI(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
  		break;
  	}
  
@@ -547,7 +547,7 @@ index 747c9bf0b1bc..338a8bca01da 100644
  
  	/*
  	 * The Designware IP uses a different byte format from standard
-@@ -1529,6 +1529,8 @@ static void hdmi_config_AVI(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
+@@ -1604,6 +1604,8 @@ static void hdmi_config_AVI(struct dw_hdmi *hdmi, struct drm_display_mode *mode)
  	      (frame.active_aspect & 0xf);
  	hdmi_writeb(hdmi, val, HDMI_FC_AVICONF1);
  
@@ -557,7 +557,7 @@ index 747c9bf0b1bc..338a8bca01da 100644
  	val = ((frame.extended_colorimetry & 0x7) << 4) |
  	      ((frame.quantization_range & 0x3) << 2) |
 
-From b085b5a4986f3c0a358787ee3eec185802d785b8 Mon Sep 17 00:00:00 2001
+From f2e5626010ffc5b491d0b442baf1d0facb8c8f8f Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 12 May 2019 12:40:00 +0000
 Subject: [PATCH] WIP: arm64: dts: rockchip: add rk3328-box devices

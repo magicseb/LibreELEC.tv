@@ -1,4 +1,4 @@
-From 9fc530b75fa0531362bc977b289a9640c1ed73e3 Mon Sep 17 00:00:00 2001
+From ab3b60a04e10dbca1a8850c571f136e4ef525410 Mon Sep 17 00:00:00 2001
 From: Johan Jonker <jbx6244@gmail.com>
 Date: Sun, 10 Mar 2019 16:19:28 +0100
 Subject: [PATCH] ARM: dts: rockchip: remove disable-wp from rv1108-elgin-r1
@@ -29,7 +29,7 @@ index 1c4507b66fdd..b1db924710c8 100644
  	no-sdio;
  	non-removable;
 
-From f274ca3f17686afe1372b6a06b385575e33e138d Mon Sep 17 00:00:00 2001
+From ca37dfa099d165d20c089c0168122eb4a5dcf1f3 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 24 Feb 2019 20:10:06 +0000
 Subject: [PATCH] ARM: dts: rockchip: Enable HDMI CEC on rk3288-tinker-s
@@ -57,7 +57,7 @@ index d97da89bcd51..970e13859198 100644
 +	pinctrl-0 = <&hdmi_cec_c0>;
 +};
 
-From 7906979b6645f171a5a700230ea8c8af9e03753c Mon Sep 17 00:00:00 2001
+From e2df2104cbb93a1f4d7fdd3c803f76d93844f7aa Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sun, 24 Feb 2019 21:52:00 +0000
 Subject: [PATCH] ARM: dts: rockchip: add grf reference in rk3288 tsadc node
@@ -92,7 +92,7 @@ index a024d1e7e74c..510d237f54ab 100644
  		status = "disabled";
  	};
 
-From b3dfa458c348ef41f58e4dd6c529d4972014ac05 Mon Sep 17 00:00:00 2001
+From b5070e14af9daef027eb108ab773847e18334c45 Mon Sep 17 00:00:00 2001
 From: David Summers <beagleboard@davidjohnsummers.uk>
 Date: Sat, 9 Mar 2019 15:39:22 +0000
 Subject: [PATCH] ARM: dts: rockchip: Enable WiFi on rk3288-tinker
@@ -197,7 +197,7 @@ index ef653c3209bc..d93a48cfc966 100644
  	rockchip,hw-tshut-mode = <1>; /* tshut mode 0:CRU 1:GPIO */
  	rockchip,hw-tshut-polarity = <1>; /* tshut polarity 0:LOW 1:HIGH */
 
-From 20f171a13cb70a218ccc26ed806ec1654f01d230 Mon Sep 17 00:00:00 2001
+From 16125c16ed915f28b12bdbc86d2e81155fa47a52 Mon Sep 17 00:00:00 2001
 From: Marc Zyngier <marc.zyngier@arm.com>
 Date: Sat, 2 Mar 2019 13:10:30 +0000
 Subject: [PATCH] arm64: dts: rockchip: Add capacity-dmips-mhz attributes to
@@ -277,7 +277,7 @@ index 1a16d6ce3ea8..ce6f9de5caae 100644
  			#cooling-cells = <2>; /* min followed by max */
  			dynamic-power-coefficient = <436>;
 
-From 58e64b8f166e9f8b5dc137fcfbd3c44fbf03f763 Mon Sep 17 00:00:00 2001
+From 22a1c720b8622a9563ac5ea686fff239fd2897e8 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sat, 2 Mar 2019 16:37:09 +0000
 Subject: [PATCH] arm64: dts: rockchip: enable HDMI CEC on rk3328
@@ -312,7 +312,7 @@ index dabef1a21649..876cc8365074 100644
  		phy-names = "hdmi";
  		pinctrl-names = "default";
 
-From f2ce2eee75579b2d8d8f4e7c231d3ecf15d43a38 Mon Sep 17 00:00:00 2001
+From cd1115094e9a149a144f268525b521a558fc740c Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sat, 2 Mar 2019 16:56:57 +0000
 Subject: [PATCH] arm64: dts: rockchip: fix regulator name on rk3328-rock64
@@ -349,7 +349,7 @@ index 79b4d1d4b5d6..2fbde045c2a9 100644
  				regulator-max-microvolt = <1800000>;
  				regulator-always-on;
 
-From 6952ccf2bad77fc561dbc2f33095c745b22cb278 Mon Sep 17 00:00:00 2001
+From fdabb953da62fae0b01fb3dd9c368f4b9328c2c0 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sat, 2 Mar 2019 17:00:25 +0000
 Subject: [PATCH] arm64: dts: rockchip: add leds node on rk3328-rock64
@@ -400,7 +400,7 @@ index 2fbde045c2a9..2fe2d91d7f31 100644
  		pinctrl-0 = <&pmic_int_l>;
  		rockchip,system-power-controller;
 
-From 25b7d9698b1d466453a53869287cfe788be1c784 Mon Sep 17 00:00:00 2001
+From 34f7a8f78dfdff8197a373643abd8ef94068ec86 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sat, 2 Mar 2019 17:03:14 +0000
 Subject: [PATCH] arm64: dts: rockchip: add ir-receiver node on rk3328-rock64
@@ -446,7 +446,7 @@ index 2fe2d91d7f31..7cfd5ca6cc85 100644
  		pmic_int_l: pmic-int-l {
  			rockchip,pins = <2 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>;
 
-From 180a612f960dd389cdfd21274441ef819ccb1740 Mon Sep 17 00:00:00 2001
+From 7bee21adcfab8d3eb3ecb9dadf63633def40ab59 Mon Sep 17 00:00:00 2001
 From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 Date: Mon, 18 Feb 2019 02:34:06 +0900
 Subject: [PATCH] arm64: dts: rockchip: add #sound-dai-cells to HDMI of rk3328
@@ -474,7 +474,7 @@ index 876cc8365074..994468671b19 100644
  
  		ports {
 
-From a77218ef9a9a49738b84610d7e557dbf29b31c92 Mon Sep 17 00:00:00 2001
+From c8518c2078550f037e31126770682cb1d480a31e Mon Sep 17 00:00:00 2001
 From: "Leonidas P. Papadakos" <papadakospan@gmail.com>
 Date: Sun, 3 Mar 2019 01:18:33 +0200
 Subject: [PATCH] arm64: dts: rockchip: give some life to the rk3328-roc-cc
@@ -524,7 +524,7 @@ index 0e34354b2092..9cbd3028da14 100644
  
  &cpu0 {
 
-From d4e38917ee819054d7d25c8e08d8b51ccca7f73d Mon Sep 17 00:00:00 2001
+From 4eb06f4208874c9756741e9332396dc0e73b7083 Mon Sep 17 00:00:00 2001
 From: "Leonidas P. Papadakos" <papadakospan@gmail.com>
 Date: Fri, 1 Mar 2019 20:07:21 +0200
 Subject: [PATCH] arm64: dts: rockchip: add rk3328-roc-cc cpu-supply entries
@@ -564,7 +564,7 @@ index 9cbd3028da14..c213ad74d51d 100644
  	bus-width = <8>;
  	cap-mmc-highspeed;
 
-From 4e17cc7f3dd31fa5afaec54a17321545b6a2fcaa Mon Sep 17 00:00:00 2001
+From 91812fd1aa8d9d85290ef14ad4dcee6b03e05168 Mon Sep 17 00:00:00 2001
 From: Ezequiel Garcia <ezequiel@collabora.com>
 Date: Mon, 18 Feb 2019 07:05:55 -0300
 Subject: [PATCH] arm64: dts: rockchip: enable mali on Rock Pi 4
@@ -595,7 +595,7 @@ index 844eac939a97..e030627159c6 100644
  	ddc-i2c-bus = <&i2c3>;
  	pinctrl-names = "default";
 
-From fc8fd347c6e3643ab5421cec09edba2d6ead62f7 Mon Sep 17 00:00:00 2001
+From f59c0f937c141d2a0d26d64cd8a8eafa9470932b Mon Sep 17 00:00:00 2001
 From: Ezequiel Garcia <ezequiel@collabora.com>
 Date: Mon, 18 Feb 2019 06:58:57 -0300
 Subject: [PATCH] arm64: dts: rockchip: enable mali on rock960 boards
@@ -626,7 +626,7 @@ index 2927db4dda9d..d1248065fe14 100644
  	ddc-i2c-bus = <&i2c3>;
  	pinctrl-names = "default";
 
-From 91562fcb0e8dc5b2aae3255b72995b544def5d5b Mon Sep 17 00:00:00 2001
+From 955f433bfd9e0c34c3f48e02f8d2690ea4ab1505 Mon Sep 17 00:00:00 2001
 From: Alexis Ballier <aballier@gentoo.org>
 Date: Fri, 22 Feb 2019 19:44:19 +0100
 Subject: [PATCH] arm64: dts: rockchip: Add support for the Orange Pi RK3399
@@ -1460,7 +1460,7 @@ index 000000000000..cf37b96a6b77
 +	status = "okay";
 +};
 
-From 23f090919cf8500e5de403c8b420e855a7508273 Mon Sep 17 00:00:00 2001
+From f52a8fa4a7651da3515242e7dcc2a7b0f7831b03 Mon Sep 17 00:00:00 2001
 From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 Date: Thu, 21 Feb 2019 00:12:26 +0900
 Subject: [PATCH] arm64: dts: rockchip: enable hdmi audio out for
@@ -1492,7 +1492,7 @@ index d473ce290f0c..20ec7d1c25d7 100644
  	mali-supply = <&vdd_gpu>;
  	status = "okay";
 
-From 8feb1686681afdc4de22d4e7b23aa2ab7a04f783 Mon Sep 17 00:00:00 2001
+From f38f0f3b5e9a411965ffa325155eceaa7eb1bef6 Mon Sep 17 00:00:00 2001
 From: Jagan Teki <jagan@amarulasolutions.com>
 Date: Fri, 8 Mar 2019 23:42:02 +0530
 Subject: [PATCH] arm64: dts: rockchip: Add Nanopi NEO4 initial support
@@ -1601,7 +1601,7 @@ index 000000000000..195410b089b9
 +	vin-supply = <&vdd_5v>;
 +};
 
-From 43c29e3e02304ed1ff360f5e89208c9b225cfddf Mon Sep 17 00:00:00 2001
+From 79c87f6c2f1a28ca3a060a7a049a1b2469309851 Mon Sep 17 00:00:00 2001
 From: Jagan Teki <jagan@amarulasolutions.com>
 Date: Mon, 11 Mar 2019 20:33:30 +0530
 Subject: [PATCH] arm64: dts: rockchip: Rename vcc_sys into vcc5v0_sys on
@@ -1700,7 +1700,7 @@ index d1248065fe14..1c13a70a7295 100644
  		vddio-supply = <&vcc_1v8>;
  
 
-From c41977f77bc75201c8f35c440781563cceb858fa Mon Sep 17 00:00:00 2001
+From 2768db5f873aec5faeed327bf333fde25c6a0835 Mon Sep 17 00:00:00 2001
 From: Jagan Teki <jagan@amarulasolutions.com>
 Date: Mon, 11 Mar 2019 20:33:31 +0530
 Subject: [PATCH] arm64: dts: rockchip: Add 12V DCIN regulator to rk3399-ficus
@@ -1747,7 +1747,7 @@ index 1c13a70a7295..5ba2aeca0fa8 100644
  
  	vcc3v3_sys: vcc3v3-sys {
 
-From 42323d3b466d8527298366b4c7805059fd2afec6 Mon Sep 17 00:00:00 2001
+From 2678db3ceb2e0204073c24153b565ce350f2eebe Mon Sep 17 00:00:00 2001
 From: Alexis Ballier <aballier@gentoo.org>
 Date: Fri, 15 Mar 2019 15:58:17 +0100
 Subject: [PATCH] arm64: dts: rockchip: Fix clock names and add missing
@@ -1783,7 +1783,7 @@ index cf37b96a6b77..6bc2e545f2fb 100644
  };
  
 
-From c873eb5632e8acaf9ba3e01e81bc8031ce29423d Mon Sep 17 00:00:00 2001
+From 824e2ea9ab808c3a570be91247df109bd8c23911 Mon Sep 17 00:00:00 2001
 From: Alexis Ballier <aballier@gentoo.org>
 Date: Fri, 15 Mar 2019 15:58:19 +0100
 Subject: [PATCH] arm64: dts: rockchip: Specify vid supply for the
@@ -1812,7 +1812,7 @@ index 6bc2e545f2fb..96ccbe5c4f0c 100644
  
  	mpu6500@68 {
 
-From b3b3dbd2bab8d15bcc50c0ca80b81c8d78577ed1 Mon Sep 17 00:00:00 2001
+From 5d300fced32a15c6c0690c50f0cb9bbfeb7ee52f Mon Sep 17 00:00:00 2001
 From: Alexis Ballier <aballier@gentoo.org>
 Date: Fri, 15 Mar 2019 15:58:21 +0100
 Subject: [PATCH] arm64: dts: rockchip: Add the fusb typec manager to
@@ -1897,7 +1897,7 @@ index 96ccbe5c4f0c..2166be171df8 100644
  	};
  
 
-From 30d45f677b155a586912be3e2b3c14b98bdd76ab Mon Sep 17 00:00:00 2001
+From d4d130b522e2b7db5ff277247d3751cf8cc89018 Mon Sep 17 00:00:00 2001
 From: Robin Murphy <robin.murphy@arm.com>
 Date: Fri, 15 Mar 2019 01:05:53 +0000
 Subject: [PATCH] arm64: dts: rockchip: Add PWM fan for NanoPC-T4
@@ -1998,7 +1998,7 @@ index 84433cf02be9..931c3dbf1b7d 100644
  
  &pinctrl {
 
-From 96caceda88700a1e9c2569e77db08a99918d7376 Mon Sep 17 00:00:00 2001
+From bb607f8d7b38b6c519c4b1c0020821e4814f188d Mon Sep 17 00:00:00 2001
 From: Robin Murphy <robin.murphy@arm.com>
 Date: Fri, 15 Mar 2019 01:05:30 +0000
 Subject: [PATCH] arm64: dts: rockchip: Add nanopi4 ethernet phy
@@ -2068,7 +2068,7 @@ index d325e117287b..dd16c80d923e 100644
  		cpu_b_sleep: cpu-b-sleep {
  			rockchip,pins = <1 RK_PC1 RK_FUNC_GPIO &pcfg_pull_down>;
 
-From ac7a90a30218eb113ea6285e3bd34b8a5314d102 Mon Sep 17 00:00:00 2001
+From 269b888d310429c6814f020045a26537ef352835 Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Thu, 21 Feb 2019 08:21:14 -0500
 Subject: [PATCH] media: cec: fill in cec chardev kobject to ease debugging
@@ -2097,7 +2097,7 @@ index cc875dabd765..f5d1578e256a 100644
  	ret = cdev_device_add(&devnode->cdev, &devnode->dev);
  	if (ret) {
 
-From eacd31fc04d516bec247519a16a81fae31c79682 Mon Sep 17 00:00:00 2001
+From 1ec01ef94bdd94a6fb5a893733c444a3fd96c526 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Wed, 20 Mar 2019 13:13:59 -0700
 Subject: [PATCH] ARM: dts: rockchip: Fix gic/efuse sort ordering for rk3288
@@ -2156,7 +2156,7 @@ index 510d237f54ab..8bce2fc49b24 100644
  		compatible = "rockchip,rk3288-pinctrl";
  		rockchip,grf = <&grf>;
 
-From 7b88c030f0fe3c3116ca81b462415035e69563ab Mon Sep 17 00:00:00 2001
+From 09327a80a044d184252384119e034137ef9d587a Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Fri, 22 Mar 2019 12:59:23 -0700
 Subject: [PATCH] dt-bindings: ARM: dts: rockchip: Add rk3288-veyron-jerry rev
@@ -2202,7 +2202,7 @@ index 0161b4a66586..864ee1fddcb0 100644
            - const: google,veyron-jerry-rev6
            - const: google,veyron-jerry-rev5
 
-From 0a36561b1585bc5c07565a1169fa8b1882001574 Mon Sep 17 00:00:00 2001
+From 01e3dffd85e520126bbbb91e38256d18c74ca3fa Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Fri, 22 Mar 2019 12:59:24 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add rk3288-veyron-jerry rev 10-15
@@ -2245,7 +2245,7 @@ index 2ba89895c33a..517c6999a978 100644
  		     "google,veyron-jerry-rev3", "google,veyron-jerry",
  		     "google,veyron", "rockchip,rk3288";
 
-From 072b4fa7a6d7030fc1c2bb494e68515aaadfce25 Mon Sep 17 00:00:00 2001
+From aa01b42306b5bdded368d9bf057e56ac90344a29 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Fri, 22 Mar 2019 09:52:09 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add dvs-gpios to rk3288-veyron-jerry
@@ -2287,7 +2287,7 @@ index 517c6999a978..3e8f700a0d64 100644
  	regulators {
  		mic_vcc: LDO_REG2 {
 
-From 3ee0e64a7e861ae9a5f36c9d28149b21a93724f8 Mon Sep 17 00:00:00 2001
+From ba5b7d44242a6f7333f1045ad0ca1df3a69eb5fc Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Thu, 21 Mar 2019 13:19:44 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add vdd_logic to rk3288-veyron
@@ -2411,7 +2411,7 @@ index 192dbc089ade..77d8f39cf2a3 100644
  
  &cpu0 {
 
-From 3c7ed238c4be0c24dd06ec64f3cd6966ae0f3264 Mon Sep 17 00:00:00 2001
+From 412c50cd0d3f05c77eae17bfcbc8b7688bcbbc79 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Mon, 25 Mar 2019 09:20:04 -0700
 Subject: [PATCH] dt-bindings: ARM: dts: rockchip: Add bindings for
@@ -2462,7 +2462,7 @@ index 864ee1fddcb0..5c6bbf10abc9 100644
          items:
            - const: google,veyron-minnie-rev4
 
-From 17ffd03aad45c1681092f0bc1416c61fabf7e01c Mon Sep 17 00:00:00 2001
+From 40c4f1bd901ae362ea583d217f425cf50bec57ce Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Mon, 25 Mar 2019 09:20:05 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add device tree for rk3288-veyron-mighty
@@ -2538,7 +2538,7 @@ index 000000000000..f640857cbdae
 +	};
 +};
 
-From 6a09243678cdbe7afcfc2c334eb7c8688d741746 Mon Sep 17 00:00:00 2001
+From b9090268978a3d3cedfcf0db287c37b678776692 Mon Sep 17 00:00:00 2001
 From: Christoph Muellner <christoph.muellner@theobroma-systems.com>
 Date: Fri, 22 Mar 2019 12:34:52 +0100
 Subject: [PATCH] arm64: dts: rockchip: Define drive-impedance-ohm for RK3399's
@@ -2569,7 +2569,7 @@ index ce6f9de5caae..382297ecfefa 100644
  			status = "disabled";
  		};
 
-From 116991596557a3edeb4821cb1d76f5ef395dbe44 Mon Sep 17 00:00:00 2001
+From 8d7eb58ec9bad114084bd611a15d717c4c037153 Mon Sep 17 00:00:00 2001
 From: Christoph Muellner <christoph.muellner@theobroma-systems.com>
 Date: Fri, 22 Mar 2019 12:34:53 +0100
 Subject: [PATCH] arm64: dts: rockchip: Decrease emmc-phy's drive impedance on
@@ -2605,7 +2605,7 @@ index 0130b9f98c9d..4f75bb6b2f14 100644
  
  &gmac {
 
-From 5796d224dd0c925d890deaf727b4b63c7cb1f95b Mon Sep 17 00:00:00 2001
+From 2184d3cd913ff8f86f9887472e1310c3970b29d6 Mon Sep 17 00:00:00 2001
 From: Urja Rannikko <urjaman@gmail.com>
 Date: Mon, 18 Mar 2019 15:44:12 +0000
 Subject: [PATCH] drm/rockchip: vop: Support dithering to RGB666
@@ -2757,7 +2757,7 @@ index bd76328c0fdb..e732b73033c8 100644
  	.dsp_blank = VOP_REG(RK3328_DSP_CTRL0, 0x3, 18),
  	.out_mode = VOP_REG(RK3328_DSP_CTRL0, 0xf, 0),
 
-From 3b8c93d56956d882648b107be08bb8fccd5a371c Mon Sep 17 00:00:00 2001
+From b4666652605824866d7eca260579f28e80ab257d Mon Sep 17 00:00:00 2001
 From: Johan Jonker <jbx6244@gmail.com>
 Date: Sat, 30 Mar 2019 10:56:39 +0100
 Subject: [PATCH] dt-bindings: display: rockchip: add document for rk3066 hdmi
@@ -2854,7 +2854,7 @@ index 000000000000..d1ad31bca8d9
 +		};
 +};
 
-From f77585e0fc4285e1975a0ce430d81a812b776cbc Mon Sep 17 00:00:00 2001
+From 76e11c790b98792e489846d1c89c7b9a5e0f0f35 Mon Sep 17 00:00:00 2001
 From: Zheng Yang <zhengyang@rock-chips.com>
 Date: Sat, 30 Mar 2019 10:56:36 +0100
 Subject: [PATCH] drm: rockchip: introduce rk3066 hdmi
@@ -4059,7 +4059,7 @@ index ce48568ec8a0..e4bc4322bc3f 100644
 +extern struct platform_driver rk3066_hdmi_driver;
  #endif /* _ROCKCHIP_DRM_DRV_H_ */
 
-From 6349fda01b9398070df2ac37704dc2cb69e89939 Mon Sep 17 00:00:00 2001
+From b54d3bbaac4cea4fce84b186aca1488e078ac894 Mon Sep 17 00:00:00 2001
 From: Zheng Yang <zhengyang@rock-chips.com>
 Date: Sat, 30 Mar 2019 10:56:37 +0100
 Subject: [PATCH] ARM: dts: rockchip: add rk3066 hdmi nodes
@@ -4159,7 +4159,7 @@ index 653127a377fa..d9504fd456a7 100644
  			i2c0_xfer: i2c0-xfer {
  				rockchip,pins = <RK_GPIO2 28 RK_FUNC_1 &pcfg_pull_none>,
 
-From 9902ad7cbcc80dd7ed26640b3b749bf32c5c5876 Mon Sep 17 00:00:00 2001
+From 39fc6ef0e23720043478bbd6291df08b7e0b3a89 Mon Sep 17 00:00:00 2001
 From: Johan Jonker <jbx6244@gmail.com>
 Date: Sat, 30 Mar 2019 10:56:38 +0100
 Subject: [PATCH] ARM: dts: rockchip: enable vop0 and hdmi nodes to
@@ -4230,7 +4230,7 @@ index 9d2216d71f70..8bc259d3e450 100644
  	status = "okay";
  };
 
-From 878dc59c3e050bca3cd62d66936624430fefb503 Mon Sep 17 00:00:00 2001
+From bf81684b47e8a2b6d9ff174587796cb1e6ff6cae Mon Sep 17 00:00:00 2001
 From: Paul Cercueil <paul@crapouillou.net>
 Date: Fri, 29 Mar 2019 22:50:43 +0100
 Subject: [PATCH] ASoC: es8316: Add support for inverted jack detect
@@ -4296,7 +4296,7 @@ index 6d4a323f786b..ec2770b3f77d 100644
  
  	es8316->jack = jack;
 
-From ab856cfc8e6f3048304516f66eccbf3daa7da9ef Mon Sep 17 00:00:00 2001
+From afd2cd43f57e44e619195722cc96165e3919afdd Mon Sep 17 00:00:00 2001
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 Date: Wed, 3 Apr 2019 21:40:46 +0800
 Subject: [PATCH] ASoC: rockchip: pdm: using left justified store mode
@@ -4338,7 +4338,7 @@ index 886b48d128fd..00a8fa187d22 100644
  #define PDM_PATH2_EN		BIT(29)
  #define PDM_PATH1_EN		BIT(28)
 
-From eb448e1f06eb1cf94faf2e9e3f952004f1d1f2da Mon Sep 17 00:00:00 2001
+From 8a6e9e49869aca025887958ced118634f65182f8 Mon Sep 17 00:00:00 2001
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 Date: Wed, 3 Apr 2019 21:40:47 +0800
 Subject: [PATCH] ASoC: rockchip: pdm: add default regs
@@ -4377,7 +4377,7 @@ index 92496ba0d239..a24bc67ad48f 100644
  	.readable_reg = rockchip_pdm_rd_reg,
  	.volatile_reg = rockchip_pdm_volatile_reg,
 
-From b1c48e533a9020cc8f411e11d1f48bd4c83182d8 Mon Sep 17 00:00:00 2001
+From 9991f701895182653d6ddf7d71430f82f18dd8ab Mon Sep 17 00:00:00 2001
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 Date: Wed, 3 Apr 2019 21:40:48 +0800
 Subject: [PATCH] ASoC: rockchip: pdm: optimize clear logic
@@ -4423,7 +4423,7 @@ index a24bc67ad48f..c50494b0ed0d 100644
  	if (ret) {
  		dev_err(&pdev->dev, "could not register pcm: %d\n", ret);
 
-From 96607297f622512b1598b3e1ef5bd743c88e6872 Mon Sep 17 00:00:00 2001
+From 738493b1905ff6de1d5b8882e7c447915a5de55b Mon Sep 17 00:00:00 2001
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 Date: Thu, 4 Apr 2019 11:51:09 +0800
 Subject: [PATCH] ASoC: rockchip: pdm: fixup pdm fractional div
@@ -4731,7 +4731,7 @@ index 00a8fa187d22..ae88644aa334 100644
  #define PDM_CLK_EN		BIT(5)
  #define PDM_CLK_DIS		(0x0 << 5)
 
-From 3d6c98037f24c791e0b996641ce43ea6660a5ae8 Mon Sep 17 00:00:00 2001
+From 54947cf6fcb3413ce450cf65eebd0d9badbc2796 Mon Sep 17 00:00:00 2001
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 Date: Thu, 4 Apr 2019 11:54:30 +0800
 Subject: [PATCH] ASoC: rockchip: pdm: add compatible for rk1808
@@ -4760,7 +4760,7 @@ index 4f93a7454e85..3e1c5fd5b32b 100644
  	  .data = (void *)RK_PDM_RK3308 },
  	{},
 
-From 41b5aeb0d16201715b999dbf33c1ed0ee4b72444 Mon Sep 17 00:00:00 2001
+From c51d8cd25778c87d36c0d3db3976ca6992128ab6 Mon Sep 17 00:00:00 2001
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 Date: Thu, 4 Apr 2019 11:56:29 +0800
 Subject: [PATCH] ASoC: rockchip: pdm: adjust waterlevel in frame unit
@@ -4792,7 +4792,7 @@ index 3e1c5fd5b32b..955cdc2b8fc5 100644
  	return 0;
  }
 
-From 1be37ca235456151420915ebc39c2d9ba78b157b Mon Sep 17 00:00:00 2001
+From 6c300e7b401d54d94abc3643c074f61eba2a7c8e Mon Sep 17 00:00:00 2001
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 Date: Thu, 4 Apr 2019 11:57:57 +0800
 Subject: [PATCH] ASoC: rockchip: pdm: Correct PDM_CTRL0 reg value
@@ -4836,7 +4836,7 @@ index 955cdc2b8fc5..068453596470 100644
  	  .data = (void *)RK_PDM_RK3308 },
  	{ .compatible = "rockchip,rk1808-pdm",
 
-From da384d119a2ce2af9e7270216726c5bef2eb4d9c Mon Sep 17 00:00:00 2001
+From 1b98c582c86df60bb26b14b7d4542719d58e52ab Mon Sep 17 00:00:00 2001
 From: Sugar Zhang <sugar.zhang@rock-chips.com>
 Date: Thu, 4 Apr 2019 11:57:08 +0800
 Subject: [PATCH] ASoC: rockchip: pdm: Mark RXFIFO_DATA as volatile and
@@ -4891,7 +4891,7 @@ index 068453596470..6c0f242db5ef 100644
  };
  
 
-From 78ab71691b896dc107ece2b5ca1b4a6e5e1d668a Mon Sep 17 00:00:00 2001
+From 1c64fa83693b48b730309a6f8b4b54d534b8e96f Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Wed, 10 Apr 2019 11:30:10 -0700
 Subject: [PATCH] ARM: dts: rockchip: Remove unnecessary setting of UART0 SCLK
@@ -4930,7 +4930,7 @@ index 77d8f39cf2a3..1a753243bdbc 100644
  	pinctrl-names = "default";
  	pinctrl-0 = <&uart0_xfer &uart0_cts &uart0_rts>;
 
-From b9f2947ed00a2d1f3b3b40eef3aeb1101e13a085 Mon Sep 17 00:00:00 2001
+From 15dfdd1366d11e48817f8d603ec1fc1482042b06 Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Tue, 9 Apr 2019 16:14:05 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add BT_EN to the power sequence for
@@ -4979,58 +4979,7 @@ index 1a753243bdbc..92ad639e2c20 100644
  
  	vcc_5v: vcc-5v {
 
-From 7db08c4ecd635234c5cbacfd3e35dc012fe7531c Mon Sep 17 00:00:00 2001
-From: Douglas Anderson <dianders@chromium.org>
-Date: Tue, 9 Apr 2019 13:49:05 -0700
-Subject: [PATCH] soc: rockchip: Set the proper PWM for rk3288
-
-The rk3288 SoC has two PWM implementations available, the "old"
-implementation and the "new" one.  You can switch between the two of
-them by flipping a bit in the grf.
-
-The "old" implementation is the default at chip power up but isn't the
-one that's officially supposed to be used.  ...and, in fact, the
-driver that gets selected in Linux using the rk3288 device tree only
-supports the "new" implementation.
-
-Long ago I tried to get a switch to the right IP block landed in the
-PWM driver (search for "rk3288: Switch to use the proper PWM IP") but
-that got rejected.  In the mean time the grf has grown a full-fledged
-driver that already sets other random bits like this.  That means we
-can now get the fix landed.
-
-For those wondering how things could have possibly worked for the last
-4.5 years, folks have mostly been relying on the bootloader to set
-this bit.  ...but occasionally folks have pointed back to my old patch
-series [1] in downstream kernels.
-
-[1] https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1391597.html
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-(cherry picked from commit bbdc00a7de24cc90315b1775fb74841373fe12f7)
----
- drivers/soc/rockchip/grf.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/soc/rockchip/grf.c b/drivers/soc/rockchip/grf.c
-index 96882ffde67e..3b81e1d75a97 100644
---- a/drivers/soc/rockchip/grf.c
-+++ b/drivers/soc/rockchip/grf.c
-@@ -66,9 +66,11 @@ static const struct rockchip_grf_info rk3228_grf __initconst = {
- };
- 
- #define RK3288_GRF_SOC_CON0		0x244
-+#define RK3288_GRF_SOC_CON2		0x24c
- 
- static const struct rockchip_grf_value rk3288_defaults[] __initconst = {
- 	{ "jtag switching", RK3288_GRF_SOC_CON0, HIWORD_UPDATE(0, 1, 12) },
-+	{ "pwm select", RK3288_GRF_SOC_CON2, HIWORD_UPDATE(1, 1, 0) },
- };
- 
- static const struct rockchip_grf_info rk3288_grf __initconst = {
-
-From a88038caad9ae42bdd4f0ef99873d36e4070b8f1 Mon Sep 17 00:00:00 2001
+From 16c9576c604ac9e9a1bf8f8698b1749840c97096 Mon Sep 17 00:00:00 2001
 From: "Leonidas P. Papadakos" <papadakospan@gmail.com>
 Date: Thu, 4 Apr 2019 14:23:29 +0300
 Subject: [PATCH] arm64: dts: rockchip: eMMC additions for rk3328-roc-cc
@@ -5074,7 +5023,7 @@ index c213ad74d51d..b08f630265e8 100644
  };
  
 
-From bf4c0c78ccedd8f0de0570fe32bac3565622ef3b Mon Sep 17 00:00:00 2001
+From ea5ab55cd1de7b18d42658310d98bfe1f8e78ff1 Mon Sep 17 00:00:00 2001
 From: "Leonidas P. Papadakos" <papadakospan@gmail.com>
 Date: Wed, 3 Apr 2019 21:22:48 +0300
 Subject: [PATCH] arm64: dts: rockchip: enable display nodes on rk3328-roc-cc
@@ -5122,7 +5071,7 @@ index b08f630265e8..5d499c9086fb 100644
 +	status = "okay";
 +};
 
-From 21d564df1ac85537dd0835a9f600115e925c78fe Mon Sep 17 00:00:00 2001
+From 4d0d3691a5cb9399b4d904e99208cb8f0ac4895e Mon Sep 17 00:00:00 2001
 From: Heiko Stuebner <heiko@sntech.de>
 Date: Tue, 2 Apr 2019 13:56:24 +0200
 Subject: [PATCH] arm64: dts: rockchip: bulk convert gpios to their constant
@@ -7632,7 +7581,7 @@ index 382297ecfefa..f54c855f8cdf 100644
  		};
  
 
-From 6011d45245fdac0b2ca07ce0f64dc6c995da45e4 Mon Sep 17 00:00:00 2001
+From 51dae9ed5b4b89e21a23b9fa3295da0f2ce1b4a5 Mon Sep 17 00:00:00 2001
 From: Heiko Stuebner <heiko@sntech.de>
 Date: Tue, 2 Apr 2019 14:08:57 +0200
 Subject: [PATCH] ARM: dts: rockchip: bulk convert gpios to their constant
@@ -11793,7 +11742,7 @@ index f47ac86d2852..5876690ee09e 100644
  		};
  	};
 
-From 6c8ca41175f0a60b69d973d5820dea097a1689ba Mon Sep 17 00:00:00 2001
+From f771799f14952f86fe0b23d39a3a9cca5bb46ce7 Mon Sep 17 00:00:00 2001
 From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 Date: Sun, 7 Apr 2019 00:35:57 +0900
 Subject: [PATCH] arm64: dts: rockchip: fix cts, rts pin assign of UART3 for
@@ -11834,7 +11783,7 @@ index f54c855f8cdf..196ac9b78076 100644
  		};
  
 
-From 15ed6c6763b1952ef88bec3265c0705420627bd3 Mon Sep 17 00:00:00 2001
+From f1a75ed0cd0c51673ce35c9c5ede0751b689784e Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Thu, 11 Apr 2019 10:59:17 -0700
 Subject: [PATCH] clk: rockchip: Limit use of USB PHY clock to USB on rk3288
@@ -11855,7 +11804,7 @@ Signed-off-by: Heiko Stuebner <heiko@sntech.de>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/rockchip/clk-rk3288.c b/drivers/clk/rockchip/clk-rk3288.c
-index 355d6a3611db..8f4b2e770e2a 100644
+index 18460e0993bc..24baeb56a1b3 100644
 --- a/drivers/clk/rockchip/clk-rk3288.c
 +++ b/drivers/clk/rockchip/clk-rk3288.c
 @@ -200,8 +200,8 @@ PNAME(mux_aclk_cpu_src_p)	= { "cpll_aclk_cpu", "gpll_aclk_cpu" };
@@ -11870,7 +11819,7 @@ index 355d6a3611db..8f4b2e770e2a 100644
  PNAME(mux_mmc_src_p)	= { "cpll", "gpll", "xin24m", "xin24m" };
  PNAME(mux_i2s_pre_p)	= { "i2s_src", "i2s_frac", "ext_i2s", "xin12m" };
 
-From ae0088e47bb04feef5b668aeca339a8fc48ba706 Mon Sep 17 00:00:00 2001
+From c2a2fcfb00e9fbc91aabcb15552f6f2cb690e0c0 Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
 Date: Thu, 11 Apr 2019 17:01:58 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add dynamic-power-coefficient for rk3288
@@ -11955,7 +11904,7 @@ index 2e604f0afa98..74c9517c4f92 100644
  	};
  
 
-From 3e40aae4cbea6ae12fdae89640d0cb6f5743d174 Mon Sep 17 00:00:00 2001
+From c35e240a031b0ca10f7720edc46adf514871dd28 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Thu, 11 Apr 2019 16:21:54 -0700
 Subject: [PATCH] ARM: rockchip: Mark pm-init functions __init
@@ -11994,7 +11943,7 @@ index 0592534e0b88..065b09e6f1eb 100644
  	struct device_node *sram_np;
  	struct resource res;
 
-From d3846cacc10090c38b725471716ee36afb0e160f Mon Sep 17 00:00:00 2001
+From 429e0171eb9012fe331aa6fe2baa8ca2e8f4aa97 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Thu, 11 Apr 2019 16:21:55 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add DDR retention/poweroff to
@@ -12055,7 +12004,7 @@ index 5c67acc3e6d8..279d7f4ecce0 100644
  	>;
  
 
-From 5367ef87c389257d209372c07a267c8998e72334 Mon Sep 17 00:00:00 2001
+From 9eb584c854b83f618d598c8fa0408b66603d6806 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Thu, 11 Apr 2019 16:21:56 -0700
 Subject: [PATCH] ARM: dts: rockchip: vcc33_ccd off in suspend for
@@ -12098,7 +12047,7 @@ index b9cc90f0f25c..fbef34578100 100644
  		};
  	};
 
-From 908d0a790d35f6ff1af778c47e5f15b9b1064029 Mon Sep 17 00:00:00 2001
+From 1474fae8c7c63cc2099c5fb5a52c42809477a375 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Thu, 11 Apr 2019 16:21:57 -0700
 Subject: [PATCH] ARM: dts: rockchip: vdd_gpu off in suspend for rk3288-veyron
@@ -12137,92 +12086,7 @@ index 279d7f4ecce0..1252522392c7 100644
  			};
  
 
-From 969ee2ede23a2c129a7a4e63e108b62a0b9f8d05 Mon Sep 17 00:00:00 2001
-From: Douglas Anderson <dianders@chromium.org>
-Date: Thu, 11 Apr 2019 16:21:53 -0700
-Subject: [PATCH] clk: rockchip: Turn on "aclk_dmac1" for suspend on rk3288
-
-Experimentally it can be seen that going into deep sleep (specifically
-setting PMU_CLR_DMA and PMU_CLR_BUS in RK3288_PMU_PWRMODE_CON1)
-appears to fail unless "aclk_dmac1" is on.  The failure is that the
-system never signals that it made it into suspend on the GLOBAL_PWROFF
-pin and it just hangs.
-
-NOTE that it's confirmed that it's the actual suspend that fails, not
-one of the earlier calls to read/write registers.  Specifically if you
-comment out the "PMU_GLOBAL_INT_DISABLE" setting in
-rk3288_slp_mode_set() and then comment out the "cpu_do_idle()" call in
-rockchip_lpmode_enter() then you can exercise the whole suspend path
-without any crashing.
-
-This is currently not a problem with suspend upstream because there is
-no current way to exercise the deep suspend code.  However, anyone
-trying to make it work will run into this issue.
-
-This was not a problem on shipping rk3288-based Chromebooks because
-those devices all ran on an old kernel based on 3.14.  On that kernel
-"aclk_dmac1" appears to be left on all the time.
-
-There are several ways to skin this problem.
-
-A) We could add "aclk_dmac1" to the list of critical clocks and that
-apperas to work, but presumably that wastes power.
-
-B) We could keep a list of "struct clk" objects to enable at suspend
-time in clk-rk3288.c and use the standard clock APIs.
-
-C) We could make the rk3288-pmu driver keep a list of clocks to enable
-at suspend time.  Presumably this would require a dts and bindings
-change.
-
-D) We could just whack the clock on in the existing syscore suspend
-function where we whack a bunch of other clocks.  This is particularly
-easy because we know for sure that the clock's only parent
-("aclk_cpu") is a critical clock so we don't need to do anything more
-than ungate it.
-
-In this case I have chosen D) because it seemed like the least work,
-but any of the other options would presumably also work fine.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Elaine Zhang <zhangqing@rock-chips.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-(cherry picked from commit 57a20248ef3e429dc822f0774bc4e00136c46c83)
----
- drivers/clk/rockchip/clk-rk3288.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/drivers/clk/rockchip/clk-rk3288.c b/drivers/clk/rockchip/clk-rk3288.c
-index 8f4b2e770e2a..24baeb56a1b3 100644
---- a/drivers/clk/rockchip/clk-rk3288.c
-+++ b/drivers/clk/rockchip/clk-rk3288.c
-@@ -856,6 +856,9 @@ static const int rk3288_saved_cru_reg_ids[] = {
- 	RK3288_CLKSEL_CON(10),
- 	RK3288_CLKSEL_CON(33),
- 	RK3288_CLKSEL_CON(37),
-+
-+	/* We turn aclk_dmac1 on for suspend; this will restore it */
-+	RK3288_CLKGATE_CON(10),
- };
- 
- static u32 rk3288_saved_cru_regs[ARRAY_SIZE(rk3288_saved_cru_reg_ids)];
-@@ -871,6 +874,14 @@ static int rk3288_clk_suspend(void)
- 				readl_relaxed(rk3288_cru_base + reg_id);
- 	}
- 
-+	/*
-+	 * Going into deep sleep (specifically setting PMU_CLR_DMA in
-+	 * RK3288_PMU_PWRMODE_CON1) appears to fail unless
-+	 * "aclk_dmac1" is on.
-+	 */
-+	writel_relaxed(1 << (12 + 16),
-+		       rk3288_cru_base + RK3288_CLKGATE_CON(10));
-+
- 	/*
- 	 * Switch PLLs other than DPLL (for SDRAM) to slow mode to
- 	 * avoid crashes on resume. The Mask ROM on the system will
-
-From d0ceeee5296e0a9ba82ab812b9df39ac81064ff4 Mon Sep 17 00:00:00 2001
+From a96445d833ec07c7cbcd0f54474fd6724296af72 Mon Sep 17 00:00:00 2001
 From: Finley Xiao <finley.xiao@rock-chips.com>
 Date: Wed, 3 Apr 2019 17:42:26 +0800
 Subject: [PATCH] clk: rockchip: add a COMPOSITE_DIV_OFFSET clock-type
@@ -12316,7 +12180,7 @@ index 6b53fff4cc96..1b5270755431 100644
  			go, gs, gf)				\
  	{							\
 
-From 5275fa64199065997b90428c022662a6c650884b Mon Sep 17 00:00:00 2001
+From 7c9ea58553d14cb327fd849279f3d43144b05810 Mon Sep 17 00:00:00 2001
 From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Date: Thu, 21 Mar 2019 19:14:36 -0400
 Subject: [PATCH] PM / devfreq: rockchip-dfi: Move GRF definitions to a common
@@ -12422,7 +12286,7 @@ index 000000000000..3eebabcb2812
 +
 +#endif
 
-From 52441c00bf4aed8c895d55a45521828812b1fc6a Mon Sep 17 00:00:00 2001
+From 2eb094c9f309913263aa7df83f5cdd94dba6b25f Mon Sep 17 00:00:00 2001
 From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Date: Thu, 21 Mar 2019 19:14:38 -0400
 Subject: [PATCH] PM / devfreq: rk3399_dmc: Pass ODT and auto power down
@@ -12594,7 +12458,7 @@ index 7e28092c4d3d..ad9482c56797 100644
  
  #endif
 
-From 5b4de5bc37389226d9c697951c59809bb84772d8 Mon Sep 17 00:00:00 2001
+From c6166055194ad420d8267ff57e95c34b23be03ea Mon Sep 17 00:00:00 2001
 From: YueHaibing <yuehaibing@huawei.com>
 Date: Tue, 19 Mar 2019 23:30:28 +0800
 Subject: [PATCH] phy: rockchip-typec: Make usb3_pll_cfg and dp_pll_cfg static
@@ -12635,7 +12499,7 @@ index e32edeebcd63..8ad366ee6ada 100644
  	{ 0x18,		CMN_PLL1_VCOCAL_ITER },
  	{ 0x30b9,	CMN_PLL1_VCOCAL_START },
 
-From bac41a7d457a859048045e58b23f50296fcd0c42 Mon Sep 17 00:00:00 2001
+From 61f6b796c7a3377a8d216fb3e9d5abc93dc20fca Mon Sep 17 00:00:00 2001
 From: Christoph Muellner <christoph.muellner@theobroma-systems.com>
 Date: Fri, 22 Mar 2019 12:34:50 +0100
 Subject: [PATCH] phy: rockchip-emmc: Allow to set drive impedance via DTS.
@@ -12729,7 +12593,7 @@ index 19bf84f0bc67..b804c6bf4b55 100644
  	generic_phy = devm_phy_create(dev, dev->of_node, &ops);
  	if (IS_ERR(generic_phy)) {
 
-From 236d632b48f23d3353533c6c6e116d7f8920e8e9 Mon Sep 17 00:00:00 2001
+From 647484aa1cbfeb6ad35062b811a2555ff59dfdca Mon Sep 17 00:00:00 2001
 From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Date: Wed, 10 Apr 2019 05:13:28 -0400
 Subject: [PATCH] media: cec-notifier: add cec_notifier_parse_hdmi_phandle
@@ -12842,7 +12706,7 @@ index 814eeef35a5c..57b3a9f6ea1d 100644
  
  /**
 
-From 5b9a0ff9085e02f9e03a17599a065d87702a33ce Mon Sep 17 00:00:00 2001
+From b4057e33b02a8c904f226e306f20f91f782c542c Mon Sep 17 00:00:00 2001
 From: Wen Yang <wen.yang99@zte.com.cn>
 Date: Tue, 5 Mar 2019 19:32:56 +0800
 Subject: [PATCH] ARM: rockchip: add missing of_node_put in
@@ -12882,7 +12746,7 @@ index 51984a40b097..4675d9202000 100644
  		pr_err("%s: could not map pmu registers\n", __func__);
  		return -ENOMEM;
 
-From 6e768b9cd7df9fa145d6cee000d5360fb965534a Mon Sep 17 00:00:00 2001
+From d9f827f8359f571ff15239e0a068faa68ce7db4f Mon Sep 17 00:00:00 2001
 From: Colin Ian King <colin.king@canonical.com>
 Date: Wed, 17 Apr 2019 17:26:28 +0100
 Subject: [PATCH] ASoC: hdmi-codec: fix spelling mistake "plalform" ->
@@ -12911,7 +12775,7 @@ index fb2f0ac1f16f..720de0a53c79 100644
  	}
  
 
-From 6ad01ec66d2c9a07e4af63e21b99063be09c469b Mon Sep 17 00:00:00 2001
+From 6a0640ea5b21c410d618d9686f272b2821655866 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Mon, 29 Apr 2019 15:29:40 +0200
 Subject: [PATCH] ASoC: hdmi-codec: stream is already locked in hw_params
@@ -12944,7 +12808,7 @@ index 720de0a53c79..39caf19abb0b 100644
  	hp.cea.channels = params_channels(params);
  	hp.cea.coding_type = HDMI_AUDIO_CODING_TYPE_STREAM;
 
-From b416664821a66eeb68624ab863c900ff692b10d7 Mon Sep 17 00:00:00 2001
+From bcfd2072271c07b784a8305c5ac7acd2d2e583e3 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Tue, 16 Apr 2019 14:53:50 -0700
 Subject: [PATCH] ARM: dts: rockchip: Hook resets up to USB PHYs on rk3288.
@@ -12992,7 +12856,7 @@ index 74c9517c4f92..7e70ecf2b95a 100644
  		};
  	};
 
-From 59228d8c6301f4fb2134e8a72b39a4927ae6ced4 Mon Sep 17 00:00:00 2001
+From 9d2f2706b960bedcc11ac2d665cd3cc0fbd93fbd Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
 Date: Tue, 16 Apr 2019 14:53:51 -0700
 Subject: [PATCH] ARM: dts: rockchip: Add quirk for resetting rk3288's dwc2
@@ -13023,7 +12887,7 @@ index 7e70ecf2b95a..aa017abf4f42 100644
  	};
  
 
-From 930a215dd5e2068f551c3d67d066cfc07d5e480f Mon Sep 17 00:00:00 2001
+From f33dcbc4eed1228c4d4cd551b964b53d30835ea3 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
 Date: Mon, 6 May 2019 17:02:24 +0200
 Subject: [PATCH] ASoC: rockchip: Fix an uninitialized variable compile warning
@@ -13057,7 +12921,7 @@ index 6c0f242db5ef..b9c1d8ad77c1 100644
  	bool change;
  	int ret;
 
-From c2760b08f590f740e66a38905655fd014c10652a Mon Sep 17 00:00:00 2001
+From 1c2e885469bc4013e7311dd939e731f3d2ca4cec Mon Sep 17 00:00:00 2001
 From: Uma Shankar <uma.shankar@intel.com>
 Date: Tue, 19 Feb 2019 22:42:59 +0530
 Subject: [PATCH] drm: Add HDMI colorspace property
@@ -13341,7 +13205,7 @@ index 8fe22abb1e10..c8061992d6cb 100644
  void drm_hdmi_avi_infoframe_content_type(struct hdmi_avi_infoframe *frame,
  					 const struct drm_connector_state *conn_state);
 
-From 427d04cd09a5cc830bccf69c882afa148c8d505c Mon Sep 17 00:00:00 2001
+From 903f48c3af917c3d7a84385e3ae7f68a0b89128f Mon Sep 17 00:00:00 2001
 From: Uma Shankar <uma.shankar@intel.com>
 Date: Tue, 19 Feb 2019 22:43:00 +0530
 Subject: [PATCH] drm: Add colorspace info to AVI Infoframe
@@ -13381,10 +13245,10 @@ Link: https://patchwork.freedesktop.org/patch/msgid/1550596381-993-3-git-send-em
  2 files changed, 76 insertions(+)
 
 diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index 8db099b8077e..eb95b1e7d420 100644
+index d94778915312..c53e65b2bfcd 100644
 --- a/drivers/gpu/drm/drm_edid.c
 +++ b/drivers/gpu/drm/drm_edid.c
-@@ -4949,6 +4949,76 @@ drm_hdmi_avi_infoframe_from_display_mode(struct hdmi_avi_infoframe *frame,
+@@ -4988,6 +4988,76 @@ drm_hdmi_avi_infoframe_from_display_mode(struct hdmi_avi_infoframe *frame,
  }
  EXPORT_SYMBOL(drm_hdmi_avi_infoframe_from_display_mode);
  
@@ -13462,7 +13326,7 @@ index 8db099b8077e..eb95b1e7d420 100644
   * drm_hdmi_avi_infoframe_quant_range() - fill the HDMI AVI infoframe
   *                                        quantization range information
 diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-index 8dc1a081fb36..9d3b5b93102c 100644
+index 19b15fd28854..c9ca0be54d9a 100644
 --- a/include/drm/drm_edid.h
 +++ b/include/drm/drm_edid.h
 @@ -331,6 +331,7 @@ struct cea_sad {
@@ -13486,7 +13350,7 @@ index 8dc1a081fb36..9d3b5b93102c 100644
  drm_hdmi_avi_infoframe_quant_range(struct hdmi_avi_infoframe *frame,
  				   struct drm_connector *connector,
 
-From d4d20fcb858fb9c56966dcde0be0d90a001e49eb Mon Sep 17 00:00:00 2001
+From 14fd7b9cf371af1461a033700e633ee8fd425772 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
 Date: Tue, 26 Mar 2019 19:34:01 +0200
 Subject: [PATCH] drm/uapi: Remove unused DRM_DISPLAY_INFO_LEN
@@ -13523,7 +13387,7 @@ index a439c2e67896..09d72966899a 100644
  #define DRM_DISPLAY_MODE_LEN	32
  #define DRM_PROP_NAME_LEN	32
 
-From 43b9d724babe418a0af5b463bfa5e340a684058d Mon Sep 17 00:00:00 2001
+From 5cb3ce9b1053f422dd291eb4a426b59d4249eee9 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Mon, 29 Apr 2019 11:47:49 +0200
 Subject: [PATCH] ASoC: fix valid stream condition
@@ -13557,7 +13421,7 @@ index be80a12fba27..c4e5d292a0d7 100644
  
  /**
 
-From 72c90e142ecbb6aa8acf14bf143b6bd2fdbe322f Mon Sep 17 00:00:00 2001
+From 1add24c4dc8c4915460c0b2e3bd0fe1227cf7b8d Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
 Date: Mon, 29 Apr 2019 11:47:50 +0200
 Subject: [PATCH] ASoC: skip hw_free on codec dai for which the stream is
