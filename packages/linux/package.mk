@@ -23,20 +23,14 @@ case "$LINUX" in
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     ;;
   raspberrypi)
-    PKG_VERSION="534913e8784cbc65b81fc0b141e89d9646fb758e" # 5.1.12
-    PKG_SHA256="29f94d76e6d6a93c183389c4d960e272817965ac6325f2f77e8dc8b28bc943a5"
-    PKG_URL="https://github.com/raspberrypi/linux/archive/$PKG_VERSION.tar.gz"
-    PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
-    ;;
-  raspberrypi-4.19)
-    PKG_VERSION="7b5c53d89a53e343679759476a27bb7af736ea22"
-    PKG_SHA256="0b5b1076bc39df3d716449a0f0e4ebee78b974f0aff4f0a3c90b117fcc4dac49"
+    PKG_VERSION="a831d7ceefd10b78f17d3fa0cc625d2dfd8ca00e" # 5.1.15
+    PKG_SHA256="c498c0003c0078e7fbc4980f1fc577d3edd864b1b611d15b25fbe924b68ccf55"
     PKG_URL="https://github.com/raspberrypi/linux/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     ;;
   *)
-    PKG_VERSION="5.1.9"
-    PKG_SHA256="58c9eca99c3dd2fff5b559302996c985c3f3f2aad0b99b2172a61c4df7122a79"
+    PKG_VERSION="5.1.15"
+    PKG_SHA256="e8a128702680cea9f37c44bbeb456ea1c2ef1ae1eba0e05dcfc11d7d6cdc1399"
     PKG_URL="https://www.kernel.org/pub/linux/kernel/v5.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_PATCH_DIRS="default"
     ;;
@@ -94,6 +88,12 @@ post_patch() {
     sed -i -e "s|^CONFIG_ISCSI_BOOT_SYSFS=.*$|# CONFIG_ISCSI_BOOT_SYSFS is not set|" $PKG_BUILD/.config
     sed -i -e "s|^CONFIG_ISCSI_IBFT_FIND=.*$|# CONFIG_ISCSI_IBFT_FIND is not set|" $PKG_BUILD/.config
     sed -i -e "s|^CONFIG_ISCSI_IBFT=.*$|# CONFIG_ISCSI_IBFT is not set|" $PKG_BUILD/.config
+  fi
+
+  # disable lima/panfrost if libmali is configured
+  if [ "$OPENGLES" = "libmali" ]; then
+    sed -e "s|^CONFIG_DRM_LIMA=.*$|# CONFIG_DRM_LIMA is not set|" -i $PKG_BUILD/.config
+    sed -e "s|^CONFIG_DRM_PANFROST=.*$|# CONFIG_DRM_PANFROST is not set|" -i $PKG_BUILD/.config
   fi
 }
 
