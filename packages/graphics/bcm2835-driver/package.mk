@@ -55,8 +55,8 @@ make_target() {
 
   # Create symlinks to /opt/vc to satisfy hardcoded include & lib paths
   mkdir -p ${SYSROOT_PREFIX}/opt/vc
-    ln -sf ${SYSROOT_PREFIX}/usr/lib     ${SYSROOT_PREFIX}/opt/vc/lib
-    ln -sf ${SYSROOT_PREFIX}/usr/include ${SYSROOT_PREFIX}/opt/vc/include
+    ln -sfn ${SYSROOT_PREFIX}/usr/lib     ${SYSROOT_PREFIX}/opt/vc/lib
+    ln -sfn ${SYSROOT_PREFIX}/usr/include ${SYSROOT_PREFIX}/opt/vc/include
 }
 
 makeinstall_target() {
