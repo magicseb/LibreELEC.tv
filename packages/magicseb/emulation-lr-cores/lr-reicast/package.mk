@@ -45,9 +45,6 @@ pre_configure_target() {
     Amlogic_Legacy)
       PKG_MAKE_OPTS_TARGET+=" platform=rpi"
       ;;
-    RPi)
-      PKG_MAKE_OPTS_TARGET+=" platform=rpi"
-      ;;
     RPi2)
       PKG_MAKE_OPTS_TARGET+=" platform=rpi2"
       ;;
@@ -59,6 +56,15 @@ pre_configure_target() {
       ;;
     Generic)
       PKG_MAKE_OPTS_TARGET+=" AS=${AS} CC_AS=${AS} HAVE_OIT=1"
+      ;;
+  esac
+
+case $DEVICE in
+    RPi)
+      PKG_MAKE_OPTS_TARGET+=" platform=rpi"
+      ;;
+    RPi4|RPi3)
+      PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
       ;;
   esac
 }

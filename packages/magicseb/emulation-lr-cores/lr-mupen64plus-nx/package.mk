@@ -31,6 +31,10 @@ configure_package() {
   if [ "${OPENGLES_SUPPORT}" = "yes" ]; then
     PKG_DEPENDS_TARGET+=" ${OPENGLES}"
   fi
+
+  if [ "${DEVICE}" = "RPi4" ]; then
+    PKG_DEPENDS_TARGET+=" libX11"
+  fi
 }
 
 pre_configure_target() {

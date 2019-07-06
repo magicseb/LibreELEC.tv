@@ -7,7 +7,7 @@ PKG_VERSION="024d75d568c8bb6373b458aa10abfc53dee96d4d" #1.7.6
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="https://github.com/libretro/RetroArch.git"
-PKG_DEPENDS_TARGET="toolchain linux glibc systemd dbus openssl expat alsa-lib libpng libusb libass speex tinyalsa fluidsynth-git freetype zlib bzip2 ffmpeg lr-common-overlays lr-core-info lr-database lr-glsl-shaders lr-overlay-borders lr-samples retroarch-assets retroarch-joypad-autoconfig SDL2-git"
+PKG_DEPENDS_TARGET="toolchain linux glibc systemd dbus openssl expat alsa-lib libpng libusb libass speex tinyalsa fluidsynth-git freetype zlib bzip2 ffmpeg lr-common-overlays lr-core-info lr-database lr-glsl-shaders lr-overlay-borders lr-samples retroarch-assets retroarch-joypad-autoconfig SDL2-git libvdpau"
 PKG_LONGDESC="Reference frontend for the libretro API."
 GET_HANDLER_SUPPORT="git"
 
@@ -103,9 +103,6 @@ pre_configure_target() {
      elif [ "${OPENGLES}" = "mesa" ]; then
       PKG_CONFIGURE_OPTS_TARGET+=" --enable-egl --disable-videocore --enable-opengles3 --enable-opengles --disable-x11 --disable-wayland"
 
-      CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/EGL \
-                      -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads \
-                      -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
 
     # Amlogic OpenGLES Features Support
     elif [ "${OPENGLES}" = "opengl-meson" ]; then
@@ -113,7 +110,7 @@ pre_configure_target() {
 
    # Rockchip OpenGLES
     elif [ "${OPENGLES}" = "libmali" ]; then
-      PKG_CONFIGURE_OPTS_TARGET+=" --enable-kms --disable-x11 --disable-wayland --enable-opengles3 --disable-opengl_core --disable-opengl1"
+      PKG_CONFIGURE_OPTS_TARGET+=" --enable-egl --enable-kms --disable-x11 --disable-videocore --enable-plain_drm"
     fi
   fi
 
