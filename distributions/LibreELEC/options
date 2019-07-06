@@ -228,6 +228,9 @@
 # debug tty path
   DEBUG_TTY="/dev/tty3"
 
+# wireless daemon to use (wpa_supplicant/iwd)
+  WIRELESS_DAEMON="wpa_supplicant"
+
 #LIBRETRO CORES
 LIBRETRO_CORES="lr-2048 lr-atari800 lr-beetle-pce-fast lr-beetle-psx lr-beetle-saturn lr-beetle-wswan lr-bluemsx lr-bsnes-mercury-accuracy lr-bsnes-mercury-balanced lr-chailove lr-citra lr-desmume lr-dolphin lr-dosbox lr-fbalpha lr-fceumm lr-fuse lr-gambatte lr-genplus lr-kronos lr-mame2003-plus lr-mame2010 lr-mame2016 lr-mesen lr-mgba lr-mrboom lr-mupen64plus lr-mupen64plus-nx lr-nestopia lr-parallel-n64 lr-pcsx-rearmed lr-ppsspp lr-prboom lr-reicast lr-scummvm lr-snes9x lr-snes9x2010 lr-stella lr-tyrquake lr-vice lr-yabause"
 
@@ -349,5 +352,6 @@ LIBRETRO_CORES="lr-2048 lr-atari800 lr-beetle-pce-fast lr-beetle-psx lr-beetle-s
 "/tmp/cores/mednafen_ngp_libretro.so;"\
 "/tmp/cores/ppsspp_libretro.so;"\
 "/tmp/cores/pcsx_rearmed_libretro.so"
+
 
 
