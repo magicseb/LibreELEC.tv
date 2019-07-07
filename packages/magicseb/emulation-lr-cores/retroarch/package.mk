@@ -3,11 +3,11 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="retroarch"
-PKG_VERSION="024d75d568c8bb6373b458aa10abfc53dee96d4d" #1.7.6
+PKG_VERSION="0b1ee7d00a27f8f2f8f1b36f1b1f54245c6bfb99" #1.7.6
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="https://github.com/libretro/RetroArch.git"
-PKG_DEPENDS_TARGET="toolchain linux glibc systemd dbus openssl expat alsa-lib libpng libusb libass speex tinyalsa fluidsynth-git freetype zlib bzip2 ffmpeg lr-common-overlays lr-core-info lr-database lr-glsl-shaders lr-overlay-borders lr-samples retroarch-assets retroarch-joypad-autoconfig SDL2-git libvdpau"
+PKG_DEPENDS_TARGET="toolchain linux glibc systemd dbus openssl expat alsa-lib libpng libusb libass speex tinyalsa fluidsynth-git freetype zlib bzip2 ffmpeg lr-common-overlays lr-core-info lr-database lr-glsl-shaders lr-overlay-borders lr-samples retroarch-assets retroarch-joypad-autoconfig SDL2-git"
 PKG_LONGDESC="Reference frontend for the libretro API."
 GET_HANDLER_SUPPORT="git"
 
@@ -51,6 +51,12 @@ configure_package() {
   if [ "${VULKAN_SUPPORT}" = "yes" ]; then
     PKG_DEPENDS_TARGET+=" vulkan-loader lr-slang-shaders"
   fi
+
+ #RPi4
+ if [ "${DEVICE}" = "RPi4" ]; then
+    PKG_DEPENDS_TARGET+=" libvdpau"
+  fi
+
 }
 
 pre_configure_target() {
@@ -101,7 +107,7 @@ pre_configure_target() {
                       -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
 
      elif [ "${OPENGLES}" = "mesa" ]; then
-      PKG_CONFIGURE_OPTS_TARGET+=" --enable-egl --disable-videocore --enable-opengles3 --enable-opengles --disable-x11 --disable-wayland"
+      PKG_CONFIGURE_OPTS_TARGET+=" --enable-egl --disable-videocore --enable-opengles3 --disable-x11 --disable-wayland"
 
 
     # Amlogic OpenGLES Features Support
@@ -110,7 +116,7 @@ pre_configure_target() {
 
    # Rockchip OpenGLES
     elif [ "${OPENGLES}" = "libmali" ]; then
-      PKG_CONFIGURE_OPTS_TARGET+=" --enable-egl --enable-kms --disable-x11 --disable-videocore --enable-plain_drm"
+      PKG_CONFIGURE_OPTS_TARGET+=" --enable-kms --disable-x11 --disable-wayland --enable-opengles3 --disable-opengl_core --disable-opengl1"
     fi
   fi
 

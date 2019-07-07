@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-slang-shaders"
-PKG_VERSION="24f3e6d6c8d4b39b984f586d04362a600b3d4b6d"
-PKG_SHA256="ef9a22a932416dca00349f68fbd3292b70c70d88c4c5ae39e7ac228c3cf3db08"
+PKG_VERSION="968325ddb3e2d5d9940178a6d054df6f42a8997d"
+PKG_SHA256="51aa9d6c355546b210dc830450480cf0e307eba3c64faa4727fa74585b289299"
 PKG_LICENSE="MIT"
 PKG_SITE="https://github.com/libretro/slang-shaders"
 PKG_URL="https://github.com/libretro/slang-shaders/archive/$PKG_VERSION.tar.gz"

@@ -60,10 +60,7 @@ pre_configure_target() {
   esac
 
 case $DEVICE in
-    RPi)
-      PKG_MAKE_OPTS_TARGET+=" platform=rpi"
-      ;;
-    RPi4|RPi3)
+    RPi4)
       PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
       ;;
   esac
