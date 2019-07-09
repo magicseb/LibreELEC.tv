@@ -29,10 +29,22 @@ mv $BOOT_ROOT/dtb $BOOT_ROOT/dtb_old
 cp -R $UPDATE_DIR/.tmp/*/3rdparty/bootloader/dtb $BOOT_ROOT
 
 # update u-boot scripts
-  for scriptfile in $SYSTEM_ROOT/usr/share/bootloader/*_autoscript* $SYSTEM_ROOT/usr/share/bootloader/*.scr ; do
-    echo "Updating $(basename $scriptfile)"
-    cp -p $scriptfile $BOOT_ROOT 2>/dev/null || true
-  done
+  if [ -f $BOOT_ROOT/s905_autoscript ]; then
+      echo "Updating s905_autoscript"
+      cp -p $SYSTEM_ROOT/usr/share/bootloader/s905_autoscript $BOOT_ROOT 2>/dev/null || true
+  fi
+
+  if [ -f $BOOT_ROOT/emmc_autoscript ]; then
+      echo "Updating emmc_autoscript"
+      cp -p $SYSTEM_ROOT/usr/share/bootloader/emmc_autoscript $BOOT_ROOT 2>/dev/null || true
+  fi
+
+  if [ -f $BOOT_ROOT/install2emmc.sh ]; then
+    for scriptfile in $SYSTEM_ROOT/usr/share/bootloader/*.sh ; do
+      echo "Updating $(basename $scriptfile)"
+      cp -p $scriptfile $BOOT_ROOT 2>/dev/null || true
+    done
+  fi
 
 # mount $BOOT_ROOT ro
   sync
