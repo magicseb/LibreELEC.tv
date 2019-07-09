@@ -16,12 +16,12 @@ PKG_STAMP="$KERNEL_TARGET $KERNEL_MAKE_EXTRACMD"
 PKG_PATCH_DIRS="$LINUX"
 
 case "$LINUX" in
-  amlogic-5.2.0) #AMLG12
-    PKG_VERSION="3bda2761ea547848c39983e9df68fe3c214a12f7" # 5.2-rc4
+  amlogic-5.2) #AMLG12
+    PKG_VERSION="69eccfd712eabfcc9a9ab1461c5e46c887e60a58" # 5.2-rc7
     PKG_SHA256=""
-    PKG_URL="https://github.com/150balbes/Amlogic_s905-kernel/archive/$PKG_VERSION.tar.gz"
+    PKG_URL="https://github.com/chewitt/linux/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
-    PKG_PATCH_DIRS="amlogic-5.2.0"
+    PKG_PATCH_DIRS="amlogic-5.2"
     ;;
   rockchip-4.4)
     PKG_VERSION="aa8bacf821e5c8ae6dd8cae8d64011c741659945"
