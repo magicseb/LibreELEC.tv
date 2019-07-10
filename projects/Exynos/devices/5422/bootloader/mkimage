@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: GPL-2.0
+# Copyright (C) 2017-present Team LibreELEC (https://libreelec.tv)
+
+if [ -f "$RELEASE_DIR/3rdparty/bootloader/bl1.bin" ]; then
+  echo "image: burn bl1.bin to image..."
+  dd if="$RELEASE_DIR/3rdparty/bootloader/bl1.bin" of="$DISK" seek=1 conv=fsync,notrunc >"$SAVE_ERROR" 2>&1 || show_error
+fi
+if [ -f "$RELEASE_DIR/3rdparty/bootloader/bl2.bin" ]; then
+  echo "image: burn bl2.bin to image..."
+  dd if="$RELEASE_DIR/3rdparty/bootloader/bl2.bin" of="$DISK" seek=31 conv=fsync,notrunc >"$SAVE_ERROR" 2>&1 || show_error
+fi
+if [ -f "$RELEASE_DIR/3rdparty/bootloader/u-boot.bin" ]; then
+  echo "image: burn u-boot.bin to image..."
+  dd if="$RELEASE_DIR/3rdparty/bootloader/u-boot.bin" of="$DISK" seek=63 conv=fsync,notrunc >"$SAVE_ERROR" 2>&1 || show_error
+fi
+if [ -f "$RELEASE_DIR/3rdparty/bootloader/tzsw.bin" ]; then
+  echo "image: burn tzsw.bin to image..."
+  dd if="$RELEASE_DIR/3rdparty/bootloader/tzsw.bin" of="$DISK" seek=1503 conv=fsync,notrunc >"$SAVE_ERROR" 2>&1 || show_error
+fi

@@ -115,6 +115,22 @@ devices = \
       },
     },
   },
+  'Exynos': {
+    '5422': {
+      'odroid-xu3': {
+        'dtb': 'exynos5422-odroidxu3.dts',
+        'config': 'odroid-xu3_defconfig'
+      },
+      'odroid-xu3-lite': {
+        'dtb': 'exynos5422-odroidxu3-lite.dts',
+        'config': 'odroid-xu3_defconfig'
+      },
+      'odroid-xu4': {
+        'dtb': 'exynos5422-odroidxu4.dts',
+        'config': 'odroid-xu3_defconfig'
+      },
+    },
+  },
   'NXP': {
     'iMX6': {
       'cubox-dl': {
