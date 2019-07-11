@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-reicast"
-PKG_VERSION="4d3a6e2b46868c119261041f913ee55c51bfc9d0"
-PKG_SHA256="c3f6718af68bac9ba791592c561e0ea36f92b565160db20a35fd981bd5e4f88a"
+PKG_VERSION="f318abe4272f1dfca78a3de574e0100da4049874"
+PKG_SHA256="422c5e73b6993dee4b41f0389649ac444a84e61265135ade73d918a150a027a1"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/flycast"
 PKG_URL="https://github.com/libretro/flycast/archive/$PKG_VERSION.tar.gz"
@@ -61,7 +61,7 @@ pre_configure_target() {
 
 case $DEVICE in
     RPi4)
-      PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
+      PKG_MAKE_OPTS_TARGET+=" platform=rpi4"
       ;;
   esac
 }
