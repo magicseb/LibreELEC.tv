@@ -24,7 +24,8 @@ OEM_EMU_COMMON=" \
   lr-bluemsx \
   lr-desmume \
   lr-dosbox \
-  lr-fbalpha \
+  lr-fbneo \
+  lr-flycast \
   lr-fceumm \
   lr-fuse \
   lr-gambatte \
@@ -36,7 +37,6 @@ OEM_EMU_COMMON=" \
   lr-nestopia \
   lr-pcsx-rearmed \
   lr-prboom \
-  lr-reicast \
   lr-scummvm \
   lr-snes9x \
   lr-stella \
