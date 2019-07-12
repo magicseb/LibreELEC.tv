@@ -1,0 +1,28 @@
+new file mode 100644
+index 000000000000..22f1045adf26
+--- a/dev/null
++++ b/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max-rmii.dts
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2018 BayLibre SAS. All rights reserved.
++ */
++
++/dts-v1/;
++
++#include "meson-g12a-x96-max.dts"
++
++/ {
++	compatible = "amediatech,x96-max-rmii", "amlogic,u200", "amlogic,g12a";
++	model = "Shenzhen Amediatech Technology Co., Ltd X96 Max";
++
++};
++
++&ethmac {
++        pinctrl-0 = <&eth_pins>;
++        pinctrl-names = "default";
++        status = "okay";
++        phy-mode = "rmii";
++        phy-handle = <&internal_ephy>;
++};
+
