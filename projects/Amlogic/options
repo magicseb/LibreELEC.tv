@@ -27,17 +27,14 @@
   # U-Boot firmware package(s) to use
     UBOOT_FIRMWARE="amlogic-boot-fip"
 
+  # u-boot version to use (default)
+    UBOOT_VERSION="vendor"
+
   # Linux Kernel to use
     LINUX="default"
 
   # Kernel target
-    KERNEL_TARGET="uImage.lzo"
-
-  # Kernel uImage load address
-    KERNEL_UIMAGE_LOADADDR="0x1080000"
-
-  # Kernel uImage entry address
-    KERNEL_UIMAGE_ENTRYADDR="0x1080000"
+    KERNEL_TARGET="Image"
 
   # Additional kernel make parameters
     KERNEL_MAKE_EXTRACMD="dtbs"
