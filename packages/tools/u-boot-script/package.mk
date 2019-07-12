@@ -17,6 +17,11 @@ make_target() {
       mkimage -A $TARGET_KERNEL_ARCH -O linux -T script -C none -d "$src" "$(basename $src .src)"
     done
   fi
+  if find_dir_path bootloader/instboot ; then
+    for src in $FOUND_PATH/* ; do
+      cp -a $src $PKG_BUILD/
+    done
+  fi
 }
 
 makeinstall_target() {
