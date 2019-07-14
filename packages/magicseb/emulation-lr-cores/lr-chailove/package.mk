@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-chailove"
-PKG_VERSION="a9c774b0688cbbd41ceea86016d0c101c98a1cc8" # v0.32.0
+PKG_VERSION="9e5b3808f14b12aeea9e8dbe72e3aef9346b3536" # v0.32.0
 PKG_LICENSE="MIT"
 PKG_SITE="https://github.com/libretro/libretro-chailove"
 PKG_URL="https://github.com/libretro/libretro-chailove.git"

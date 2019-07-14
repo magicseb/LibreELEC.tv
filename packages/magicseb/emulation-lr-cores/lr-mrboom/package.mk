@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-mrboom"
-PKG_VERSION="7a36164d08c4e86509e384dbda6eebeae5ee6166"
-PKG_SHA256="1a8396591d65e6d9d7bcc7d43f89fffb5223bc17b944d075679ec6942afade26"
+PKG_VERSION="e65e07ed8ae038aabda42ad627e152d8feb62950"
+PKG_SHA256="78ba613be9f3d59826152da070c0c89a6919ca793c6dca6e57109381ef0b1dcb"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/mrboom-libretro"
 PKG_URL="https://github.com/libretro/mrboom-libretro/archive/$PKG_VERSION.tar.gz"
