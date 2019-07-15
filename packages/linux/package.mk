@@ -16,8 +16,8 @@ PKG_STAMP="$KERNEL_TARGET $KERNEL_MAKE_EXTRACMD"
 PKG_PATCH_DIRS="$LINUX"
 
 case "$LINUX" in
-  amlogic-5.2) #AMLG12
-    PKG_VERSION="69eccfd712eabfcc9a9ab1461c5e46c887e60a58" # 5.2-rc7
+  amlogic-5.2)
+    PKG_VERSION="66270c5b3beb0a7aabc4ccdef7de5d4fd143cba0" # 5.2.0
     PKG_SHA256=""
     PKG_URL="https://github.com/chewitt/linux/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"

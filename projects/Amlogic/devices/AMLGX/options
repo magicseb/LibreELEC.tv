@@ -1,3 +1,6 @@
+  # Linux Kernel to use
+    LINUX="amlogic-5.2"
+
   # OpenGL-ES implementation to use
     OPENGLES="mesa"
 
@@ -9,3 +12,4 @@
 
   # Mali GPU family
     MALI_FAMILY="450 t820"
+
