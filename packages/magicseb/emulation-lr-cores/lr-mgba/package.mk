@@ -33,15 +33,16 @@ pre_configure_target() {
                          -DUSE_MAGICK=OFF \
                          -DUSE_ELF=OFF"
 
-  if [ "${OPENGLES_SUPPORT}" = "yes" ]; then
-    PKG_CMAKE_OPTS_TARGET+=" -DBUILD_GLES2=ON \
+ if [ "${OPENGLES_SUPPORT}" = "yes" ]; then
+    PKG_CMAKE_OPTS_TARGET+=" -DBUILD_GLES3=ON \
+				-DBUILD_GLES2=OFF \
                              -DUSE_EPOXY=OFF"
 
-  fi
+ fi
 
    if [ "${DEVICE}" = "RPi4" ]; then
     PKG_CMAKE_OPTS_TARGET+=" -DBUILD_GLES3=ON \
-			     -DBUILD_GLES2=OFF \
+				-DBUILD_GLES2=OFF \
                              -DUSE_EPOXY=OFF"
 
   fi
