@@ -3,8 +3,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-mame2003-plus"
-PKG_VERSION="c88bf1d398ebdb560fa18cd0be8c0741679eed10"
-PKG_SHA256="ffc088b780443e1644a73e32c8e195480ac6ff8076fa974f35d8c783ceae8271"
+PKG_VERSION="6ab46db7edcece9201e5d60819ec59e812c71ef5"
+PKG_SHA256="671fdb4475b7d859bd2a739440d03b12c81fa588471d5fc0eb141c39cf1709e8"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/mame2003-plus-libretro"
 PKG_URL="https://github.com/libretro/mame2003-plus-libretro/archive/$PKG_VERSION.tar.gz"
@@ -22,6 +22,9 @@ pre_configure_target() {
     case $DEVICE in
       RPi2)
         PKG_MAKE_OPTS_TARGET+=" platform=rpi2"
+        ;;
+      RPi4)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi4"
         ;;
       *)
         PKG_MAKE_OPTS_TARGET+=" platform=armv"

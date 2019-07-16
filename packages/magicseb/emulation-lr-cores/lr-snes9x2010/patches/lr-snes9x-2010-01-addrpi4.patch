@@ -1,0 +1,20 @@
+--- a/Makefile.libretro	2019-06-23 15:32:57.000000000 +0200
++++ b/Makefile.libretro	2019-07-16 18:16:52.651000000 +0200
+@@ -287,6 +287,16 @@
+         CFLAGS += -fomit-frame-pointer -ffast-math
+         HAVE_NEON = 1
+         
++# Raspberry Pi 4
++else ifeq ($(platform), rpi4)
++        TARGET := $(TARGET_NAME)_libretro.so
++        fpic := -fPIC
++        SHARED := -shared -Wl,--version-script=libretro/link.T -Wl,--no-undefined
++        CFLAGS += -DARM
++        CFLAGS += -marm -mcpu=cortex-a72 -mfpu=neon-fp-armv8 -mfloat-abi=hard -funsafe-math-optimizations
++        CFLAGS += -fomit-frame-pointer -ffast-math
++        HAVE_NEON = 1
++
+ # Classic Platforms ####################
+ # Platform affix = classic_<ISA>_<µARCH>
+ # Help at https://modmyclassic.com/comp
+

@@ -36,7 +36,16 @@ pre_configure_target() {
   if [ "${OPENGLES_SUPPORT}" = "yes" ]; then
     PKG_CMAKE_OPTS_TARGET+=" -DBUILD_GLES2=ON \
                              -DUSE_EPOXY=OFF"
+
   fi
+
+   if [ "${DEVICE}" = "RPi4" ]; then
+    PKG_CMAKE_OPTS_TARGET+=" -DBUILD_GLES3=ON \
+			     -DBUILD_GLES2=OFF \
+                             -DUSE_EPOXY=OFF"
+
+  fi
+
 }
 
 pre_make_target() {

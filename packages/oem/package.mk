@@ -16,7 +16,6 @@ OEM_EMU_COMMON=" \
   sixpair\
   baseone \
   retroarch \
-  rr-config-tool \
   lr-2048 \
   lr-atari800 \
   lr-beetle-pce-fast \
@@ -30,10 +29,11 @@ OEM_EMU_COMMON=" \
   lr-fuse \
   lr-gambatte \
   lr-genplus \
+  lr-hatari \
   lr-mame2003-plus \
+  lr-mgba \
   lr-mrboom \
   lr-mupen64plus \
-  lr-mupen64plus-nx \
   lr-nestopia \
   lr-pcsx-rearmed \
   lr-prboom \
@@ -55,12 +55,15 @@ OEM_EMU_GENERIC=" \
 
 OEM_EMU_RPI=" \
   lr-mame2010 \
+  lr-ppsspp \
+  lr-puae \
   lr-snes9x2010 \
   lr-vice \
   lr-yabause"
 
 OEM_EMU_ROCKCHIP=" \
   lr-mame2010 \
+  lr-puae \
   lr-snes9x2010 \
   lr-vice \
   lr-yabause"

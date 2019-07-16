@@ -42,6 +42,7 @@ pre_configure_target() {
   if [ "${OPENGLES_SUPPORT}" = "yes" ]; then
     PKG_MAKE_OPTS_TARGET+=" FORCE_GLES=1"
   fi
+ 
 
   if [ "$PROJECT" = "RPi" ]; then
     case $DEVICE in
@@ -63,7 +64,12 @@ pre_configure_target() {
                         -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
 
         ;;
+    RPi4)
+        PKG_MAKE_OPTS_TARGET+="  FORCE_GLES=0 FORCE_GLES3=1"
+
+        ;;
     esac
+
   else
     # Dynarec
     if [ "${ARCH}" = "arm" ]; then

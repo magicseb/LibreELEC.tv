@@ -1,0 +1,13 @@
+--- a/Makefile	2019-07-09 22:39:22.482897278 +0200
++++ b/Makefile	2019-07-16 19:04:37.727000000 +0200
+@@ -143,6 +143,9 @@
+    else ifneq (,$(findstring rpi3,$(platform)))
+       CPUFLAGS += -march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard
+       HAVE_NEON = 1
++   else ifneq (,$(findstring rpi4,$(platform)))
++      CPUFLAGS += -march=armv8-a+crc -mtune=cortex-a72 -mfpu=neon-fp-armv8 -mfloat-abi=hard
++      HAVE_NEON = 1
+    endif
+    COREFLAGS += -DUNDEF_GL_GLEXT_PROTOTYPES -DOS_LINUX
+    ASFLAGS = -f elf -d ELF_TYPE
+

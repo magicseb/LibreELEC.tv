@@ -1,0 +1,14 @@
+--- a/src/burner/libretro/Makefile	2019-07-15 17:20:10.000000000 +0200
++++ b/src/burner/libretro/Makefile	2019-07-16 20:06:13.593502298 +0200
+@@ -83,6 +83,10 @@
+ 		PLATFORM_DEFINES := -marm -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard
+ 		HAVE_NEON = 1
+ 		USE_CYCLONE = 1
++	else ifneq (,$(findstring rpi4,$(platform)))
++		PLATFORM_DEFINES := -marm -mcpu=cortex-a72.cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard
++		HAVE_NEON = 1
++		USE_CYCLONE = 1
+ 	endif
+ 
+ 	# Solaris
+

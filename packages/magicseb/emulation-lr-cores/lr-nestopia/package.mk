@@ -18,7 +18,30 @@ PKG_MAKE_OPTS_TARGET="-C libretro GIT_VERSION=${PKG_VERSION:0:7}"
 
 pre_configure_target() {
   if [ "${PROJECT}" = "RPi" ]; then
-    PKG_MAKE_OPTS_TARGET+=" platform=rpi2"
+    case $DEVICE in
+      RPi)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi"
+        CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads \
+                        -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
+
+        ;;
+      RPi2)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi2"
+        CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads \
+                        -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
+
+        ;;
+     RPi3)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
+        CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads \
+                        -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
+
+        ;;
+    RPi4)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
+
+        ;;
+    esac
   fi
 }
 

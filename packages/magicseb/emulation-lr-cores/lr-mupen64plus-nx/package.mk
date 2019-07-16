@@ -63,6 +63,10 @@ pre_configure_target() {
                         -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
 
         ;;
+     RPi4)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi4"
+
+        ;;
     esac
   else
     # Dynarec

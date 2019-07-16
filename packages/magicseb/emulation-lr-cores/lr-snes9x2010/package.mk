@@ -16,6 +16,29 @@ PKG_LIBPATH="$PKG_LIBNAME"
 
 PKG_MAKE_OPTS_TARGET="-f Makefile.libretro GIT_VERSION=${PKG_VERSION:0:7}"
 
+pre_configure_target() {
+  if [ "$PROJECT" = "RPi" ]; then
+    case $DEVICE in
+      RPi2)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi2"
+        CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads \
+                        -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
+
+        ;;
+     RPi3)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
+        CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads \
+                        -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
+
+        ;;
+     RPi4)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi4"
+
+        ;;
+    esac
+ fi
+}
+
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/libretro
   cp $PKG_LIBPATH $INSTALL/usr/lib/libretro/

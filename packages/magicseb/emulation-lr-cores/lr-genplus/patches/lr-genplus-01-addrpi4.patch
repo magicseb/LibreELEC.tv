@@ -1,0 +1,12 @@
+--- a/Makefile.libretro	2019-07-14 05:25:10.000000000 +0200
++++ b/Makefile.libretro	2019-07-16 18:24:03.743000000 +0200
+@@ -75,6 +75,8 @@
+          PLATFORM_DEFINES += -DARM -marm -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard
+       else ifneq (,$(findstring rpi3,$(platform)))
+          PLATFORM_DEFINES += -DARM -marm -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard
++      else ifneq (,$(findstring rpi4,$(platform)))
++         PLATFORM_DEFINES += -DARM -marm -mcpu=cortex-a72 -mfpu=neon-fp-armv8 -mfloat-abi=hard
+       endif
+    endif
+    
+

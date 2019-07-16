@@ -42,6 +42,9 @@ pre_configure_target() {
         RPi2)
           PKG_MAKE_OPTS_TARGET+=" platform=rpi2"
           ;;
+        RPi4)
+          PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
+          ;;
       esac
     else
       if target_has_feature neon; then
