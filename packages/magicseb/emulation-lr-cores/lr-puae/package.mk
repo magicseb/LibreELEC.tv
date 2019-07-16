@@ -11,6 +11,9 @@ PKG_DEPENDS_TARGET="toolchain linux glibc"
 PKG_LONGDESC="WIP libretro port of UAE (P-UAE and libco) Expect bugs"
 PKG_TOOLCHAIN="make"
 
+PKG_LIBNAME="puae_libretro.so"
+PKG_LIBPATH="$PKG_LIBNAME"
+
 pre_configure_target() {
  if [ "$ARCH" == "arm" ]; then
     CFLAGS="$CFLAGS -DARM -marm"
@@ -19,5 +22,5 @@ pre_configure_target() {
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/libretro
-  cp -v ${PKG_LIBPATH} ${INSTALL}/usr/lib/libretro/
+  cp -v $PKG_LIBPATH ${INSTALL}/usr/lib/libretro/
 }

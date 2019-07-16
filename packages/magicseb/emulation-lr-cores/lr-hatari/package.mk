@@ -11,10 +11,10 @@ PKG_DEPENDS_TARGET="toolchain linux glibc"
 PKG_LONGDESC="New rebasing of Hatari based on Mercurial upstream"
 PKG_TOOLCHAIN="make"
 
-PKG_LIBNAME="fbneo_libretro.so"
-PKG_LIBPATH="src/burner/libretro/${PKG_LIBNAME}"
+PKG_LIBNAME="../hatari_libretro.so"
+PKG_LIBPATH="$PKG_LIBNAME"
 
-PKG_MAKE_OPTS_TARGET="-C .. -f Makefile.libretro GIT_VERSION=${PKG_VERSION:0:7}"
+PKG_MAKE_OPTS_TARGET=" -C .. -f Makefile.libretro"
 
 pre_configure_target() {
  if [ "$ARCH" == "arm" ]; then
@@ -24,5 +24,5 @@ pre_configure_target() {
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/libretro
-  cp -v ${PKG_LIBPATH} ${INSTALL}/usr/lib/libretro/
+  cp $PKG_LIBPATH $INSTALL/usr/lib/libretro/
 }
