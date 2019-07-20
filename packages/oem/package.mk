@@ -20,6 +20,7 @@ OEM_EMU_COMMON=" \
   lr-atari800 \
   lr-beetle-pce-fast \
   lr-beetle-wswan \
+  lr-crocods \
   lr-bluemsx \
   lr-desmume \
   lr-dosbox \
@@ -34,6 +35,7 @@ OEM_EMU_COMMON=" \
   lr-mgba \
   lr-mrboom \
   lr-mupen64plus \
+  lr-mupen64plus-nx \
   lr-nestopia \
   lr-pcsx-rearmed \
   lr-prboom \

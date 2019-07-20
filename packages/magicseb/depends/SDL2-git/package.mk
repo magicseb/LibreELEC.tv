@@ -129,7 +129,14 @@ pre_configure_target(){
     PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_RPI=OFF"
   fi
 
-
+  # RPi4 Video Support
+  if [ "${OPENGLES}" = "mesa" ]; then
+    PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_KMSDRM=ON \
+                             -DVIDEO_VULKAN=OFF \
+                             -DVIDEO_KMSDRM=OFF"
+  else
+    PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_RPI=OFF"
+  fi
 
   # AML Mali Video Support
   if [ "${OPENGLES}" = "opengl-meson" ]; then

@@ -1,13 +1,14 @@
---- a/Makefile	2019-07-09 22:39:22.482897278 +0200
-+++ b/Makefile	2019-07-16 19:04:37.727000000 +0200
-@@ -143,6 +143,9 @@
-    else ifneq (,$(findstring rpi3,$(platform)))
-       CPUFLAGS += -march=armv8-a+crc -mtune=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard
-       HAVE_NEON = 1
-+   else ifneq (,$(findstring rpi4,$(platform)))
-+      CPUFLAGS += -march=armv8-a+crc -mtune=cortex-a72 -mfpu=neon-fp-armv8 -mfloat-abi=hard
-+      HAVE_NEON = 1
-    endif
-    COREFLAGS += -DUNDEF_GL_GLEXT_PROTOTYPES -DOS_LINUX
-    ASFLAGS = -f elf -d ELF_TYPE
-
+diff --git a/GLideN64/src/Graphics/OpenGLContext/opengl_Utils.cpp b/GLideN64/src/Graphics/OpenGLContext/opengl_Utils.cpp
+index 0279af9..1b1d7cc 100644
+--- a/GLideN64/src/Graphics/OpenGLContext/opengl_Utils.cpp
++++ b/GLideN64/src/Graphics/OpenGLContext/opengl_Utils.cpp
+@@ -53,6 +53,9 @@ bool Utils::isEGLExtensionSupported(const char * extension)
+ 
+ 	const char* extensions = eglQueryString(eglGetDisplay(EGL_DEFAULT_DISPLAY), EGL_EXTENSIONS);
+ 
++	if (!extensions)
++		return false;
++
+ 	const char* start = extensions;
+ 	for (;;) {
+ 		where = strstr(start, extension);

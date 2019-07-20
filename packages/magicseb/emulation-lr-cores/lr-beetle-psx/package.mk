@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-beetle-psx"
-PKG_VERSION="a264b2b51cfd3344cb9b69d81df8ced593830e7c"
-PKG_SHA256="1d6ec8434c1e6edfedad51503f194c7e62a9966fa28ede6db5de425cd3bbe4a8"
+PKG_VERSION="3a3e397ca61a8c221f85d706d4536420a4853745"
+PKG_SHA256="419101cd0cf088454c618c44f33b814a5f9dceb8a37256af6340696c7aa7da05"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/beetle-psx-libretro"
 PKG_URL="https://github.com/libretro/beetle-psx-libretro/archive/$PKG_VERSION.tar.gz"

@@ -20,6 +20,9 @@ pre_configure_target() {
       RPi2)
         PKG_MAKE_OPTS_TARGET+=" platform=rpi2"
         ;;
+      RPi3)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
+        ;;
       RPi4)
         PKG_MAKE_OPTS_TARGET+=" platform=rpi4"
         ;;

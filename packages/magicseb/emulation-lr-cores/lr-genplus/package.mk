@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-genplus"
-PKG_VERSION="e51ab09850a940dca9a11bb210fc9e2c778ec206"
-PKG_SHA256="500c12c7aa0c984ce9093230aa3ecf8961e6dd985b6e211af57d7307c7dd5f9a"
+PKG_VERSION="a5d20e0d0f6ff5c03343c3822eab4a7d347914e6"
+PKG_SHA256="923e34b0f612d83e146e9c1740bf91a355998f9238bada68708e4bd31ae0b587"
 PKG_LICENSE="Modified BSD / LGPLv2.1"
 PKG_SITE="https://github.com/libretro/Genesis-Plus-GX"
 PKG_URL="https://github.com/libretro/Genesis-Plus-GX/archive/$PKG_VERSION.tar.gz"
@@ -25,6 +25,9 @@ pre_configure_target() {
     case $DEVICE in
       RPi2)
         PKG_MAKE_OPTS_TARGET+=" platform=rpi2"
+        ;;
+      RPi3)
+        PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
         ;;
       RPi4)
         PKG_MAKE_OPTS_TARGET+=" platform=rpi4"
