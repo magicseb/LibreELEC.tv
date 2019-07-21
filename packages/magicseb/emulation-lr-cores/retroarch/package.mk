@@ -3,7 +3,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="retroarch"
-PKG_VERSION="da12d1c861c3d795ccf56efc7807ecd98effd58f" #1.7.6
+PKG_VERSION="ccfea4007a2c0a4c7716107741db70d33a558a9a" #1.7.6
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="https://github.com/libretro/RetroArch.git"
@@ -107,7 +107,7 @@ pre_configure_target() {
                       -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
 
      elif [ "${OPENGLES}" = "mesa" ]; then
-      PKG_CONFIGURE_OPTS_TARGET+=" --enable-egl --disable-videocore --enable-opengles3 --disable-x11 --disable-wayland"
+      PKG_CONFIGURE_OPTS_TARGET+=" --disable-videocore --disable-opengl1 --enable-kms --disable-x11 --enable-opengles3 --enable-opengl_core"
 
 
     # Amlogic OpenGLES Features Support
