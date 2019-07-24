@@ -31,7 +31,7 @@
     UBOOT_VERSION="vendor"
 
   # Linux Kernel to use
-    LINUX="default"
+    LINUX="amlogic-5.2"
 
   # Kernel target
     KERNEL_TARGET="Image"
@@ -74,7 +74,7 @@
     GRAPHIC_DRIVERS=""
 
   # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
-    FIRMWARE="brcmfmac_sdio-firmware meson-firmware"
+    FIRMWARE="brcmfmac_sdio-firmware meson-firmware misc-firmware wlan-firmware"
 
   # build and install ATV IR remote support (yes / no)
     ATVCLIENT_SUPPORT="no"
