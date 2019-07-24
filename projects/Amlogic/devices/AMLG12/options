@@ -1,5 +1,5 @@
   # Linux Kernel to use
-    LINUX="amlogic-5.2"
+    LINUX="amlogic-5.2.0"
 
   # OpenGL-ES implementation to use
     OPENGLES="libmali"

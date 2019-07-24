@@ -16,8 +16,15 @@ PKG_STAMP="$KERNEL_TARGET $KERNEL_MAKE_EXTRACMD"
 PKG_PATCH_DIRS="$LINUX"
 
 case "$LINUX" in
+  amlogic-5.2.0)
+    PKG_VERSION="b366c2025bdb5e522ffcdb352971aa7c2d5d8f70" #
+    PKG_SHA256=""
+    PKG_URL="https://github.com/150balbes/Amlogic_s905-kernel/archive/$PKG_VERSION.tar.gz"
+    PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
+    PKG_PATCH_DIRS="amlogic-5.2.0"
+    ;;
   amlogic-5.2)
-    PKG_VERSION="66270c5b3beb0a7aabc4ccdef7de5d4fd143cba0" # 5.2.0
+    PKG_VERSION="a15bcea61b2ba8d8a3263759dae7665338993bdb" # 5.2.1
     PKG_SHA256=""
     PKG_URL="https://github.com/chewitt/linux/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
