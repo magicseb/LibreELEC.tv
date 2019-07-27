@@ -110,6 +110,7 @@ pre_configure_target() {
                              --disable-dxva2 \
                              --disable-aom \
                              --disable-dav1d \
+			     --disable-vpx \
                              --disable-vlc"
 
   # X11 Support
@@ -120,7 +121,7 @@ pre_configure_target() {
   fi
 
   # MMAL Support for RPi
-  if [ "${OPENGLES}" = "bcm2835-driver" ]; then
+  if [ "${OPENGLES}" = "bcm2835-driver" || "${OPENGLES}" = "mesa" ]; then
     PKG_CONFIGURE_OPTS_TARGET+=" --enable-mmal"
   fi
 
