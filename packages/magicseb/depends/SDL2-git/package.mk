@@ -132,17 +132,17 @@ pre_configure_target(){
   # RPi4 Video Support
   if [ "${OPENGLES}" = "mesa" ]; then
     PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_KMSDRM=ON \
-                             -DVIDEO_VULKAN=OFF \
-                             -DVIDEO_KMSDRM=OFF"
+                             -KMSDRM_SHARED=ON \
+                             -DVIDEO_VULKAN=OFF"
   else
-    PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_RPI=OFF"
+    PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_KMSDRM=OFF"
   fi
 
   # AML Mali Video Support
   if [ "${OPENGLES}" = "opengl-meson" ]; then
     PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_MALI=ON \
-                             -DVIDEO_VULKAN=OFF \
-                             -DVIDEO_KMSDRM=OFF"
+                             -DVIDEO_VULKAN=OFF"
+
   else
     PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_MALI=OFF"
   fi
@@ -163,8 +163,7 @@ pre_configure_target(){
     PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_KMSDRM=ON \
                            -DVIDEO_VULKAN=OFF \
                            -KMSDRM_SHARED=ON"
-  else
-    PKG_CMAKE_OPTS_TARGET+==" -DVIDEO_KMSDRM=OFF"
+
 fi
 
 }

@@ -1,0 +1,16 @@
+--- a/modules/visualization/Makefile.am	2017-11-24 16:29:18.000000000 +0100
++++ b/modules/visualization/Makefile.am	2019-07-30 02:19:28.055995383 +0200
+@@ -7,9 +7,9 @@
+ 	visualization/visual/window.c visualization/visual/window.h \
+ 	visualization/visual/window_presets.h
+ libglspectrum_plugin_la_LIBADD = $(GL_LIBS) $(LIBM)
+-if HAVE_GL
+-visu_LTLIBRARIES += libglspectrum_plugin.la
+-endif
++#if HAVE_GL
++#visu_LTLIBRARIES += libglspectrum_plugin.la
++#endif
+ 
+ libgoom_plugin_la_SOURCES = visualization/goom.c
+ libgoom_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(GOOM_CFLAGS)
+

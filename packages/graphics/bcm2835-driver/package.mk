@@ -28,6 +28,8 @@ makeinstall_target() {
     else
       for f in $(cd ${PKG_FLOAT}/opt/vc/include; ls | grep -v "GL"); do
         cp -PRv ${PKG_FLOAT}/opt/vc/include/$f ${SYSROOT_PREFIX}/usr/include
+        #OpenGLES 1.1
+        cp -PRv ${PKG_FLOAT}/opt/vc/include/GLES ${SYSROOT_PREFIX}/usr/include
       done
     fi
 
@@ -67,9 +69,17 @@ makeinstall_target() {
       ln -sf /usr/lib/libbrcmEGL.so        ${INSTALL}/usr/lib/libEGL.so.1
       ln -sf /usr/lib/libbrcmGLESv2.so     ${INSTALL}/usr/lib/libGLESv2.so
       ln -sf /usr/lib/libbrcmGLESv2.so     ${INSTALL}/usr/lib/libGLESv2.so.2
+
     else
       for f in $(cd ${PKG_FLOAT}/opt/vc/lib; ls *.so | grep -Ev "^lib(EGL|GL)"); do
         cp -PRv ${PKG_FLOAT}/opt/vc/lib/$f ${INSTALL}/usr/lib
+         
+       #OpenGLES1.1
+       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libbrcmEGL.so   ${INSTALL}/usr/lib/libEGL.so.1.4
+       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libbrcmGLESv2.so  ${INSTALL}/usr/lib/libGLESv1_CM.so.1.1
+       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libbrcmGLESv2.so  ${INSTALL}/usr/lib/libGLESv1_CM.so.1.1
+       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libbrcmGLESv2.so  ${INSTALL}/usr/lib/libGLESv1_CM.so.1
+       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libbrcmGLESv2.so  ${INSTALL}/usr/lib/libGLESv1_CM.so
       done
     fi
 

@@ -19,6 +19,12 @@ case $KODI_VENDOR in
     PKG_URL="https://github.com/popcornmix/xbmc/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="kodi-$KODI_VENDOR-$PKG_VERSION.tar.gz"
     ;;
+  raspberrypi4)
+    PKG_VERSION="b0e4133d0f26c0dd2f305c689c8c6b3ea084d7b1" # 18.3-Leia
+    PKG_SHA256="9e4d2b0cc597ae3b8ad3352e6a2a306b268ccb3974d2cfa52dedff8c3de73982"
+    PKG_URL="https://github.com/popcornmix/xbmc/archive/$PKG_VERSION.tar.gz"
+    PKG_SOURCE_NAME="kodi-$KODI_VENDOR-$PKG_VERSION.tar.gz"
+    ;;
   rockchip)
     PKG_VERSION="rockchip_18.3-Leia-v2"
     PKG_SHA256="dfce13129aa8381a4e06cd6c0f597c6212f4230184723edf802d06ea20d5509b"
