@@ -2,14 +2,47 @@
 # setup system defaults
 ################################################################################
 
+  # The TARGET_CPU variable controls which processor should be targeted for
+  # generated code.
+    case $TARGET_ARCH in
+      aarch64)
+        TARGET_CPU="cortex-a53"
+        TARGET_CPU_FLAGS="+crc+fp+simd"
+        TARGET_FEATURES="64bit"
+        ;;
+      arm)
+        TARGET_KERNEL_ARCH="arm64"
+        TARGET_PATCH_ARCH="aarch64"
+        TARGET_FLOAT=hard
+        TARGET_CPU="cortex-a53"
+        TARGET_CPU_FLAGS="+crc"
+        TARGET_FPU="neon-fp-armv8"
+        TARGET_FEATURES="32bit"
+        ;;
+    esac
+
   # Bootloader to use (syslinux / u-boot / bcm2835-bootloader)
     BOOTLOADER="u-boot"
 
   # U-Boot firmware package(s) to use
     UBOOT_FIRMWARE="amlogic-boot-fip"
 
+  # u-boot version to use (default)
+    UBOOT_VERSION="vendor"
+
   # Linux Kernel to use
-    LINUX="amlogic"
+
+    LINUX="amlogic-5.2"
+
+  # Kernel target
+    KERNEL_TARGET="Image"
+
+  # Additional kernel make parameters
+    KERNEL_MAKE_EXTRACMD="dtbs"
+
+  # kernel serial console
+    EXTRA_CMDLINE="console=ttyAML0,115200n8 console=tty0"
+
 
 ################################################################################
 # setup build defaults
@@ -43,7 +76,7 @@
     GRAPHIC_DRIVERS=""
 
   # additional Firmware to use (dvb-firmware, misc-firmware, wlan-firmware)
-    FIRMWARE="brcmfmac_sdio-firmware meson-firmware"
+    FIRMWARE="brcmfmac_sdio-firmware meson-firmware misc-firmware wlan-firmware"
 
   # build and install ATV IR remote support (yes / no)
     ATVCLIENT_SUPPORT="no"
@@ -65,6 +98,11 @@
 
   # use the kernel CEC framework for libcec (yes / no)
     CEC_FRAMEWORK_SUPPORT="yes"
+
+  # set the addon dirs
+    ADDON_SERVER_URL="https://balbes150.libreelec.tv/addons"
+    ADDON_PATH="$ADDON_VERSION/AMLG12/$TARGET_ARCH"
+    ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
 
   # debug tty path
     DEBUG_TTY="/dev/ttyAML0"

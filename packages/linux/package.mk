@@ -16,6 +16,20 @@ PKG_STAMP="$KERNEL_TARGET $KERNEL_MAKE_EXTRACMD"
 PKG_PATCH_DIRS="$LINUX"
 
 case "$LINUX" in
+  amlogic-5.2.0)
+    PKG_VERSION="b366c2025bdb5e522ffcdb352971aa7c2d5d8f70" #
+    PKG_SHA256=""
+    PKG_URL="https://github.com/150balbes/Amlogic_s905-kernel/archive/$PKG_VERSION.tar.gz"
+    PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
+    PKG_PATCH_DIRS="amlogic-5.2.0"
+    ;;
+  amlogic-5.2)
+    PKG_VERSION="a15bcea61b2ba8d8a3263759dae7665338993bdb" # 5.2.1
+    PKG_SHA256=""
+    PKG_URL="https://github.com/chewitt/linux/archive/$PKG_VERSION.tar.gz"
+    PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
+    PKG_PATCH_DIRS="amlogic-5.2"
+    ;;
   rockchip-4.4)
     PKG_VERSION="aa8bacf821e5c8ae6dd8cae8d64011c741659945"
     PKG_SHA256="a2760fe89a15aa7be142fd25fb08ebd357c5d855c41f1612cf47c6e89de39bb3"
@@ -32,12 +46,6 @@ case "$LINUX" in
     PKG_VERSION="82fba36079e471b5fb5f386bb8195ce5be75cfb3" # 5.1.18
     PKG_SHA256="4ab335edb71cf95505f891e7ab456f6f00731d5690b5fc0dac7a0b0ed141f1ab"
     PKG_URL="https://github.com/raspberrypi/linux/archive/$PKG_VERSION.tar.gz"
-    PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
-    ;;
-  amlogic)
-    PKG_VERSION="5.1.9" # 5.1.18
-    PKG_SHA256="58c9eca99c3dd2fff5b559302996c985c3f3f2aad0b99b2172a61c4df7122a79"
-    PKG_URL="https://www.kernel.org/pub/linux/kernel/v5.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     ;;
   *)

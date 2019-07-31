@@ -3,6 +3,14 @@
 # SPDX-License-Identifier: GPL-2.0
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
-TEMP=$(cat /sys/class/hwmon/hwmon0/temp1_input)
+case `dtsoc` in
+  amlogic,g12*)
+    TEMP=$(cat /sys/devices/platform/soc/ff600000.bus/ff634800.temperature-sensor/iio\:device1/in_temp_input)
+    ;;
+  *)
+    TEMP=$(cat /sys/class/hwmon/hwmon0/temp1_input)
+    ;;
+esac
+
 TEMP="$(( $TEMP / 1000 ))"
 echo "${TEMP} C"

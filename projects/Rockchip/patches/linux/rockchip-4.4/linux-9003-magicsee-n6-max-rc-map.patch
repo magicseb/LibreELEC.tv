@@ -1,0 +1,11 @@
+--- a/include/media/rc-map.h
++++ b/include/media/rc-map.h
+@@ -164,6 +164,7 @@
+ #define RC_MAP_LEADTEK_Y04G0051          "rc-leadtek-y04g0051"
+ #define RC_MAP_LIRC                      "rc-lirc"
+ #define RC_MAP_LME2510                   "rc-lme2510"
++#define RC_MAP_MAGICN6                   "rc-magicn6"
+ #define RC_MAP_MANLI                     "rc-manli"
+ #define RC_MAP_MEDION_X10                "rc-medion-x10"
+ #define RC_MAP_MEDION_X10_DIGITAINER     "rc-medion-x10-digitainer"
+
