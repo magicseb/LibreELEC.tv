@@ -9,7 +9,7 @@
     UBOOT_FIRMWARE="amlogic-boot-fip"
 
   # Linux Kernel to use
-    LINUX="default"
+    LINUX="amlogic"
 
 ################################################################################
 # setup build defaults

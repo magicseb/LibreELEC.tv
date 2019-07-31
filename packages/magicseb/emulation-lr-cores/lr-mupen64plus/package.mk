@@ -32,12 +32,31 @@ configure_package() {
     PKG_DEPENDS_TARGET+=" ${OPENGLES}"
   fi
   
+ # RPi4 
   if [ "${DEVICE}" = "RPi4" ]; then
+    PKG_DEPENDS_TARGET+=" libX11"
+  fi
+
+ #Amlogic
+ if [ "$PROJECT" = "Amlogic" ]; then
     PKG_DEPENDS_TARGET+=" libX11"
   fi
 }
 
 pre_configure_target() {
+
+  # Amlogic
+  if [ "$PROJECT" = "Amlogic" ]; then
+    case ${DEVICE} in
+      AMLG12)
+        PKG_MAKE_OPTS_TARGET+=" platform=AMLG12B"
+        ;;
+      AMLGXL)
+        PKG_MAKE_OPTS_TARGET+=" platform=AMLGX"
+        ;;
+    esac
+  fi
+
   # OpenGLES Support
   if [ "${OPENGLES_SUPPORT}" = "yes" ]; then
     PKG_MAKE_OPTS_TARGET+=" FORCE_GLES=1"
