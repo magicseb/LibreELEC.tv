@@ -77,5 +77,10 @@
   # Space separated list is supported,
     DRIVER_ADDONS="dvb-latest"
 
+  # set the addon dirs
+    ADDON_SERVER_URL="https://balbes150.libreelec.tv/addons"
+    ADDON_PATH="$ADDON_VERSION/AMLG12/$TARGET_ARCH"
+    ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
+
   # debug tty path
     DEBUG_TTY="/dev/ttyS2"

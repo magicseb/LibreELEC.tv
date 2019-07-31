@@ -27,6 +27,12 @@ case "$UBOOT_SYSTEM" in
     PKG_URL="https://github.com/hardkernel/u-boot/archive/${PKG_VERSION}.tar.gz"
     PKG_SOURCE_DIR="u-boot-${PKG_VERSION}"
     ;;
+  odroid-n2)
+    PKG_VERSION="20190220"
+    PKG_SHA256="48fd24c347758feb432adc1aef13c58be5fcaab65809146bed5796d4075c2e19"
+    PKG_URL="https://github.com/BayLibre/u-boot/releases/download/v2017.11-libretech-cc/odroid-n2_fip_${PKG_VERSION}.tar.gz"
+    PKG_SOURCE_DIR="fip"
+    ;;
   *)
     PKG_VERSION="20170606"
     PKG_SHA256="957c96037bcd792a4139cc33eded2f006d55a82c0c56ae69ef43bdcb76a255e2"
