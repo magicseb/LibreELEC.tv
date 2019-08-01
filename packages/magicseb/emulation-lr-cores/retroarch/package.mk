@@ -106,13 +106,13 @@ pre_configure_target() {
       CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads \
                       -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
 
-     elif [ "${OPENGLES}" = "mesa" ]; then
+     elif [ "${DEVICE}" = "RPi4" ]; then
       PKG_CONFIGURE_OPTS_TARGET+=" --disable-videocore --disable-opengl1 --enable-kms --disable-x11 --enable-opengles3 --enable-opengl_core"
 
 
     # Amlogic OpenGLES Features Support
-    elif [ "${OPENGLES}" = "opengl-meson" ]; then
-      PKG_CONFIGURE_OPTS_TARGET+=" --enable-mali_fbdev"
+    elif [ "${PROJECT}" = "Amlogic" ]; then
+      PKG_CONFIGURE_OPTS_TARGET+=" --enable-kms --disable-x11 --disable-wayland --disable-opengl_core --disable-opengles3 --disable-opengl1"
 
    # Rockchip OpenGLES
     elif [ "${OPENGLES}" = "libmali" ]; then

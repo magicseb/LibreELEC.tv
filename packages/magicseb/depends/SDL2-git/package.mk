@@ -130,7 +130,7 @@ pre_configure_target(){
   fi
 
   # RPi4 Video Support
-  if [ "${OPENGLES}" = "mesa" ]; then
+  if [ "${DEVICE}" = "RPi4" ]; then
     PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_KMSDRM=ON \
                              -KMSDRM_SHARED=ON \
                              -DVIDEO_VULKAN=OFF"
@@ -139,8 +139,9 @@ pre_configure_target(){
   fi
 
   # AML Mali Video Support
-  if [ "${OPENGLES}" = "opengl-meson" ]; then
-    PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_MALI=ON \
+  if [ "$PROJECT" = "Amlogic" ]; then
+    PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_KMSDRM=ON \
+                             -KMSDRM_SHARED=ON \
                              -DVIDEO_VULKAN=OFF"
 
   else
