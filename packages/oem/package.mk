@@ -65,6 +65,7 @@ OEM_EMU_RPI=" \
   lr-yabause"
 
 OEM_EMU_ROCKCHIP=" \
+emulationstation \
   lr-mame2010 \
   lr-puae \
   lr-snes9x2010 \

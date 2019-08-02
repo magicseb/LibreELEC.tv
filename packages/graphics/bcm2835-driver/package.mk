@@ -4,7 +4,7 @@
 
 PKG_NAME="bcm2835-driver"
 #PKG_VERSION="cba4be275b9943b353ea2e5201ab2badd4c760e9"
-PKG_VERSION="38e81f25e639d19fc0ce6e67fd39998c340a15d5"
+PKG_VERSION="3822340923e5cddc772492386d82ba00f4275d62"
 #PKG_SHA256="b332c4e56a746a46ffbc65ff8e7d5a18d3257dc781847a82ad6af88c263dcc89"
 PKG_LICENSE="nonfree"
 PKG_SITE="http://www.broadcom.com"
@@ -75,11 +75,11 @@ makeinstall_target() {
         cp -PRv ${PKG_FLOAT}/opt/vc/lib/$f ${INSTALL}/usr/lib
          
        #OpenGLES1.1
-       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libbrcmEGL.so   ${INSTALL}/usr/lib/libEGL.so.1.4
-       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libbrcmGLESv2.so  ${INSTALL}/usr/lib/libGLESv1_CM.so.1.1
-       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libbrcmGLESv2.so  ${INSTALL}/usr/lib/libGLESv1_CM.so.1.1
-       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libbrcmGLESv2.so  ${INSTALL}/usr/lib/libGLESv1_CM.so.1
-       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libbrcmGLESv2.so  ${INSTALL}/usr/lib/libGLESv1_CM.so
+       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libEGL.so   ${INSTALL}/usr/lib/libEGL.so.1.4
+       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libGLESv1_CM.so  ${INSTALL}/usr/lib/libGLESv1_CM.so.1.1
+       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libGLESv1_CM.so  ${INSTALL}/usr/lib/libGLESv1_CM.so.1.1
+       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libGLESv1_CM.so  ${INSTALL}/usr/lib/libGLESv1_CM.so.1
+       cp -PRv ${PKG_FLOAT}/opt/vc/lib/libGLESv1_CM.so  ${INSTALL}/usr/lib/libGLESv1_CM.so
       done
     fi
 

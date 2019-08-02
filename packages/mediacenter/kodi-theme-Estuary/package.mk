@@ -16,7 +16,12 @@ makeinstall_target() {
     cp -a $(get_build_dir kodi)/.$TARGET_NAME/addons/skin.estuary $INSTALL/usr/share/kodi/addons/
 
 #Patch for RetroArch
-    patch -d $INSTALL/usr/share/kodi/addons/skin.estuary -p1 < $PKG_DIR/files/estuary-emulation-menu_rk.patch
-
+   # patch -d $INSTALL/usr/share/kodi/addons/skin.estuary -p1 < $PKG_DIR/files/estuary-emulation-menu_rk.patch
+if [ "${DEVICE}" = "RPi3" ]||[ "${PROJECT}" = "Rockchip" ]; then
+    patch -d $INSTALL/usr/share/kodi/addons/skin.estuary -p1 < $PKG_DIR/files/kodi-theme-Estuary-100.02-emulationstation-menu.patch
+    patch -d $INSTALL/usr/share/kodi/addons/skin.estuary -p1 < $PKG_DIR/files/kodi-theme-Estuary-100.03-retroarch-menu.patch 
+else
+    patch -d $INSTALL/usr/share/kodi/addons/skin.estuary -p1 < $PKG_DIR/files/kodi-theme-Estuary-100.03-retroarch-menu.patch
+fi
 }
 

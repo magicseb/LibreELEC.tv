@@ -11,8 +11,8 @@ PKG_DEPENDS_TARGET="toolchain alsa-lib systemd dbus"
 PKG_LONGDESC="Simple DirectMedia Layer is a cross-platform development library designed to provide low level access to audio, keyboard, mouse, joystick, and graphics hardware."
 
 # Set up egl-interface
-if [ ${PROJECT} = "Amlogic_Legacy" ]; then
-  PKG_PATCH_DIRS="Amlogic_Legacy"
+if [ ${PROJECT} = "Amlogic" ]; then
+  PKG_PATCH_DIRS="Amlogic"
 fi
 
 configure_package() {
@@ -134,8 +134,6 @@ pre_configure_target(){
     PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_KMSDRM=ON \
                              -KMSDRM_SHARED=ON \
                              -DVIDEO_VULKAN=OFF"
-  else
-    PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_KMSDRM=OFF"
   fi
 
   # AML Mali Video Support
@@ -143,9 +141,8 @@ pre_configure_target(){
     PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_KMSDRM=ON \
                              -KMSDRM_SHARED=ON \
                              -DVIDEO_VULKAN=OFF"
-
-  else
-    PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_MALI=OFF"
+ else
+	PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_MALI=OFF "
   fi
 
 
