@@ -41,7 +41,7 @@ pre_configure_target() {
     PKG_MAKE_OPTS_TARGET+=" FORCE_GLES=1"
   fi
 
-if [ "ARCH" = "arm" ]; then
+if [ "$ARCH" = "arm" ]; then
   case $PROJECT in
     Amlogic_Legacy)
       PKG_MAKE_OPTS_TARGET+=" platform=rpi"
@@ -73,7 +73,7 @@ case $DEVICE in
   esac
 fi
 
-if [ "ARCH" = "aarch64" ]; then
+if [ "$ARCH" = "aarch64" ]; then
 
  PKG_MAKE_OPTS_TARGET+=" platform=odroid-n2"
 
