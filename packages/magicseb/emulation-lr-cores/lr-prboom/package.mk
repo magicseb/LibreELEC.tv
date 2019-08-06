@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-prboom"
-PKG_VERSION="39ecffe58ed0560dbf7376899e40abcc9247d133"
-PKG_SHA256="aa4bf95eba026a44e5db9784c1deb217584cc68788224e8237bfad09593af343"
+PKG_VERSION="d469c089ea7f7b5b431888a4e5a3fc0bae5bc126"
+PKG_SHA256="1ae1a1f9b10b4160f078f055c2f0e24ab8264eea9f81a40c1c33a84e5620883a"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/libretro-prboom"
 PKG_URL="https://github.com/libretro/libretro-prboom/archive/$PKG_VERSION.tar.gz"

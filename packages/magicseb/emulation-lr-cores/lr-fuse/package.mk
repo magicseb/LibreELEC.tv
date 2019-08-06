@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-fuse"
-PKG_VERSION="4df6297df30621bde0a827c435c7a699099d3059"
-PKG_SHA256="674665fee6344cd61c159fb45767efac5a5fa61255ce2a94974f4f99196a678f"
+PKG_VERSION="8184756a5ee4b97e0f47281d44db4ca076a2671b"
+PKG_SHA256="2d419e423c448c036b07f5e2be6310cf2c27b750387cf4f511c3cbb27de9950b"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/fuse-libretro"
 PKG_URL="https://github.com/libretro/fuse-libretro/archive/$PKG_VERSION.tar.gz"

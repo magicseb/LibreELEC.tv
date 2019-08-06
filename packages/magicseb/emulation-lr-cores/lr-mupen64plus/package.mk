@@ -93,12 +93,18 @@ pre_configure_target() {
     # Dynarec
     if [ "${ARCH}" = "arm" ]; then
       PKG_MAKE_OPTS_TARGET+=" WITH_DYNAREC=arm"
+    elif [ "${ARCH}" = "aarch64" ]; then
+      PKG_MAKE_OPTS_TARGET+=" WITH_DYNAREC=aarch64"
     elif [ "${ARCH}" = "x86_64" ]; then
       PKG_MAKE_OPTS_TARGET+=" WITH_DYNAREC=x86_64"
     fi
     # NEON Support
     if target_has_feature neon; then
       PKG_MAKE_OPTS_TARGET+=" HAVE_NEON=1"
+    fi
+    
+    if [ "${ARCH}" = "aarch64" ]; then
+      PKG_MAKE_OPTS_TARGET+=" HAVE_NEON=0"
     fi
   fi
 }

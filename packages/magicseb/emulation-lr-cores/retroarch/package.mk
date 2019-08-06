@@ -3,7 +3,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="retroarch"
-PKG_VERSION="eb3753ee3c81f6cb47140ca4142a920e074caa33" #1.7.6
+PKG_VERSION="22a62363b311592349629cc8ba47e06f7356bd1b" #1.7.6
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="https://github.com/libretro/RetroArch.git"
@@ -54,8 +54,9 @@ configure_package() {
 
  #RPi4
  if [ "${DEVICE}" = "RPi4" ]; then
-    PKG_DEPENDS_TARGET+=" libX11"
+    PKG_DEPENDS_TARGET+=" libX11 libXext"
   fi
+
 
 }
 
@@ -115,15 +116,17 @@ pre_configure_target() {
       PKG_CONFIGURE_OPTS_TARGET+=" --enable-kms --disable-x11 --disable-wayland --disable-opengl_core --disable-opengles3 --disable-opengl1"
 
    # Rockchip OpenGLES
-    elif [ "${OPENGLES}" = "libmali" ]; then
+    elif [ "${PROJECT}" = "Rockchip" ]; then
       PKG_CONFIGURE_OPTS_TARGET+=" --enable-kms --disable-x11 --disable-wayland --enable-opengles3 --disable-opengl_core --disable-opengl1"
     fi
   fi
 
   # NEON Support
+if [ "${ARCH}" = "arm" ]; then
   if target_has_feature neon; then
     PKG_CONFIGURE_OPTS_TARGET+=" --enable-neon"
   fi
+fi
 
   # Clean up & export env/version
   cd ..

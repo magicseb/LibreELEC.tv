@@ -5,7 +5,7 @@
     OPENGLES="mesa"
 
   # Graphic drivers to use
-    GRAPHIC_DRIVERS="lima panfrost"
+   GRAPHIC_DRIVERS="lima panfrost"
 
   # KODI Player implementation to use
     KODIPLAYER_DRIVER="$OPENGLES"

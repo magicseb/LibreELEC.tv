@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-flycast"
-PKG_VERSION="d60140fb355f76f2f87076ae99290c853eafb7dc"
-PKG_SHA256="a26fb2681bf4fe9d27ac08b01c3642e12b43d750cfa9c2f282a8eb84323977ed"
+PKG_VERSION="ec266e1116057140e007e719e41217c9588c5ff9"
+PKG_SHA256="2044cdaaf07ec0b98cc3829453968e42b21ccf46b872aa368075e7381c13e696"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/flycast"
 PKG_URL="https://github.com/libretro/flycast/archive/$PKG_VERSION.tar.gz"
@@ -41,6 +41,7 @@ pre_configure_target() {
     PKG_MAKE_OPTS_TARGET+=" FORCE_GLES=1"
   fi
 
+if [ "ARCH" = "arm" ]; then
   case $PROJECT in
     Amlogic_Legacy)
       PKG_MAKE_OPTS_TARGET+=" platform=rpi"
@@ -70,7 +71,17 @@ case $DEVICE in
       PKG_MAKE_OPTS_TARGET+=" platform=rpi4-gles-neon HAVE_OPENMP=0"
       ;;
   esac
+fi
+
+if [ "ARCH" = "aarch64" ]; then
+
+ PKG_MAKE_OPTS_TARGET+=" platform=odroid-n2"
+
+fi
 }
+
+
+
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/libretro

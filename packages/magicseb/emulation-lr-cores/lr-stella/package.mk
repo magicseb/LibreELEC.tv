@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-stella"
-PKG_VERSION="7cc0c44b08542d8e0efcd5361c680959b39f29a6"
-PKG_SHA256="c8805f96102ce260e50a743e0791382dd98f054c268944a1e770be19f8305c81"
+PKG_VERSION="a181878b283fc02c26c0474c41bde418c052c853"
+PKG_SHA256="5e52adcaf978d78cd0e182220882069011240206af1a5ad9bd3a06a9005d603a"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/stella2014-libretro"
 PKG_URL="https://github.com/libretro/stella2014-libretro/archive/$PKG_VERSION.tar.gz"

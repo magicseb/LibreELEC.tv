@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-mupen64plus-nx"
-PKG_VERSION="8cc06b19f0e105e8d5691d16b6b13216c382c720"
-PKG_SHA256="517941aeaf002d4d61e8d8b29a3cff745ee1f302d8f52f92163879f082ebdfb4"
+PKG_VERSION="b785150465048fa88f812e23462f318e66af0be0"
+PKG_SHA256="456c433f45b0e2ba15a587978234e3e1300301d431b6823747ad0e779331c97e"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/mupen64plus-libretro-nx"
 PKG_URL="https://github.com/libretro/mupen64plus-libretro-nx/archive/$PKG_VERSION.tar.gz"
@@ -91,12 +91,18 @@ pre_configure_target() {
     # Dynarec
     if [ "${ARCH}" = "arm" ]; then
       PKG_MAKE_OPTS_TARGET+=" WITH_DYNAREC=arm"
+    elif [ "${ARCH}" = "aarch64" ]; then
+      PKG_MAKE_OPTS_TARGET+=" WITH_DYNAREC=aarch64"
     elif [ "${ARCH}" = "x86_64" ]; then
       PKG_MAKE_OPTS_TARGET+=" WITH_DYNAREC=x86_64"
     fi
     # NEON Support
     if target_has_feature neon; then
       PKG_MAKE_OPTS_TARGET+=" HAVE_NEON=1"
+    fi
+
+    if [ "${ARCH}" = "aarch64" ]; then
+      PKG_MAKE_OPTS_TARGET+=" HAVE_NEON=0"
     fi
   fi
 }

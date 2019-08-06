@@ -12,22 +12,38 @@ PKG_LONGDESC="OEM: Metapackage for various OEM packages"
 
 PKG_TOOLCHAIN="manual"
 
-
+      
 OEM_EMU_COMMON=" \
   sixpair\
+  sixaxis \
+  gl4es \
   baseone \
   retroarch \
+  lr-4do \
   lr-2048 \
+  lr-81 \
   lr-atari800 \
+  lr-beetle-bsnes \
+  lr-beetle-gba \
+  lr-beetle-lynx \
+  lr-beetle-ngp \
   lr-beetle-pce-fast \
+  lr-beetle-pcfx \
+  lr-beetle-psx \
+  lr-beetle-saturn \
+  lr-beetle-supergrafx \
   lr-beetle-wswan \
+  lr-beetle-vb \
+  lr-bnes \
+  lr-cap32 \
   lr-crocods \
   lr-bluemsx \
   lr-desmume \
+  lr-dinothawr \
   lr-dosbox \
   lr-fbneo \
-  lr-flycast \
   lr-fceumm \
+  lr-flycast \
   lr-fuse \
   lr-gambatte \
   lr-genplus \
@@ -57,6 +73,7 @@ OEM_EMU_GENERIC=" \
   lr-ppsspp"
 
 OEM_EMU_RPI=" \
+emulationstation \
   lr-mame2010 \
   lr-ppsspp \
   lr-puae \
@@ -66,11 +83,11 @@ OEM_EMU_RPI=" \
 
 OEM_EMU_ROCKCHIP=" \
 emulationstation \
-  lr-mame2010 \
   lr-puae \
+  lr-redream \
   lr-snes9x2010 \
   lr-vice \
-  lr-yabause"
+  lr-yabasanshiro"
 
 
 if [ "$OEM_EMU" = "yes" ]; then

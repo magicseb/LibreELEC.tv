@@ -3,14 +3,15 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-mame2003-plus"
-PKG_VERSION="b118752bdb4af009986e7c4921594e1fe20ac28a"
-PKG_SHA256="26f52b67338c3fe4a6be2341ffb444ec1fdd9bdeadf5f2982f24337814111b63"
+PKG_VERSION="76be8aba9ebb07583293df0b80d39796afaf31d9"
+PKG_SHA256="772a6858fda53d4898b6903d47dd3b31ab7f7a4da83556193e90f5f1c4ddf184"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/mame2003-plus-libretro"
-PKG_URL="https://github.com/libretro/mame2003-plus-libretro/archive/$PKG_VERSION.tar.gz"
+PKG_URL="$PKG_SITE.git"
 PKG_DEPENDS_TARGET="toolchain linux glibc"
 PKG_LONGDESC="Updated 2018 version of MAME (0.78) for libretro. with added game support plus many fixes and improvements"
 PKG_TOOLCHAIN="make"
+GET_HANDLER_SUPPORT="git"
 
 PKG_LIBNAME="mame2003_plus_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"

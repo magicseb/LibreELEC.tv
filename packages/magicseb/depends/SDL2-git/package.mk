@@ -140,7 +140,8 @@ pre_configure_target(){
   if [ "$PROJECT" = "Amlogic" ]; then
     PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_KMSDRM=ON \
                              -KMSDRM_SHARED=ON \
-                             -DVIDEO_VULKAN=OFF"
+                             -DVIDEO_VULKAN=OFF \
+                             -DVIDEO_MALI=OFF"
  else
 	PKG_CMAKE_OPTS_TARGET+=" -DVIDEO_MALI=OFF "
   fi

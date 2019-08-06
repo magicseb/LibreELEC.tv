@@ -83,7 +83,7 @@ else
 fi
 
 if [ "$OPENGLES_SUPPORT" = "yes" ]; then
-  PKG_MESON_OPTS_TARGET+=" -Dgles1=false -Dgles2=true"
+  PKG_MESON_OPTS_TARGET+=" -Dgles1=true -Dgles2=true"
 else
   PKG_MESON_OPTS_TARGET+=" -Dgles1=false -Dgles2=false"
 fi

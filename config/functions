@@ -514,6 +514,12 @@ debug_strip() {
   fi
 }
 
+strip_gold() {
+  # strip out usage from GOLD linker
+  LDFLAGS=`echo $LDFLAGS | sed -e "s|-fuse-ld=gold||g"`
+  TARGET_LDFLAGS=`echo $TARGET_LDFLAGS | sed -e "s|-fuse-ld=gold||g"`
+}
+
 init_package_cache() {
   local _ANCHOR="@?+?@"
   local temp_global temp_local

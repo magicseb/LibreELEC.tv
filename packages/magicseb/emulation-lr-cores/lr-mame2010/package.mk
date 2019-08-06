@@ -20,7 +20,7 @@ pre_configure_target() {
   export CFLAGS="$CFLAGS -fpermissive"
   export CXXFLAGS="$CXXFLAGS -fpermissive"
   export LD="$CXX"
-
+  if [ "$ARCH" = "arm" ]; then
   case $TARGET_CPU in
     arm1176jzf-s)
       PKG_MAKE_OPTS_TARGET+=" platform=armv6-hardfloat-$TARGET_CPU"
@@ -28,10 +28,11 @@ pre_configure_target() {
     cortex-a7|cortex-a9)
       PKG_MAKE_OPTS_TARGET+=" platform=armv7-neon-hardfloat-$TARGET_CPU"
       ;;
-    *cortex-a53|cortex-a17|cortex-a72)
+    cortex-a53|cortex-a17|cortex-a72)
       PKG_MAKE_OPTS_TARGET+=" platform=armv7-neon-hardfloat-cortex-a9"
       ;;
   esac
+fi
 }
 
 makeinstall_target() {

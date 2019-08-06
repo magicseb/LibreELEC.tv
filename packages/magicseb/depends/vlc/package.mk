@@ -20,6 +20,7 @@ if [ "${OPENGLES}" = "mesa" ]; then
   PKG_PATCH_DIRS="MMAL"
 fi
 
+
 pre_configure_target() {
   PKG_CONFIGURE_OPTS_TARGET="--enable-silent-rules \
                              --disable-dependency-tracking \

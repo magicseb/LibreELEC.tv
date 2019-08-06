@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-fbneo"
-PKG_VERSION="561e97a781c56390bafa893e7d649a97745b1b0d"
-PKG_SHA256="28597773d0c8f21fedc3804b98b4a471e134dd47baa84025611e3844304793f3"
+PKG_VERSION="d77f0079534233de3ff831066d3913becf72747e"
+PKG_SHA256="af08f613849645991598491e56bb3f62e43ce43c1ecdcebd468090173407db5a"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/FBNeo"
 PKG_URL="https://github.com/libretro/FBNeo/archive/$PKG_VERSION.tar.gz"
@@ -33,6 +33,10 @@ pre_configure_target() {
     # NEON Support ?
     if target_has_feature neon; then
       PKG_MAKE_OPTS_TARGET+=" HAVE_NEON=1"
+    fi
+
+  if [ "${ARCH}" = "aarch64" ]; then
+      PKG_MAKE_OPTS_TARGET+=" HAVE_NEON=0"
     fi
   fi
 }

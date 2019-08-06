@@ -2,14 +2,15 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-atari800"
-PKG_VERSION="0b9453c525ceec886fb86f94bbe9f43b9e2f1950"
-PKG_SHA256="9497cb1df525e3411e597d98d8bb39f3d3c260933c1d67dd14a844c2b4e49ccf"
+PKG_VERSION="43287de64e4dfe94bffae98313b4356a3a725702"
+PKG_SHA256="2b72b166c3f2e9308b3106faa6927f9958820278f712d860fd6351cb4585eefc"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/libretro-atari800"
-PKG_URL="https://github.com/libretro/libretro-atari800/archive/$PKG_VERSION.tar.gz"
+PKG_URL="$PKG_SITE.git"
 PKG_DEPENDS_TARGET="toolchain linux glibc zlib"
 PKG_LONGDESC="WIP Libretro port of Atari800 emulator version 3.1.0"
 PKG_TOOLCHAIN="make"
+GET_HANDLER_SUPPORT="git"
 
 PKG_LIBNAME="atari800_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"
