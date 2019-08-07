@@ -11,6 +11,7 @@ PKG_DEPENDS_TARGET="toolchain linux glibc"
 PKG_LONGDESC="Reicast is a multiplatform Sega Dreamcast emulator"
 PKG_TOOLCHAIN="make"
 PKG_BUILD_FLAGS="-gold"
+PKG_ARCH="x86_64 arm"
 
 PKG_LIBNAME="flycast_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"
@@ -75,7 +76,7 @@ fi
 
 if [ "$ARCH" = "aarch64" ]; then
 
- PKG_MAKE_OPTS_TARGET+=" platform=odroid-n2"
+ PKG_MAKE_OPTS_TARGET+="  platform=arm64 HAVE_OPENMP=0"
 
 fi
 }

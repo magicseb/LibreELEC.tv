@@ -5,6 +5,11 @@
   # The TARGET_CPU variable controls which processor should be targeted for
   # generated code.
     case $TARGET_ARCH in
+      aarch64)
+        TARGET_CPU="cortex-a72"
+        TARGET_CPU_FLAGS="+crc"
+        TARGET_FEATURES="64bit"
+        ;;
       arm)
         # Valid TARGET_CPU for Raspberry Pi based devices are:
         # arm1176jzf-s cortex-a7 cortex-a53

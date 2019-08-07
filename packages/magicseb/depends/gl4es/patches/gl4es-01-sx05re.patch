@@ -12,9 +12,9 @@
  # ODROID
  if(ODROID)
      add_definitions(-DODROID)
-+    set(NOX11 ON)
++    set(NOX11 OFF)
 +    set(NOEGL ON)
-+    add_definitions(-marm -mcpu=cortex-a53 -mfpu=neon -mfloat-abi=hard  -ffast-math -fomit-frame-pointer)  
++    add_definitions(-marm -mcpu=cortex-a72 -mfpu=neon -mfloat-abi=hard  -ffast-math -fomit-frame-pointer)  
  endif()
  
  #PocketCHIP

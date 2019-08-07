@@ -16,7 +16,6 @@ PKG_TOOLCHAIN="manual"
 OEM_EMU_COMMON=" \
   sixpair\
   sixaxis \
-  gl4es \
   baseone \
   retroarch \
   lr-4do \

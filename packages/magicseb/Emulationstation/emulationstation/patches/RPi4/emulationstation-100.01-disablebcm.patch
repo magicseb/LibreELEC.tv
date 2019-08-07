@@ -1,0 +1,18 @@
+--- a/CMakeLists.txt	2019-08-07 22:41:21.568627029 +0200
++++ b/CMakeLists.txt	2019-08-07 23:10:17.580199656 +0200
+@@ -20,10 +20,10 @@
+     set(GLSystem "Desktop OpenGL" CACHE STRING "The OpenGL system to be used")
+ #-------------------------------------------------------------------------------
+ #check if we're running on Raspberry Pi
+-elseif(EXISTS "${CMAKE_FIND_ROOT_PATH}/opt/vc/include/bcm_host.h")
+-    MESSAGE("bcm_host.h found")
+-    set(BCMHOST found)
+-    set(GLSystem "OpenGL ES" CACHE STRING "The OpenGL system to be used")
++elseif(EXISTS "${CMAKE_FIND_ROOT_PATH}/opt/vc/include/bcm_host.h")
++    MESSAGE("bcm_host.h found")
++    set(VERO4K found)
++    set(GLSystem "OpenGL ES" CACHE STRING "The OpenGL system to be used")
+ #-------------------------------------------------------------------------------
+ #check if we're running on OSMC Vero4K
+ elseif(EXISTS "${CMAKE_FIND_ROOT_PATH}/opt/vero3/lib/libMali.so")
+

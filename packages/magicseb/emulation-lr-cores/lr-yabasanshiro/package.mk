@@ -22,7 +22,7 @@ PKG_NAME="lr-yabasanshiro"
 PKG_VERSION="b14c96ec542b3fa1594b48b5a3dffed4e1f8f5a9"
 PKG_GIT_CLONE_BRANCH="yabasanshiro"
 PKG_REV="1"
-PKG_ARCH="any"
+PKG_ARCH="x86_64 arm"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/yabause"
 PKG_URL="$PKG_SITE.git"
@@ -39,7 +39,7 @@ PKG_AUTORECONF="no"
 
 make_target() {
   if [ "$ARCH" == "aarch64" ]; then
-    make -C yabause/src/libretro platform=arm64
+    make -C yabause/src/libretro platform=rockpro64
   elif [ "$ARCH" == "arm" ]; then
     make -C yabause/src/libretro platform=unix-armv
   else

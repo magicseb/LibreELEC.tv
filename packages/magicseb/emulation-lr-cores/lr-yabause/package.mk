@@ -10,6 +10,7 @@ PKG_URL="https://github.com/libretro/yabause/archive/$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain linux glibc"
 PKG_LONGDESC="Yabause is a Sega Saturn emulator."
 PKG_TOOLCHAIN="make"
+PKG_ARCH="x86_64 arm"
 
 PKG_LIBNAME="yabause_libretro.so"
 PKG_LIBPATH="libretro/$PKG_LIBNAME"

@@ -10,6 +10,7 @@ PKG_URL="https://github.com/libretro/desmume/archive/$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain linux glibc libpcap"
 PKG_LONGDESC="DeSmuME is a Nintendo DS emulator"
 PKG_TOOLCHAIN="make"
+PKG_ARCH="x86_64 arm"
 
 PKG_LIBNAME="desmume_libretro.so"
 PKG_LIBPATH="desmume/src/frontend/libretro/$PKG_LIBNAME"

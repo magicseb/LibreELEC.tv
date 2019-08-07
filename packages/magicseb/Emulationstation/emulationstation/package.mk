@@ -12,6 +12,10 @@ PKG_LONGDESC="A Fork of Emulation Station for RetroPie. Emulation Station is a f
 GET_HANDLER_SUPPORT="git"
 PKG_BUILD_FLAGS="+lto"
 
+if [ "${DEVICE}" = "RPi4" ]; then
+  PKG_PATCH_DIRS="RPi4"
+fi
+
 configure_package() {
   # Displayserver Support
   if [ "${DISPLAYSERVER}" = "x11" ]; then
@@ -27,6 +31,11 @@ configure_package() {
   if [ "${OPENGLES_SUPPORT}" = "yes" ]; then
     PKG_DEPENDS_TARGET+=" ${OPENGLES}"
   fi
+
+  if [ "${DEVICE}" = "RPi4" ]; then
+    PKG_DEPENDS_TARGET+=" libX11"
+  fi
+
 }
 
 post_makeinstall_target() {
