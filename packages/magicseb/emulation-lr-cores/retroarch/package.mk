@@ -108,7 +108,7 @@ pre_configure_target() {
                       -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
 
      elif [ "${DEVICE}" = "RPi4" ]; then
-      PKG_CONFIGURE_OPTS_TARGET+=" --disable-videocore --disable-opengl1 --enable-kms --disable-x11 --enable-opengles3 --enable-opengl_core"
+      PKG_CONFIGURE_OPTS_TARGET+=" --disable-videocore --disable-opengl1 --enable-kms --disable-x11 --enable-opengl_core"
 
 
     # Amlogic OpenGLES Features Support
