@@ -2,6 +2,8 @@
 # Device defaults
 ################################################################################
 
+  LINUX="raspberrypi4-4.1.9"
+
   # NOOBS supported hex versions (legacy) is not relevant for RPi4
     unset NOOBS_HEX
 

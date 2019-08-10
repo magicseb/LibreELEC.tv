@@ -7,7 +7,7 @@ PKG_VERSION="ef5f448" #1.7.6
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="https://github.com/libretro/RetroArch.git"
-PKG_DEPENDS_TARGET="toolchain linux glibc systemd dbus openssl expat alsa-lib libpng libusb libass speex tinyalsa fluidsynth-git freetype zlib bzip2 ffmpeg lr-common-overlays lr-core-info lr-database lr-glsl-shaders lr-overlay-borders lr-samples retroarch-assets retroarch-joypad-autoconfig  SDL2-git SDL2_ttf SDL2_mixer"
+PKG_DEPENDS_TARGET="toolchain linux glibc systemd dbus openssl expat alsa-lib libpng libusb libass speex tinyalsa fluidsynth-git freetype zlib bzip2 ffmpeg lr-common-overlays lr-core-info lr-database lr-glsl-shaders lr-overlay-borders lr-samples retroarch-assets retroarch-joypad-autoconfig"
 PKG_LONGDESC="Reference frontend for the libretro API."
 GET_HANDLER_SUPPORT="git"
 
