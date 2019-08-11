@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-flycast"
-PKG_VERSION="ec266e1116057140e007e719e41217c9588c5ff9"
-PKG_SHA256="2044cdaaf07ec0b98cc3829453968e42b21ccf46b872aa368075e7381c13e696"
+PKG_VERSION="09038a0f2480f868733c7e52a74afc0eff4d5652"
+PKG_SHA256="5a71fb618775792da6b9e65af5a17c7925202e87a9aa4aae5d00324498fd81d3"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/flycast"
 PKG_URL="https://github.com/libretro/flycast/archive/$PKG_VERSION.tar.gz"

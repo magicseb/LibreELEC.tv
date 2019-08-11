@@ -48,6 +48,8 @@ OEM_EMU_COMMON=" \
   lr-genplus \
   lr-hatari \
   lr-mame2003-plus \
+  lr-mesen \
+  lr-mesen-s \
   lr-mgba \
   lr-mrboom \
   lr-mupen64plus \
@@ -67,7 +69,6 @@ OEM_EMU_GENERIC=" \
   lr-bsnes-mercury-balanced \
   lr-dolphin \
   lr-mame2016 \
-  lr-mesen \
   lr-parallel-n64 \
   lr-ppsspp"
 

@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present magicseb (https://github.com/magicseb)
 
 PKG_NAME="lr-beetle-bsnes"
-PKG_VERSION="c40d159c97ff38703bc860612066ae643d9d56d0"
+PKG_VERSION="b6e37db703a6492afe4611f062e555eb7f4ee695"
 PKG_ARCH="x86_64 i386"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/beetle-bsnes-libretro"

@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present magicseb (https://github.com/magicseb)
 
 PKG_NAME="lr-beetle-lynx"
-PKG_VERSION="91797c516355ab182d8f88fac6edb6ba1f580473"
+PKG_VERSION="19ce3d09d3521a7cb76497a3d0f1fe8e7c5a4d6b"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/beetle-lynx-libretro"
