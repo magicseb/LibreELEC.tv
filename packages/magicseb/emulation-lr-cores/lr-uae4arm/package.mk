@@ -18,36 +18,33 @@
 #  http://www.gnu.org/copyleft/gpl.html
 ################################################################################
 
-PKG_NAME="lr-yabasanshiro"
-PKG_VERSION="de6b6a8345409c2c6d9a4bf7b4207a3d7ec87e03"
-PKG_GIT_CLONE_BRANCH="yabasanshiro"
+PKG_NAME="lr-uae4arm"
+PKG_VERSION="0e9dd6e2e8c1d08df0532a429afc8fa9f5e9ca3a"
 PKG_REV="1"
-PKG_ARCH="x86_64 arm"
-PKG_LICENSE="GPLv2"
-PKG_SITE="https://github.com/libretro/yabause"
+PKG_ARCH="arm"
+PKG_LICENSE="GPL"
+PKG_SITE="https://github.com/libretro/uae4arm-libretro"
 PKG_URL="$PKG_SITE.git"
 PKG_DEPENDS_TARGET="toolchain"
 PKG_PRIORITY="optional"
 PKG_SECTION="libretro"
-PKG_SHORTDESC="Port of YabaSanshiro to libretro."
-PKG_LONGDESC="Port of YabaSanshiro to libretro."
+PKG_SHORTDESC="Port of uae4arm for libretro (rpi/android)"
+PKG_LONGDESC="Port of uae4arm for libretro (rpi/android) "
 GET_HANDLER_SUPPORT="git"
-PKG_TOOLCHAIN="make"
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 make_target() {
-  if [ "$ARCH" == "aarch64" ]; then
-    make -C yabause/src/libretro platform=rockpro64
-  elif [ "$ARCH" == "arm" ]; then
-    make -C yabause/src/libretro platform=unix-armv
-  else
-    make -C yabause/src/libretro
+
+  CFLAGS="$CFLAGS -DARM -marm"
+  if [[ "$TARGET_FPU" =~ "neon" ]]; then
+    CFLAGS="-D__NEON_OPT"
   fi
+  make HAVE_NEON=1 USE_PICASSO96=1
 }
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/libretro
-  cp yabause/src/libretro/yabasanshiro_libretro.so $INSTALL/usr/lib/libretro/
+  cp uae4arm_libretro.so $INSTALL/usr/lib/libretro/
 }

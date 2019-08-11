@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-fbneo"
-PKG_VERSION="d563d3fbfe74409cd121366d873a69351c5c820b"
-PKG_SHA256="05bb73f27a08edb1b917184c0a98972ab29851e4bf1bb6b96449dcd9d5be40d5"
+PKG_VERSION="8bdce496eb75fd72c7f0d36cffd3d52c4146c738"
+PKG_SHA256="f8475ac6004e7a014d68e42798a05c625c2caf5e8fe782fd3c72bd0b095a8c80"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/FBNeo"
 PKG_URL="https://github.com/libretro/FBNeo/archive/$PKG_VERSION.tar.gz"

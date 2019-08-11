@@ -18,36 +18,29 @@
 #  http://www.gnu.org/copyleft/gpl.html
 ################################################################################
 
-PKG_NAME="lr-yabasanshiro"
-PKG_VERSION="de6b6a8345409c2c6d9a4bf7b4207a3d7ec87e03"
-PKG_GIT_CLONE_BRANCH="yabasanshiro"
-PKG_REV="1"
-PKG_ARCH="x86_64 arm"
-PKG_LICENSE="GPLv2"
-PKG_SITE="https://github.com/libretro/yabause"
+PKG_NAME="lr-easyrpg"
+PKG_VERSION="580d933d47bbafabbd1434f4fbec5dcb33a32112"
+PKG_REV="2"
+PKG_ARCH="any"
+PKG_LICENSE="GPLv3"
+PKG_SITE="https://github.com/libretro/easyrpg-libretro"
 PKG_URL="$PKG_SITE.git"
-PKG_DEPENDS_TARGET="toolchain"
+PKG_DEPENDS_TARGET="toolchain zlib"
 PKG_PRIORITY="optional"
 PKG_SECTION="libretro"
-PKG_SHORTDESC="Port of YabaSanshiro to libretro."
-PKG_LONGDESC="Port of YabaSanshiro to libretro."
+PKG_SHORTDESC="An unofficial libretro port of the EasyRPG/Player."
+PKG_LONGDESC="An unofficial libretro port of the EasyRPG/Player."
 GET_HANDLER_SUPPORT="git"
-PKG_TOOLCHAIN="make"
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
+PKG_USE_CMAKE="no"
 
 make_target() {
-  if [ "$ARCH" == "aarch64" ]; then
-    make -C yabause/src/libretro platform=rockpro64
-  elif [ "$ARCH" == "arm" ]; then
-    make -C yabause/src/libretro platform=unix-armv
-  else
-    make -C yabause/src/libretro
-  fi
+  make -C ../builds/libretro -f Makefile.libretro
 }
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/libretro
-  cp yabause/src/libretro/yabasanshiro_libretro.so $INSTALL/usr/lib/libretro/
+  cp ../builds/libretro/easyrpg_libretro.so $INSTALL/usr/lib/libretro/
 }

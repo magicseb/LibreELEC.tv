@@ -18,36 +18,28 @@
 #  http://www.gnu.org/copyleft/gpl.html
 ################################################################################
 
-PKG_NAME="lr-yabasanshiro"
-PKG_VERSION="de6b6a8345409c2c6d9a4bf7b4207a3d7ec87e03"
-PKG_GIT_CLONE_BRANCH="yabasanshiro"
+PKG_NAME="lr-emux-sms"
+PKG_VERSION="ba63bd53a66c532a0893885cdad5f33b4976189a"
 PKG_REV="1"
-PKG_ARCH="x86_64 arm"
+PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
-PKG_SITE="https://github.com/libretro/yabause"
+PKG_SITE="https://github.com/libretro/emux"
 PKG_URL="$PKG_SITE.git"
 PKG_DEPENDS_TARGET="toolchain"
 PKG_PRIORITY="optional"
 PKG_SECTION="libretro"
-PKG_SHORTDESC="Port of YabaSanshiro to libretro."
-PKG_LONGDESC="Port of YabaSanshiro to libretro."
+PKG_SHORTDESC="Libretro port of Emux"
+PKG_LONGDESC="Emux is a cross-platform emulator project supporting various machines with an architecture inspired by the Linux kernel."
 GET_HANDLER_SUPPORT="git"
-PKG_TOOLCHAIN="make"
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
 make_target() {
-  if [ "$ARCH" == "aarch64" ]; then
-    make -C yabause/src/libretro platform=rockpro64
-  elif [ "$ARCH" == "arm" ]; then
-    make -C yabause/src/libretro platform=unix-armv
-  else
-    make -C yabause/src/libretro
-  fi
+  make -C libretro -f Makefile.lakka MACHINE=sms
 }
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/libretro
-  cp yabause/src/libretro/yabasanshiro_libretro.so $INSTALL/usr/lib/libretro/
+  cp libretro/emux_sms_libretro.so $INSTALL/usr/lib/libretro/emux_sms_libretro.so
 }

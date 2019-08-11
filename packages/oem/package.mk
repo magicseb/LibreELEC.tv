@@ -60,7 +60,8 @@ OEM_EMU_COMMON=" \
   lr-scummvm \
   lr-snes9x \
   lr-stella \
-  lr-tyrquake"
+  lr-tyrquake \
+  lr-virtualjaguar"
 
 
 OEM_EMU_GENERIC=" \

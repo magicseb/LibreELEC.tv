@@ -18,36 +18,32 @@
 #  http://www.gnu.org/copyleft/gpl.html
 ################################################################################
 
-PKG_NAME="lr-yabasanshiro"
-PKG_VERSION="de6b6a8345409c2c6d9a4bf7b4207a3d7ec87e03"
-PKG_GIT_CLONE_BRANCH="yabasanshiro"
+PKG_NAME="lr-frodo"
+PKG_VERSION="4c1501686ac0a6815d6dc410556029b6577fd7ec"
 PKG_REV="1"
-PKG_ARCH="x86_64 arm"
+PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
-PKG_SITE="https://github.com/libretro/yabause"
+PKG_SITE="https://github.com/r-type/frodo-libretro"
 PKG_URL="$PKG_SITE.git"
 PKG_DEPENDS_TARGET="toolchain"
 PKG_PRIORITY="optional"
 PKG_SECTION="libretro"
-PKG_SHORTDESC="Port of YabaSanshiro to libretro."
-PKG_LONGDESC="Port of YabaSanshiro to libretro."
+PKG_SHORTDESC="Frodo - The free portable C64 emulator"
+PKG_LONGDESC="Frodo - The free portable C64 emulator"
 GET_HANDLER_SUPPORT="git"
-PKG_TOOLCHAIN="make"
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
+PKG_TOOLCHAIN="make"
 
 make_target() {
-  if [ "$ARCH" == "aarch64" ]; then
-    make -C yabause/src/libretro platform=rockpro64
-  elif [ "$ARCH" == "arm" ]; then
-    make -C yabause/src/libretro platform=unix-armv
-  else
-    make -C yabause/src/libretro
-  fi
+  #if [ "$ARCH" == "arm" ]; then
+  #  CFLAGS="$CFLAGS -DARM -DALIGN_DWORD -mstructure-size-boundary=32 -mthumb-interwork -falign-functions=16 -marm"
+  #fi
+  make -f Makefile.libretro
 }
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/libretro
-  cp yabause/src/libretro/yabasanshiro_libretro.so $INSTALL/usr/lib/libretro/
+  cp frodo_libretro.so $INSTALL/usr/lib/libretro/
 }
