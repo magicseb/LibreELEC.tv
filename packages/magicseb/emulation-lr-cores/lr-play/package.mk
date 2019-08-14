@@ -19,7 +19,8 @@
 ################################################################################
 
 PKG_NAME="lr-play"
-PKG_VERSION="95ce2c3"
+PKG_VERSION="95ce2c3099d9df6a5bb8bae0958472ad6981c1ed"
+PKG_SHA256=""
 PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/Play-"
@@ -29,6 +30,7 @@ PKG_PRIORITY="optional"
 PKG_SECTION="libretro"
 PKG_SHORTDESC="Play! is an attempt to create a PlayStation 2 emulator for Windows, macOS, UNIX, Android & iOS platforms."
 PKG_LONGDESC="Play! is an attempt to create a PlayStation 2 emulator for Windows, macOS, UNIX, Android & iOS platforms."
+GET_HANDLER_SUPPORT="git"
 
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"

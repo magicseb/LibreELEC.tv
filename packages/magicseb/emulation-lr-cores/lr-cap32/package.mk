@@ -19,7 +19,7 @@
 ################################################################################
 
 PKG_NAME="lr-cap32"
-PKG_VERSION="6c50e6c19062414a52e71d94d745d4dc5ac918b4"
+PKG_VERSION="93e52e0ccd337461916759a116c66d637ef6d6de"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/libretro-cap32"
