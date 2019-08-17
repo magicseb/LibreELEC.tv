@@ -2,16 +2,17 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-mgba"
-PKG_VERSION="aba3ef017cbed199f901b885a8cacbd7f3c776b9"
-PKG_SHA256="ac0ff5620fea293540b45f224e0d612889833830fd2f410e56a629ff7142983c"
+PKG_VERSION="cee01c738569f00a9b0674f5daeaa55fa58ac9b7"
 PKG_LICENSE="MPL 2.0"
 PKG_SITE="https://github.com/mgba-emu/mgba"
-PKG_URL="https://github.com/mgba-emu/mgba/archive/$PKG_VERSION.tar.gz"
+PKG_URL="$PKG_SITE.git"
 PKG_DEPENDS_TARGET="toolchain linux glibc zlib"
 PKG_LONGDESC="mGBA is an emulator for running Game Boy Advance games."
 
 PKG_LIBNAME="mgba_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"
+
+GET_HANDLER_SUPPORT="git"
 
 configure_package() {
   if [ "${OPENGL_SUPPORT}" = "yes" -a "${PROJECT}" = "Generic" ]; then

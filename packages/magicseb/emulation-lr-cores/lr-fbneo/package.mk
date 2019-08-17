@@ -2,14 +2,15 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-fbneo"
-PKG_VERSION="019618bce9dc2a55008f73f7c2761eb3a2116a13"
-PKG_SHA256="ae54e4909041ade7356f5a7798b35d69324cdf8e0221c14ea2452b56052b8f45"
+PKG_VERSION="e0cdb6a07f9d154f303f9ec9b00fb6adb558b7c8"
+PKG_SHA256="4ab97dfbe90ae655c3dd08d7cca6e37ac56bebf936a7743026b9847cd2610fc6"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/FBNeo"
-PKG_URL="https://github.com/libretro/FBNeo/archive/$PKG_VERSION.tar.gz"
+PKG_URL="$PKG_SITE.git"
 PKG_DEPENDS_TARGET="toolchain linux glibc"
 PKG_LONGDESC="Port of Final Burn Neo to Libretro (v0.2.97.44)."
 PKG_TOOLCHAIN="make"
+GET_HANDLER_SUPPORT="git"
 
 PKG_LIBNAME="fbneo_libretro.so"
 PKG_LIBPATH="src/burner/libretro/${PKG_LIBNAME}"
