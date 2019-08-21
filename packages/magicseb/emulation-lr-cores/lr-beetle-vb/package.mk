@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present magicseb (https://github.com/magicseb)
 
 PKG_NAME="lr-beetle-vb"
-PKG_VERSION="5ba969662bad794eba56f40006741119c931a4b6"
+PKG_VERSION="bf0d8ef224b268040888a929b1003e25dfbb493d"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv2"

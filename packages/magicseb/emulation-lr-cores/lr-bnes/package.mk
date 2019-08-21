@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present magicseb (https://github.com/magicseb)
 
 PKG_NAME="lr-bnes"
-PKG_VERSION="598c123771c885f8c48967f82b3a496b9e105b79"
+PKG_VERSION="f088d8d668ccfea1b03e4395f71774d719672d44"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv3"
