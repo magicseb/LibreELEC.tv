@@ -69,7 +69,7 @@ case $DEVICE in
       PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
       ;;
     RPi4)
-      PKG_MAKE_OPTS_TARGET+=" platform=rpi4-gles-neon HAVE_OPENMP=0"
+      PKG_MAKE_OPTS_TARGET+=" platform=rpi4"
       ;;
   esac
 fi
