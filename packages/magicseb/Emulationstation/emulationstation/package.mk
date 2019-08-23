@@ -58,6 +58,6 @@ post_makeinstall_target() {
 
   # Install config files
   cp $PKG_DIR/config/es_settings.cfg       $INSTALL/usr/config/emulationstation/
-  cp $PKG_DIR/config/${PROJECT}/es_systems.cfg                 $INSTALL/usr/config/emulationstation/
-  cp $PKG_DIR/config/${PROJECT}/userdirs-emulationstation.conf $INSTALL/usr/lib/tmpfiles.d/
+  cp $PKG_DIR/config/es_systems.cfg                 $INSTALL/usr/config/emulationstation/
+  cp $PKG_DIR/config/userdirs-emulationstation.conf $INSTALL/usr/lib/tmpfiles.d/
 }
