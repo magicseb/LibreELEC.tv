@@ -74,6 +74,7 @@ OEM_EMU_GENERIC=" \
   lr-ppsspp"
 
 OEM_EMU_RPI=" \
+amiberry \
 emulationstation \
   lr-mame2010 \
   lr-ppsspp \

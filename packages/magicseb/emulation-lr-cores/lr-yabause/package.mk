@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-yabause"
-PKG_VERSION="51b55adfe1432544642c3baf6492d7ad0694168e"
-PKG_SHA256="a3f579a63951bde7a53e559c7798bc71ad67f6642785f00c88c8aa5ef5b99f92"
+PKG_VERSION="d28d74d928a80371761a8d44ef9c95d08ed5992e"
+PKG_SHA256="46c9fa02cfacd59b9cc3ab700eb8b9c1860c3f3d1e081d3d358d70fd33b1008a"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/yabause"
 PKG_URL="https://github.com/libretro/yabause/archive/$PKG_VERSION.tar.gz"

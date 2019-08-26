@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-genplus"
-PKG_VERSION="5299257db3297deb8fb776e75c72e495965448ac"
-PKG_SHA256="424dfa2e24a544a0167907def124bfe5d75d54e7e6db324ed787bbd141641ca3"
+PKG_VERSION="a02ec8763e662bab6a2530dd308255f059b999ff"
+PKG_SHA256="d90c709fdb3455a9afea25e1af2598ef35085492822751f354291a6c72baf1f2"
 PKG_LICENSE="Modified BSD / LGPLv2.1"
 PKG_SITE="https://github.com/libretro/Genesis-Plus-GX"
 PKG_URL="https://github.com/libretro/Genesis-Plus-GX/archive/$PKG_VERSION.tar.gz"
