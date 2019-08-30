@@ -38,7 +38,7 @@ pre_configure_target() {
         AMIBERRY_PLATFORM="rpi2-sdl2"
       else
        if [ "${DEVICE}" = "RPi4" ]; then
-        AMIBERRY_PLATFORM="rpi4-sdl2"
+        AMIBERRY_PLATFORM="rpi4-sdl2-dispmanx"
        else
         AMIBERRY_PLATFORM="rpi1-sdl2"
        fi
