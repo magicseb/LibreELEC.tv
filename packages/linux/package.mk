@@ -44,7 +44,7 @@ case "$LINUX" in
     ;;
   raspberrypi4-4.19)
     #PKG_VERSION="71d47f4c4bd7fd395b87c474498187b2f9be8751" # 4.19
-    PKG_VERSION="fc5826fb999e0b32900d1f487e90c27a92010214" # 4.19.66
+    PKG_VERSION="d9a27b27450d9f81b567134f1c8b85401556ab5a" # 4.19.68
     PKG_URL="https://github.com/raspberrypi/linux/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     ;;
