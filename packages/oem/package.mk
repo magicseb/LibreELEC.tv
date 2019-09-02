@@ -74,8 +74,8 @@ OEM_EMU_GENERIC=" \
   lr-ppsspp"
 
 OEM_EMU_RPI=" \
-amiberry \
-emulationstation \
+  emulationstation \
+  amiberry \
   lr-mame2010 \
   lr-ppsspp \
   lr-puae \
@@ -84,13 +84,16 @@ emulationstation \
   lr-yabause"
 
 OEM_EMU_ROCKCHIP=" \
-emulationstation \
+  emulationstation \
   lr-puae \
-  lr-redream \
   lr-snes9x2010 \
   lr-vice \
   lr-yabasanshiro"
 
+OEM_EMU_AMLOGIC=" \
+  lr-puae \
+  lr-snes9x2010 \
+  lr-vice"
 
 if [ "$OEM_EMU" = "yes" ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $OEM_EMU_COMMON"
@@ -103,6 +106,9 @@ if [ "$OEM_EMU" = "yes" ]; then
       ;;
     RPi*)
       PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $OEM_EMU_RPI"
+      ;;
+    Amlogic)
+      PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $OEM_EMU_AMLOGIC"
       ;;
   esac
 fi

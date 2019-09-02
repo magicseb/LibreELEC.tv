@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-flycast"
-PKG_VERSION="ceba3765d3b7ebd50a6450bbb9360f7abb7c6c68"
+PKG_VERSION="cd53e401a67ce573941dab3e297b76e438e53e42"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/flycast"
 PKG_URL="$PKG_SITE.git"
@@ -43,9 +43,16 @@ pre_configure_target() {
   fi
 
 if [ "$ARCH" = "arm" ]; then
-  case $PROJECT in
-    Amlogic_Legacy)
-      PKG_MAKE_OPTS_TARGET+=" platform=rpi"
+  case ${PROJECT} in
+    Amlogic)
+      case ${DEVICE} in
+        AMLG12)
+          PKG_MAKE_OPTS_TARGET+=" platform=AMLG12B"
+          ;;
+        AMLGX)
+          PKG_MAKE_OPTS_TARGET+=" platform=AMLGX"
+          ;;
+      esac
       ;;
     RPi2)
       PKG_MAKE_OPTS_TARGET+=" platform=rpi2"
@@ -71,6 +78,7 @@ case $DEVICE in
     RPi4)
       PKG_MAKE_OPTS_TARGET+=" platform=rpi4"
       ;;
+
   esac
 fi
 
