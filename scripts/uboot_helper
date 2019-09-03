@@ -103,9 +103,17 @@ devices = \
   },
   'Amlogic': {
     'AMLGX': {
-      'box': {
-        'dtb': 'meson-gxl-s905x-p212.dtb',
-        'config': 'p212_defconfig'
+      's905': {
+        'dtb': 'meson-gxbb-p200.dtb',
+        'config': 'p200_defconfig'
+      },
+      's905x': {
+        'dtb': 'meson-gxl-s905x-khadas-vim.dtb',
+        'config': 'khadas-vim_defconfig'
+      },
+      's912': {
+        'dtb': 'meson-gxm-khadas-vim2.dtb',
+        'config': 'khadas-vim2_defconfig'
       },
       'lepotato': {
         'dtb': 'meson-gxl-s905x-libretech-cc.dtb',
@@ -121,9 +129,17 @@ devices = \
       },
     },
     'AMLG12': {
-      'box': {
-        'dtb': 'meson-gxl-s905x-p212.dtb',
-        'config': 'p212_defconfig'
+      's905x2': {
+        'dtb': 'meson-g12a-x96-max.dtb',
+        'config': 'khadas-vim_defconfig'
+      },
+      's922x': {
+        'dtb': 'meson-g12b-ugoos-am6.dtb',
+        'config': 'odroid-n2_defconfig'
+      },
+      'odroid-n2': {
+        'dtb': 'meson-g12b-odroid-n2.dtb',
+        'config': 'odroid-n2_defconfig'
       },
     },
   },
@@ -199,7 +215,7 @@ devices = \
     'RK3399': {
       'khadas-edge': {
         'dtb': 'rk3399-khadas-edge.dtb',
-        'config': 'evb-rk3399_config'
+        'config': 'khadas-edge-rk3399_config'
       },
       'rock960': {
         'dtb': 'rk3399-rock960.dtb',
