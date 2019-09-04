@@ -134,11 +134,11 @@ devices = \
         'config': 'khadas-vim_defconfig'
       },
       's922x': {
-        'dtb': 'meson-g12b-s922x-ugoos-am6.dtb',
+        'dtb': 'meson-g12b-ugoos-am6.dtb',
         'config': 'odroid-n2_defconfig'
       },
       'odroid-n2': {
-        'dtb': 'meson-g12b-s922x-odroid-n2.dtb',
+        'dtb': 'meson-g12b-odroid-n2.dtb',
         'config': 'odroid-n2_defconfig'
       },
     },

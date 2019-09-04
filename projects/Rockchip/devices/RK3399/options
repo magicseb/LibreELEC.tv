@@ -16,6 +16,8 @@
         ;;
     esac
 
+    LINUX="${LINUX:-rockchip-4.4}"
+
   # Kernel target
     KERNEL_TARGET="Image"
 
@@ -30,6 +32,10 @@
     KERNEL_MAKE_EXTRACMD+=" rockchip/rk3399-rockpro64.dtb"
     KERNEL_MAKE_EXTRACMD+=" rockchip/rk3399-sapphire.dtb"
 
+    if [ "$LINUX" = "rockchip-4.4" ]; then
+      KERNEL_MAKE_EXTRACMD+=" rockchip/rk3399-magicsee-n6-max.dtb"
+    fi
+
   # Mali GPU family
     MALI_FAMILY="t860"
 
@@ -42,3 +48,7 @@
   # Space separated list is supported,
   # e.g. ADDITIONAL_PACKAGES="PACKAGE1 PACKAGE2"
     ADDITIONAL_PACKAGES+=" rockchip-autoscript"
+
+    if [ "$LINUX" != "rockchip-4.4" ]; then
+      ADDITIONAL_DRIVERS="mali-midgard-rockchip"
+    fi

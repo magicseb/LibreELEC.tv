@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0
 # Copyright (C) 2019-present Team LibreELEC (https://libreelec.tv)
 
-. config/options $1
+. config/options ""
 
 DTB="$(${SCRIPTS}/uboot_helper ${PROJECT} ${DEVICE} ${UBOOT_SYSTEM} dtb)"
 
@@ -20,7 +20,7 @@ echo "image: copying instboot"
 
 mkimage_uboot(){
   echo "image: writing u-boot to $(basename $DISK)"
-  dd if="$INSTALL/usr/share/bootloader/u-boot.bin.sd.bin" of="$DISK" conv=fsync,notrunc bs=1 count=112 >"$SAVE_ERROR" 2>&1 || show_error
+  dd if="$INSTALL/usr/share/bootloader/u-boot.bin.sd.bin" of="$DISK" conv=fsync,notrunc bs=1 count=444 >"$SAVE_ERROR" 2>&1 || show_error
   dd if="$INSTALL/usr/share/bootloader/u-boot.bin.sd.bin" of="$DISK" conv=fsync,notrunc bs=512 skip=1 seek=1 >"$SAVE_ERROR" 2>&1 || show_error
 }
 

@@ -131,8 +131,8 @@ else
   mixer $card 'TOHDMITX' on
 
 # Amlogic G12 S/PDIF to PCM1
-  mixer $card 'FRDDR_B SRC 1 EN' on
   mixer $card 'FRDDR_B SINK 1 SEL' 'OUT 3'
+  mixer $card 'FRDDR_B SRC 1 EN' on
   mixer $card 'SPDIFOUT SRC SEL' 'IN 1'
   mixer $card 'SPDIFOUT Playback' on
 fi
