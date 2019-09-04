@@ -14,8 +14,8 @@ PKG_TOOLCHAIN="meson"
 PKG_BUILD_FLAGS="+lto"
 
 if listcontains "${GRAPHIC_DRIVERS}" "(lima|panfrost)"; then
-  PKG_VERSION="a563bb9e28318df30da0b0ab9c8280a8416cd472" # master-19.2
-  PKG_SHA256="38b8e857ae3988dad0a914920ceb356d8e044c00c4ec4db19871db6838867eba"
+  PKG_VERSION="20ac0b8e4e3a1d27c298a18d5a10681cb483c798" # master-19.3
+  PKG_SHA256="d6d1a5d7d38633dca41312260fd4f86b58d8335326338d0f246ee7621ec85641"
   PKG_URL="https://gitlab.freedesktop.org/mesa/mesa/-/archive/$PKG_VERSION/mesa-$PKG_VERSION.tar.gz"
 fi
 

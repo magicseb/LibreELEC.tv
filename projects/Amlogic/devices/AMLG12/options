@@ -1,15 +1,14 @@
   # Linux Kernel to use
-    LINUX="amlogic-5.2.0"
+#    LINUX="amlogic-5.2.0"
 
   # OpenGL-ES implementation to use
     OPENGLES="libmali"
 
   # Graphic drivers to use
-    GRAPHIC_DRIVERS=""
+    GRAPHIC_DRIVERS="mali"
 
   # KODI Player implementation to use
     KODIPLAYER_DRIVER="$OPENGLES"
 
   # Mali GPU family
     MALI_FAMILY="g31 g52"
-

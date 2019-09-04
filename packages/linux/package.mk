@@ -17,18 +17,18 @@ PKG_PATCH_DIRS="$LINUX"
 
 case "$LINUX" in
   amlogic-5.2.0)
-    PKG_VERSION="85622b9d1023a60cb48bdd3a13973cb07dc20809" #
+    PKG_VERSION="b366c2025bdb5e522ffcdb352971aa7c2d5d8f70" #
     PKG_SHA256=""
     PKG_URL="https://github.com/150balbes/Amlogic_s905-kernel/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
-    PKG_PATCH_DIRS="linux5"
+    PKG_PATCH_DIRS="amlogic-5.2.0"
     ;;
-  amlogic-5.2)
-    PKG_VERSION="a15bcea61b2ba8d8a3263759dae7665338993bdb" # 5.2.1
-    PKG_SHA256=""
-    PKG_URL="https://github.com/chewitt/linux/archive/$PKG_VERSION.tar.gz"
+  amlogic)
+    PKG_VERSION="a55aa89aab90fae7c815b0551b07be37db359d76" # 5.3-rc6
+    PKG_SHA256="75dc42470f1d72db71ab03f16cca05d4192c0abdbf960aa4587e2005d992adec"
+    PKG_URL="https://github.com/torvalds/linux/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
-    PKG_PATCH_DIRS="amlogic-5.2"
+    PKG_PATCH_DIRS="amlogic"
     ;;
   rockchip-4.4)
     PKG_VERSION="aa8bacf821e5c8ae6dd8cae8d64011c741659945"

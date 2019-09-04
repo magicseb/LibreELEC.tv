@@ -2,7 +2,7 @@ new file mode 100644
 index 000000000000..eae333d55208
 --- /dev/null
 +++ b/src/resources/lib/modules/emmc.py
-@@ -0,0 +1,161 @@
+@@ -0,0 +1,217 @@
 +################################################################################
 +#      This file is part of OpenELEC - http://www.openelec.tv
 +#      Copyright (C) 2009-2013 Stephan Raue (stephan@openelec.tv)
@@ -44,6 +44,8 @@ index 000000000000..eae333d55208
 +    EMMC_INSTALL = "/flash/install2emmc.sh"
 +    EMMC_DDBR_BACKUP = "/flash/ddbr-backup.sh"
 +    EMMC_DDBR_RESTORE = "/flash/ddbr-restore.sh"
++    EMMC_REBOOT_ENABLE = "/flash/android_enable.sh"
++    EMMC_REBOOT_DISABLE = "/flash/android_disable.sh"
 +    menu = {'8': {
 +        'name': 32820,
 +        'menuLoader': 'load_menu',
@@ -83,6 +85,22 @@ index 000000000000..eae333d55208
 +                                'action': 'restore_emmc',
 +                                'type': 'button',
 +                                'InfoText': 2823,
++                                },
++                            'emmc_reboot_enable': {
++                                'order': 4,
++                                'name': 32824,
++                                'value': '0',
++                                'action': 'reboot_emmc_enable',
++                                'type': 'button',
++                                'InfoText': 2824,
++                                },
++                            'emmc_reboot_disable': {
++                                'order': 5,
++                                'name': 32825,
++                                'value': '0',
++                                'action': 'reboot_emmc_disable',
++                                'type': 'button',
++                                'InfoText': 2825,
 +                                },
 +                        },
 +                    },
@@ -158,9 +176,48 @@ index 000000000000..eae333d55208
 +        except Exception, e:
 +            self.oe.dbg_log('emmc::restore_emmc', 'ERROR: (' + repr(e) + ')')
 +
++    def reboot_emmc_enable(self, listItem=None):
++        try:
++            self.oe.dbg_log('emmc::reboot_emmc_enable', 'enter_function', 0)
++            if os.path.exists(self.EMMC_REBOOT_ENABLE):
++                dialog = xbmcgui.Dialog()
++                ret = dialog.yesno('Attention!', 'Start enable reboot to Android ?')
++                if ret:
++                    self.oe.notify(self.oe._(32363), 'Enable...')
++                    self.oe.set_busy(1)
++                    message = self.oe.execute(self.EMMC_REBOOT_ENABLE, 1).strip()
++                    self.oe.set_busy(0)
++                    if message == 'Done! enable reboot android completed.':
++                       dialog = xbmcgui.Dialog()
++                       dialog.notification('Reboot',
++                                        '%s' % message,
++                                        xbmcgui.NOTIFICATION_INFO, 3000)
++        except Exception, e:
++            self.oe.dbg_log('emmc::reboot_emmc_enable', 'ERROR: (' + repr(e) + ')')
++
++    def reboot_emmc_disable(self, listItem=None):
++        try:
++            self.oe.dbg_log('emmc::reboot_emmc_disable', 'enter_function', 0)
++            if os.path.exists(self.EMMC_REBOOT_DISABLE):
++                dialog = xbmcgui.Dialog()
++                ret = dialog.yesno('Attention!', 'Start disable reboot to Android ?')
++                if ret:
++                    self.oe.notify(self.oe._(32363), 'Disable...')
++                    self.oe.set_busy(1)
++                    message = self.oe.execute(self.EMMC_REBOOT_DISABLE, 1).strip()
++                    self.oe.set_busy(0)
++                    if message == 'Done! disable reboot android completed.':
++                       dialog = xbmcgui.Dialog()
++                       dialog.notification('Reboot',
++                                        '%s' % message,
++                                        xbmcgui.NOTIFICATION_INFO, 3000)
++        except Exception, e:
++            self.oe.dbg_log('emmc::reboot_emmc_disable', 'ERROR: (' + repr(e) + ')')
++
 +    def exit(self):
 +        try:
 +            self.oe.dbg_log('emmc::exit', 'enter_function', 0)
 +            self.oe.dbg_log('emmc::exit', 'exit_function', 0)
 +        except Exception, e:
 +            self.oe.dbg_log('emmc::exit', 'ERROR: (%s)' % repr(e), 4)
+
