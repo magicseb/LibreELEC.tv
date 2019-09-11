@@ -19,7 +19,7 @@
 ################################################################################
 
 PKG_NAME="lr-freeintv"
-PKG_VERSION="9191671a5e74ef819f3b2996b683472c50d9bdb4"
+PKG_VERSION="2e8d29c74b738d8e4a7e636370cfdbec2a521ddd"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv3"

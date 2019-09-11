@@ -3,7 +3,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="retroarch"
-PKG_VERSION="e4fb5587f7144ba9cb6cd1318a69845f97ef3796" #Lakka
+PKG_VERSION="d00af57b4a65d2276c4c439778156fddcdb91bfc" #Lakka
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="https://github.com/libretro/RetroArch.git"
@@ -89,6 +89,8 @@ pre_configure_target() {
   if [ "${OPENGL_SUPPORT}" = "yes" ]; then
     PKG_CONFIGURE_OPTS_TARGET+=" --enable-opengl \
                                  --enable-kms"
+  else
+    PKG_CONFIGURE_OPTS_TARGET+=" --disable-opengl1"
   fi
 
   # Vulkan Support
@@ -96,37 +98,38 @@ pre_configure_target() {
      PKG_CONFIGURE_OPTS_TARGET+=" --enable-vulkan"
   fi
 
-  # OpenGLES Support
+  # OpenGL ES Support
   if [ "${OPENGLES_SUPPORT}" = "yes" ]; then
     PKG_CONFIGURE_OPTS_TARGET+=" --enable-opengles"
 
-    # RPi OpenGLES Features Support
+    # RPi OpenGL ES 2.0 Features Support
     if [ "${OPENGLES}" = "bcm2835-driver" ]; then
-      PKG_CONFIGURE_OPTS_TARGET+=" --enable-dispmanx"
+      PKG_CONFIGURE_OPTS_TARGET+=" --disable-opengl_core \
+                                   --enable-dispmanx \
+                                   --disable-kms"
 
-      CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads \
-                      -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
+    # RPi 4 OpenGL ES
+    elif [ "${OPENGLES}" = "mesa" ]; then
+      PKG_CONFIGURE_OPTS_TARGET+=" --enable-opengles3 \
+                                   --enable-kms \
+                                   --disable-videocore"
 
-     elif [ "${DEVICE}" = "RPi4" ]; then
-      PKG_CONFIGURE_OPTS_TARGET+=" --disable-videocore --disable-opengl1 --enable-kms --disable-x11 --enable-opengl_core"
-
-
-    # Amlogic OpenGLES Features Support
-    elif [ "${PROJECT}" = "Amlogic" ]; then
-      PKG_CONFIGURE_OPTS_TARGET+=" --enable-kms --disable-x11 --disable-wayland --disable-opengl_core --disable-opengles3 --disable-opengl1"
-
-   # Rockchip OpenGLES
-    elif [ "${PROJECT}" = "Rockchip" ]; then
-      PKG_CONFIGURE_OPTS_TARGET+=" --enable-kms --disable-x11 --disable-wayland --enable-opengles3 --disable-opengl_core --disable-opengl1"
+    # Mali OpenGL ES 2.0/3.0 Features Support
+    elif [ "${OPENGLES}" = "libmali" ]; then
+      if listcontains "${MALI_FAMILY}" "4[0-9]+"; then
+        PKG_CONFIGURE_OPTS_TARGET+=" --disable-opengl_core \
+                                     --disable-opengles3"
+      else
+        PKG_CONFIGURE_OPTS_TARGET+=" --enable-opengles3"
+      fi
+      PKG_CONFIGURE_OPTS_TARGET+=" --enable-kms"
     fi
   fi
 
   # NEON Support
-if [ "${ARCH}" = "arm" ]; then
   if target_has_feature neon; then
     PKG_CONFIGURE_OPTS_TARGET+=" --enable-neon"
   fi
-fi
 
   # Clean up & export env/version
   cd ..
@@ -196,9 +199,18 @@ makeinstall_target() {
   sed -i -e "s/# video_gpu_screenshot = true/video_gpu_screenshot = false/" $INSTALL/etc/retroarch.cfg
 
   # Audio
-  sed -i -e "s/# audio_driver =/audio_driver = \"alsathread\"/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# audio_filter_dir =/audio_filter_dir =\/usr\/share\/retroarch\/audio_filters/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# audio_filter_dir =/audio_filter_dir =\/usr\/share\/retroarch\/audio_filters/" $INSTALL/etc/retroarch.cfg
+  if [ "$DEVICE" = "RPi4" ]; then
+    sed -i -e "s/# audio_driver =/audio_driver = \"alsa\"/" $INSTALL/etc/retroarch.cfg
+  else
+    sed -i -e "s/# audio_driver =/audio_driver = \"alsathread\"/" $INSTALL/etc/retroarch.cfg
+  fi
+  sed -i -e "s/# audio_filter_dir =/audio_filter_dir =\/usr\/share\/audio_filters/" $INSTALL/etc/retroarch.cfg
+  if [ "$PROJECT" = "OdroidXU3" -o "$DEVICE" = "RPi4" ]; then # workaround the 55fps bug + fix no audio for RPi4
+    sed -i -e "s/# audio_out_rate = 48000/audio_out_rate = 44100/" $INSTALL/etc/retroarch.cfg
+  fi
+  if [ "$DEVICE" = "RPi4" ]; then
+    sed -i -e "s/# audio_device =/audio_device = \"hw:0,1\"/" $INSTALL/etc/retroarch.cfg
+  fi
 
   # Input
   sed -i -e "s/# input_driver = sdl/input_driver = udev/" $INSTALL/etc/retroarch.cfg

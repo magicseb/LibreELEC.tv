@@ -36,11 +36,6 @@ configure_package() {
   if [ "${DEVICE}" = "RPi4" ]; then
     PKG_DEPENDS_TARGET+=" libX11"
   fi
-
- #Amlogic
- if [ "$PROJECT" = "Amlogic" ]; then
-    PKG_DEPENDS_TARGET+=" libX11"
-  fi
 }
 
 pre_configure_target() {

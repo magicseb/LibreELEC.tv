@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-2048"
-PKG_VERSION="54d3ddd3c9f81d7bbd5714a670913e46301781c7"
+PKG_VERSION="b2b08a8767bae5ecdc2452484768aba84dbc341f"
 PKG_SHA256="cb5616e0984bdf364c7537c998e7341d95f00616aacf23cf8b3a59e6bb1352ba"
 PKG_LICENSE="Public domain"
 PKG_SITE="https://github.com/libretro/libretro-2048"

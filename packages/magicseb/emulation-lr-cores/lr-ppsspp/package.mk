@@ -2,11 +2,11 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-ppsspp"
-PKG_VERSION="1d528d6f3bf47035d244b9685965f727d2bbffdd" #v1.8.0
+PKG_VERSION="edcd5e1c7b42d2b0ac7092bbbe138f6b81800d22" #v1.8.0
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/hrydgard/ppsspp"
 PKG_URL="https://github.com/hrydgard/ppsspp.git"
-PKG_DEPENDS_TARGET="toolchain linux glibc SDL2-git zlib ffmpeg bzip2 openssl speex"
+PKG_DEPENDS_TARGET="toolchain linux glibc SDL2-git zlib ffmpeg bzip2 openssl speex libzip libpng"
 PKG_LONGDESC="A PSP emulator for Android, Windows, Mac, Linux and Blackberry 10, written in C++."
 GET_HANDLER_SUPPORT="git"
 
