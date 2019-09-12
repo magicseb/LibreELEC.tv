@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-mupen64plus-nx"
-PKG_VERSION="b785150465048fa88f812e23462f318e66af0be0"
-PKG_SHA256="456c433f45b0e2ba15a587978234e3e1300301d431b6823747ad0e779331c97e"
+PKG_VERSION="f5627a54a21c3ffb7b4297456867e7e500b3dd85"
+PKG_SHA256="f3ee0b2eb92b0f6c778dbcb0fe2771d6117214cfd101dd0ed12dc54daa5e4cf9"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/mupen64plus-libretro-nx"
 PKG_URL="https://github.com/libretro/mupen64plus-libretro-nx/archive/$PKG_VERSION.tar.gz"
@@ -36,13 +36,7 @@ configure_package() {
   if [ "${DEVICE}" = "RPi4" ]; then
     PKG_DEPENDS_TARGET+=" libX11"
   fi
-
- #Amlogic
- if [ "$PROJECT" = "Amlogic" ]; then
-    PKG_DEPENDS_TARGET+=" libX11"
-  fi
 }
-
 pre_configure_target() {
 
   # Amlogic

@@ -75,6 +75,7 @@ OEM_EMU_GENERIC=" \
 
 OEM_EMU_RPI=" \
   emulationstation \
+  SDL_GameControllerDB \
   amiberry \
   lr-mame2010 \
   lr-ppsspp \
@@ -85,12 +86,15 @@ OEM_EMU_RPI=" \
 
 OEM_EMU_ROCKCHIP=" \
   emulationstation \
+  SDL_GameControllerDB \
   lr-puae \
   lr-snes9x2010 \
   lr-vice \
   lr-yabasanshiro"
 
 OEM_EMU_AMLOGIC=" \
+  emulationstation \
+  SDL_GameControllerDB \
   lr-puae \
   lr-snes9x2010 \
   lr-vice"
