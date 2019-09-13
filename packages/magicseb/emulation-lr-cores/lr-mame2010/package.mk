@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-mame2010"
-PKG_VERSION="1a9221d9d9b23e1efda54abcdeeb91542fd06280"
+PKG_VERSION="4ced2c31f1100eefc7f4483b474b8a680a3b3f2b"
 PKG_SHA256="9712597537ed2c64be124179a111992223970323005d307b21b22f881f245d1d"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/mame2010-libretro"

@@ -3,7 +3,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="retroarch"
-PKG_VERSION="d00af57b4a65d2276c4c439778156fddcdb91bfc" #Lakka
+PKG_VERSION="785ed87117578f4c81f054d28ae72800e49949aa" #Lakka
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="https://github.com/libretro/RetroArch.git"
