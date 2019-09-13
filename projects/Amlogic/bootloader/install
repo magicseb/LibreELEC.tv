@@ -173,13 +173,16 @@ esac
 # Clean up after previous build
 rm -rf $INSTALL/usr/share/bootloader/boot.ini
 rm -rf $INSTALL/usr/share/bootloader/u-boot*
-rm -rf $INSTALL/usr/share/bootloader/extlinux
 
 # Install u-boot
 mkdir -p $INSTALL/usr/share/bootloader
-
-if [ -f $DESTDIR/u-boot.bin.sd.bin ]; then
-  cp -av $DESTDIR/u-boot.bin.sd.bin $INSTALL/usr/share/bootloader
+if [ $UBOOT_SYSTEM != "box" ]; then
+  if [ -f $DESTDIR/u-boot.bin.sd.bin ]; then
+    cp -av $DESTDIR/u-boot.bin.sd.bin $INSTALL/usr/share/bootloader
+  fi
+  if [ -f $DESTDIR/u-boot.bin ]; then
+    cp -av $DESTDIR/u-boot.bin $INSTALL/usr/share/bootloader
+  fi
 fi
 if [ -f $DESTDIR/u-boot.bin ]; then
   cp -av $DESTDIR/u-boot.bin $INSTALL/usr/share/bootloader

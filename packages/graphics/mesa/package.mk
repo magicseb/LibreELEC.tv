@@ -3,8 +3,8 @@
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="mesa"
-PKG_VERSION="19.1.5"
-PKG_SHA256="501cc19343aa81108589e2c1d0621055219a612399869e46c935de7ae93277b0"
+PKG_VERSION="19.1.6"
+PKG_SHA256="a3dc32262e3baa6a32cd153c32b0a5af3e52e0b88ff94787438e7414eb13264e"
 PKG_LICENSE="OSS"
 PKG_SITE="http://www.mesa3d.org/"
 PKG_URL="https://github.com/mesa3d/mesa/archive/mesa-$PKG_VERSION.tar.gz"
@@ -14,8 +14,8 @@ PKG_TOOLCHAIN="meson"
 PKG_BUILD_FLAGS="+lto"
 
 if listcontains "${GRAPHIC_DRIVERS}" "(lima|panfrost)"; then
-  PKG_VERSION="20ac0b8e4e3a1d27c298a18d5a10681cb483c798" # master-19.3
-  PKG_SHA256="d6d1a5d7d38633dca41312260fd4f86b58d8335326338d0f246ee7621ec85641"
+  PKG_VERSION="ef919d8dcb9272ad7b23f5dbd8b7fb2f83393b42" # master-19.3
+  PKG_SHA256="9b881e5c7617941ae89876cbb2c31982f19c7289353a5fdca4101f8b01ade69d"
   PKG_URL="https://gitlab.freedesktop.org/mesa/mesa/-/archive/$PKG_VERSION/mesa-$PKG_VERSION.tar.gz"
 fi
 

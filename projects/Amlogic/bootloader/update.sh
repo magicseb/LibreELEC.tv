@@ -23,26 +23,30 @@
 # mount $BOOT_ROOT rw
   mount -o remount,rw $BOOT_ROOT
 
-# update device tree
-[ -d "$BOOT_ROOT/dtb_old" ] && rm -r $BOOT_ROOT/dtb_old
-mv $BOOT_ROOT/dtb $BOOT_ROOT/dtb_old
-cp -R $UPDATE_DIR/.tmp/*/3rdparty/bootloader/dtb $BOOT_ROOT
+# update extlinux device trees
+  if [ -f $BOOT_ROOT/extlinux/extlinux.conf ]; then
+    for dtbfile in $BOOT_ROOT/*.dtb ; do
+      dtb=$(basename $dtbfile)
+      echo "Updating $dtb"
+      cp -p $SYSTEM_ROOT/usr/share/bootloader/$dtb $BOOT_ROOT/dtb/ 2>/dev/null || true
+    done
+  fi
+
+# update box device trees
+  if [ -f $BOOT_ROOT/uEnv.ini ]; then
+    for dtbfile in $BOOT_ROOT/dtb/*.dtb ; do
+      dtb=$(basename $dtbfile)
+      echo "Updating $dtb"
+      cp -p $SYSTEM_ROOT/usr/share/bootloader/$dtb $BOOT_ROOT/dtb/ 2>/dev/null || true
+    done
+  fi
 
 # update u-boot scripts
-  if [ -f $BOOT_ROOT/s905_autoscript ]; then
-      echo "Updating s905_autoscript"
-      cp -p $SYSTEM_ROOT/usr/share/bootloader/s905_autoscript $BOOT_ROOT 2>/dev/null || true
-  fi
-
-  if [ -f $BOOT_ROOT/emmc_autoscript ]; then
-      echo "Updating emmc_autoscript"
-      cp -p $SYSTEM_ROOT/usr/share/bootloader/emmc_autoscript $BOOT_ROOT 2>/dev/null || true
-  fi
-
-  if [ -f $BOOT_ROOT/install2emmc.sh ]; then
-    for scriptfile in $SYSTEM_ROOT/usr/share/bootloader/*.sh ; do
-      echo "Updating $(basename $scriptfile)"
-      cp -p $scriptfile $BOOT_ROOT 2>/dev/null || true
+  if [ -f $BOOT_ROOT/uEnv.ini ]; then
+    for scriptfile in $SYSTEM_ROOT/usr/share/bootloader/*_autoscript* $SYSTEM_ROOT/usr/share/bootloader/*.scr ; do
+      script=$(basename $scriptfile)
+      echo "Updating $script"
+      cp -p $SYSTEM_ROOT/usr/share/bootloader/$script $BOOT_ROOT/ 2>/dev/null || true
     done
   fi
 

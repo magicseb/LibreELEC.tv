@@ -129,13 +129,9 @@ devices = \
       },
     },
     'AMLG12': {
-      's905x2': {
-        'dtb': 'meson-g12a-x96-max.dtb',
-        'config': 'khadas-vim_defconfig'
-      },
-      's922x': {
-        'dtb': 'meson-g12b-ugoos-am6.dtb',
-        'config': 'odroid-n2_defconfig'
+      'box': {
+        'dtb': 'meson-g12a-x96max.dtb',
+        'config': 'p212_defconfig'
       },
       'odroid-n2': {
         'dtb': 'meson-g12b-odroid-n2.dtb',
