@@ -103,6 +103,10 @@ devices = \
   },
   'Amlogic': {
     'AMLGX': {
+      'box': {
+        'dtb': 'meson-gxl-s905x-p212.dtb',
+        'config': 'p212_defconfig'
+      },
       's905': {
         'dtb': 'meson-gxbb-p200.dtb',
         'config': 'p200_defconfig'

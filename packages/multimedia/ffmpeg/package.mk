@@ -9,7 +9,7 @@ PKG_SHA256="e11e7594af35f36ab2711252c3d6bb106908f26605498aef4a9be2d7bc001db2"
 PKG_LICENSE="LGPLv2.1+"
 PKG_SITE="https://ffmpeg.org"
 PKG_URL="https://github.com/xbmc/FFmpeg/archive/${PKG_VERSION}.tar.gz"
-PKG_DEPENDS_TARGET="toolchain zlib bzip2 openssl speex"
+PKG_DEPENDS_TARGET="toolchain zlib bzip2 gnutls speex"
 PKG_LONGDESC="FFmpeg is a complete, cross-platform solution to record, convert and stream audio and video."
 PKG_BUILD_FLAGS="-gold"
 
@@ -58,13 +58,9 @@ else
   PKG_FFMPEG_DEBUG="--disable-debug --enable-stripping"
 fi
 
-if [ "$PROJECT" = "RPi" ]; then
+if [ "$KODIPLAYER_DRIVER" = "bcm2835-driver" ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET bcm2835-driver"
-  if [ "$DEVICE" = "RPi4" ]; then
-   PKG_PATCH_DIRS+=" rpi4-hevc"
-  else
-   PKG_PATCH_DIRS+=" rpi-hevc"
- fi
+  PKG_PATCH_DIRS+=" rpi-hevc"
 fi
 
 if target_has_feature neon; then
@@ -86,7 +82,7 @@ pre_configure_target() {
   cd $PKG_BUILD
   rm -rf .$TARGET_NAME
 
-  if [ "$PROJECT" = "RPi" ]; then
+  if [ "$KODIPLAYER_DRIVER" = "bcm2835-driver" ]; then
     PKG_FFMPEG_LIBS="-lbcm_host -lvcos -lvchiq_arm -lmmal -lmmal_core -lmmal_util -lvcsm"
     PKG_FFMPEG_RPI="--enable-rpi"
   fi
@@ -116,7 +112,6 @@ configure_target() {
               --enable-shared \
               --enable-gpl \
               --disable-version3 \
-              --enable-nonfree \
               --enable-logging \
               --disable-doc \
               $PKG_FFMPEG_DEBUG \
@@ -134,7 +129,7 @@ configure_target() {
               --disable-devices \
               --enable-pthreads \
               --enable-network \
-              --disable-gnutls --enable-openssl \
+              --enable-gnutls --disable-openssl \
               --disable-gray \
               --enable-swscale-alpha \
               --disable-small \

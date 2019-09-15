@@ -184,9 +184,6 @@ if [ $UBOOT_SYSTEM != "box" ]; then
     cp -av $DESTDIR/u-boot.bin $INSTALL/usr/share/bootloader
   fi
 fi
-if [ -f $DESTDIR/u-boot.bin ]; then
-  cp -av $DESTDIR/u-boot.bin $INSTALL/usr/share/bootloader
-fi
 
 # Install boot.ini if it exists
 if find_file_path bootloader/${UBOOT_SYSTEM}.ini; then
