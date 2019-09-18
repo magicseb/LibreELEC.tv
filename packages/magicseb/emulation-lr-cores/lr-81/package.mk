@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present magicseb (https://github.com/magicseb)
 
 PKG_NAME="lr-81"
-PKG_VERSION="10fcd60ca341fa605c48179743b41195196a988c"
+PKG_VERSION="4352130bd2363954262a804b086f86b9d13d97f9"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/81-libretro"
