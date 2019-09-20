@@ -17,7 +17,6 @@ OEM_EMU_COMMON=" \
   sixpair\
   sixaxis \
   baseone \
-  retroarch \
   lr-4do \
   lr-2048 \
   lr-81 \
@@ -61,7 +60,8 @@ OEM_EMU_COMMON=" \
   lr-snes9x \
   lr-stella \
   lr-tyrquake \
-  lr-virtualjaguar"
+  lr-virtualjaguar \
+  retroarch"
 
 
 OEM_EMU_GENERIC=" \
