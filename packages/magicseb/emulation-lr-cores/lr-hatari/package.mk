@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-hatari"
-PKG_VERSION="ecfc143efce6e068a4b506dfdaf6516d3c268372"
-PKG_SHA256="f021698321e7c4cef7634cd33be7e924ddc1165bba6dd2ab534469bace74dcd3"
+PKG_VERSION="ec1b59c4b6c7ca7d0d23d60cfe2cb61911b11173"
+PKG_SHA256="4deea8ba40e7ce026db731b511e01bea5caa5a51b3499aa4473405841cbedd67"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/hatari"
 PKG_URL="https://github.com/libretro/hatari/archive/$PKG_VERSION.tar.gz"
