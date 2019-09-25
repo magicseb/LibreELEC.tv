@@ -73,7 +73,7 @@ pre_configure_target() {
         ;;
     esac
   elif [ "${DEVICE}" = "RPi4" ]; then
-      PKG_MAKE_OPTS_TARGET+=" platform=RK3399"
+      PKG_MAKE_OPTS_TARGET+=" platform=armv"
   elif [ "${ARCH}" = "arm" ]; then
     PKG_MAKE_OPTS_TARGET+=" platform=armv"
     # ARM NEON support
