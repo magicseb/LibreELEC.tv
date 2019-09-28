@@ -36,6 +36,9 @@ configure_package() {
 }
 
 pre_configure_target() {
+
+strip_lto
+
   export BUILD_SYSROOT=$SYSROOT_PREFIX
 
   if [ "$OPENGLES_SUPPORT" = "yes" ]; then
@@ -76,7 +79,7 @@ case $DEVICE in
       PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
       ;;
     RPi4)
-      PKG_MAKE_OPTS_TARGET+=" platform=rpi4"
+      PKG_MAKE_OPTS_TARGET+=" platform=rpi4-gles-neon DEBUG=1" #DEBUG CAN BE ENABLED, YOU CAN USE CHD WITH THIS
       ;;
 
   esac
