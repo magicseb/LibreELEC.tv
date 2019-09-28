@@ -3,7 +3,7 @@
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="gcc"
-if [ "${PROJECT}" == "Rockchip" ]; then
+if [ "${PROJECT}" == "RPi" ] ||[ "${PROJECT}" == "Rockchip" ]; then
 PKG_VERSION="8.3.0"
 PKG_SHA256="64baadfe6cc0f4947a84cb12d7f0dfaf45bb58b7e92461639596c21e02d97d2c"
 else

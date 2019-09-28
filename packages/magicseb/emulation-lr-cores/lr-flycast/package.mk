@@ -79,7 +79,7 @@ case $DEVICE in
       PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
       ;;
     RPi4)
-      PKG_MAKE_OPTS_TARGET+=" platform=rpi4-gles-neon DEBUG=1" #DEBUG CAN BE ENABLED, YOU CAN USE CHD WITH THIS
+      PKG_MAKE_OPTS_TARGET+=" platform=rpi4-gles-neon" #DEBUG CAN BE ENABLED, YOU CAN USE CHD WITH THIS
       ;;
 
   esac
