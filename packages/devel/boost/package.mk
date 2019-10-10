@@ -46,6 +46,7 @@ makeinstall_target() {
                           --toolset=gcc link=static \
                           --with-chrono \
                           --with-date_time \
+                          --with-locale \
                           --with-filesystem \
                           --with-iostreams \
                           --with-python \

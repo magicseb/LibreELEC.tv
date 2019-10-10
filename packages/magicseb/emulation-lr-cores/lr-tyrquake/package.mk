@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-tyrquake"
-PKG_VERSION="d80db75a62dd444bf989c69552dc84ee359cd9a3"
-PKG_SHA256="13731ad166b6d423f10d60c5f830290977804e347ee4388dd9363cd510256948"
+PKG_VERSION="4ebce7b499b050a6abdbc1fa6a69de5534329836"
+PKG_SHA256="780f071982d24c23798dd97bd5a8317b9ae262da8d92f6eca43d69f8dd05225d"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/tyrquake"
 PKG_URL="https://github.com/libretro/tyrquake/archive/$PKG_VERSION.tar.gz"
