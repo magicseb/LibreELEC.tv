@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-citra"
-PKG_VERSION="37192ff3d298dd43ec2d8eb198d2e18e8c3dd51b"
+PKG_VERSION="84f31e95160b029e6d614053705054ed6a34bb38"
 PKG_ARCH="x86_64"
 PKG_LICENSE="GPLv2+"
 PKG_SITE="https://github.com/libretro/citra"
