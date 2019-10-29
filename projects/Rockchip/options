@@ -10,7 +10,7 @@
 
   # Kernel to use. values can be:
   # default:  default mainline kernel
-#    LINUX="${LINUX:-rockchip-4.4}"
+    LINUX="${LINUX:-rockchip-4.4}"
 
 ################################################################################
 # setup build defaults
@@ -47,9 +47,7 @@
     GRAPHIC_DRIVERS=""
 
   # Use a vendor specific KODI repo
-    if [ "$LINUX" = "rockchip-4.4" ]; then
-      KODI_VENDOR="rockchip"
-    fi
+    KODI_VENDOR="rockchip"
 
   # KODI Player implementation to use (default / bcm2835-driver / libfslvpuwrap)
     KODIPLAYER_DRIVER="$OPENGLES"
@@ -77,33 +75,8 @@
   # driver addons to install:
   # for a list of additinoal drivers see packages/linux-driver-addons
   # Space separated list is supported,
-    if [ "$LINUX" = "rockchip-4.4" ]; then
-      DRIVER_ADDONS="crazycat dvb-latest"
-    else
-      DRIVER_ADDONS=""
-    fi
-
-  # Addon Server Url
-    case $TARGET_ARCH in
-      aarch64)
-        ADDON_SERVER_URL="https://balbes150.libreelec.tv/addons"
-	ADDON_PATH="$ADDON_VERSION/Khadas_VIM/$TARGET_ARCH"
-        ;;
-      arm)
-#        ADDON_SERVER_URL="https://amlgx.libreelec.tv"
-#	ADDON_PATH="9.0/${DEVICE:-$PROJECT}/$TARGET_ARCH"
-        ADDON_SERVER_URL="https://balbes150.libreelec.tv/addons"
-        ADDON_PATH="$ADDON_VERSION/AMLG12/$TARGET_ARCH"
-        ;;
-    esac
-
-  # set the addon dirs
-    ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
-
-  # set the addon dirs
-    ADDON_SERVER_URL="https://balbes150.libreelec.tv/addons"
-    ADDON_PATH="$ADDON_VERSION/AMLG12/$TARGET_ARCH"
-    ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
+    DRIVER_ADDONS="dvb-latest"
 
   # debug tty path
     DEBUG_TTY="/dev/ttyS2"
+

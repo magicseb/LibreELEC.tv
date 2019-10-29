@@ -19,7 +19,7 @@
 ################################################################################
 
 PKG_NAME="lr-play"
-PKG_VERSION="fedc1e1c2918a7490a881cdb4ec951a828c19671"
+PKG_VERSION="411df81fef7d15741b4ba415ecd0b544942797f7"
 PKG_SHA256=""
 PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
