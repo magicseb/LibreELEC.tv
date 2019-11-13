@@ -3,8 +3,8 @@
 # Copyright (C) 2017-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="LibreELEC-settings"
-PKG_VERSION="a799a10652567cfd327fd588cf0e180d9962cf61"
-PKG_SHA256="d72329051ac748cb6764597b36b2a6ed965f9b95c11a224b1a92ddf27db721be"
+PKG_VERSION="881a2d114412f4e6d80c39c0b17ae172a26316eb"
+PKG_SHA256="3ae041ea93fa5ae3129fae0cc4b3e9e3fd4270c2f46709d65b87fe2c0dad5dc0"
 PKG_LICENSE="GPL"
 PKG_SITE="https://libreelec.tv"
 PKG_URL="https://github.com/LibreELEC/service.libreelec.settings/archive/$PKG_VERSION.tar.gz"
@@ -25,9 +25,11 @@ post_makeinstall_target() {
 
   ADDON_INSTALL_DIR=$INSTALL/usr/share/kodi/addons/service.libreelec.settings
 
-  #python_compile $ADDON_INSTALL_DIR/resources/lib/
+  python_compile $ADDON_INSTALL_DIR/resources/lib/
 
-  #python_compile $ADDON_INSTALL_DIR/oe.py
+  python_compile $ADDON_INSTALL_DIR/defaults.py
+
+  python_compile $ADDON_INSTALL_DIR/oe.py
 }
 
 post_install() {
