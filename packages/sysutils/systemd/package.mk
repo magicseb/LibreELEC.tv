@@ -206,8 +206,17 @@ post_makeinstall_target() {
   cp $PKG_DIR/scripts/userconfig-setup $INSTALL/usr/bin
   cp $PKG_DIR/scripts/usercache-setup $INSTALL/usr/bin
 
+  # use systemd to set cpufreq governor and tunables
+  find_file_path scripts/cpufreq && cp -PRv $FOUND_PATH $INSTALL/usr/bin
+
   mkdir -p $INSTALL/usr/sbin
   cp $PKG_DIR/scripts/kernel-overlays-setup $INSTALL/usr/sbin
+  cp $PKG_DIR/scripts/network-base-setup $INSTALL/usr/sbin
+  cp $PKG_DIR/scripts/systemd-timesyncd-setup $INSTALL/usr/sbin
+
+  # /etc/resolv.conf and /etc/hosts must be writable
+  ln -sf /run/libreelec/resolv.conf $INSTALL/etc/resolv.conf
+  ln -sf /run/libreelec/hosts $INSTALL/etc/hosts
 
   # provide 'halt', 'shutdown', 'reboot' & co.
   ln -sf /usr/bin/systemctl $INSTALL/usr/sbin/halt
@@ -230,6 +239,7 @@ post_makeinstall_target() {
   ln -sf /storage/.config/logind.conf.d $INSTALL/etc/systemd/logind.conf.d
   safe_remove $INSTALL/etc/systemd/sleep.conf.d
   ln -sf /storage/.config/sleep.conf.d $INSTALL/etc/systemd/sleep.conf.d
+  ln -sf /storage/.config/timesyncd.conf.d $INSTALL/etc/systemd/timesyncd.conf.d
   safe_remove $INSTALL/etc/sysctl.d
   ln -sf /storage/.config/sysctl.d $INSTALL/etc/sysctl.d
   safe_remove $INSTALL/etc/tmpfiles.d
@@ -268,4 +278,8 @@ post_install() {
   enable_service usercache.service
   enable_service kernel-overlays.service
   enable_service hwdb.service
+  enable_service cpufreq.service
+  enable_service network-base.service
+  enable_service systemd-timesyncd.service
+  enable_service systemd-timesyncd-setup.service
 }
