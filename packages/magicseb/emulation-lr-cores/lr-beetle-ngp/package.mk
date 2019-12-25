@@ -3,7 +3,7 @@
 
 
 PKG_NAME="lr-beetle-ngp"
-PKG_VERSION="d839c35f54cafeff94591009e3a6959f5684ee43"
+PKG_VERSION="8ffd479729edf05fc36edc704f825aa190dfd309"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/beetle-ngp-libretro"
