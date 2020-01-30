@@ -19,7 +19,7 @@
 ################################################################################
 
 PKG_NAME="lr-dinothawr"
-PKG_VERSION="022527e6e2889b98ef644f490c696514389ac00b"
+PKG_VERSION="18118f66f4a04897fd1cbbfa87cd8957f5bd22ad"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="Non-commercial"

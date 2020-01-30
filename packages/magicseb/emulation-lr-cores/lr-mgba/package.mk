@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-mgba"
-PKG_VERSION="bb1ce789d268b484311b121943acf3ce3809c6d7"
+PKG_VERSION="241e67da6232ab6d515f7d7cacc1ace5b6a07d2f"
 PKG_LICENSE="MPL 2.0"
 PKG_SITE="https://github.com/mgba-emu/mgba"
 PKG_URL="$PKG_SITE.git"

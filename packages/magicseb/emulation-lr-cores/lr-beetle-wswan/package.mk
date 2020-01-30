@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-beetle-wswan"
-PKG_VERSION="fb0c111753991779526974cc7a0701f7ada875f6"
-PKG_SHA256="15aa531945e2219cd067165e44c05e0bc897b2771b1301b568ed1f4f226d922c"
+PKG_VERSION="5b03d1b09f70dc208387d3c8b59e12e1f0d2692f"
+PKG_SHA256="1053e1a6f78aea569d2fb89a86df5f0df7463cb3f32312ee910a5227419c60e2"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/beetle-wswan-libretro"
 PKG_URL="https://github.com/libretro/beetle-wswan-libretro/archive/$PKG_VERSION.tar.gz"
