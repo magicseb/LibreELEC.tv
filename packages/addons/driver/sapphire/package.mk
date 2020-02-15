@@ -9,7 +9,7 @@ PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="https://libreelec.tv"
 PKG_URL="http://www.rtr.ca/sapphire_remote/$PKG_NAME-$PKG_VERSION.tar.gz"
-PKG_DEPENDS_TARGET="toolchain linux bash"
+PKG_DEPENDS_TARGET="bash"
 PKG_SECTION="driver.remote"
 PKG_SHORTDESC="A Linux driver to add support for sapphire remotes"
 PKG_LONGDESC="A Linux driver to add support for sapphire remotes"
@@ -60,5 +60,5 @@ addon() {
     cp $PKG_BUILD/sapphire_keymap.sh $ADDON_BUILD/$PKG_ADDON_ID/bin
 
   # bash
-    cp $(get_build_dir bash)/.install_pkg/usr/bin/bash $ADDON_BUILD/$PKG_ADDON_ID/bin
+    cp $(get_install_dir bash)/usr/bin/bash $ADDON_BUILD/$PKG_ADDON_ID/bin
 }

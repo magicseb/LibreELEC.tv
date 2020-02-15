@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-common-overlays"
-PKG_VERSION="4d700116edf178452831f99a5173f88559f1b8ec"
-PKG_SHA256="8e8af74f5ab133f062b8f87316e9c0685950e7afd239250d6aa560269b0ef428"
+PKG_VERSION="adf88ef3783adf74ba076829e32df2e225b9615c"
+PKG_SHA256="aca5920bf339164382d417e2bb2252c4a2c016c8f0f4d6ef649f4e8bf7463efb"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/libretro/common-overlays"
 PKG_URL="https://github.com/libretro/common-overlays/archive/$PKG_VERSION.tar.gz"

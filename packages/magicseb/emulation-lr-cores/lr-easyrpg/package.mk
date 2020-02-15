@@ -19,7 +19,7 @@
 ################################################################################
 
 PKG_NAME="lr-easyrpg"
-PKG_VERSION="e725e841940b11be7f4cf68049af38b4b3eee9ae"
+PKG_VERSION="6ad57329edc3f1f9c8b4a244c59874e27cf174a6"
 PKG_REV="2"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv3"

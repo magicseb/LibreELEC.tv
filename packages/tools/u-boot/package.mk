@@ -9,8 +9,9 @@ PKG_SITE="https://www.denx.de/wiki/U-Boot"
 PKG_DEPENDS_TARGET="toolchain Python3:host swig:host"
 PKG_LONGDESC="Das U-Boot is a cross-platform bootloader for embedded systems."
 
-PKG_IS_KERNEL_PKG="yes"
-PKG_STAMP="$UBOOT_SYSTEM"
+PKG_STAMP="$UBOOT_SYSTEM $UBOOT_TARGET"
+
+[ -n "$KERNEL_TOOLCHAIN" ] && PKG_DEPENDS_TARGET+=" gcc-arm-$KERNEL_TOOLCHAIN:host"
 
 if [ -n "$UBOOT_FIRMWARE" ]; then
   PKG_DEPENDS_TARGET+=" $UBOOT_FIRMWARE"
@@ -28,8 +29,8 @@ case "$PROJECT" in
     PKG_PATCH_DIRS="rockchip"
     ;;
   *)
-    PKG_VERSION="d9110878895634cd9e8bf891c832d2a58b36863c"
-    PKG_SHA256="4d89dc15e5fa3bc9379c097d3315aba08ff6812b892b8900f4bef3fabb8ca1f5"
+    PKG_VERSION="v2020.01"
+    PKG_SHA256="e981e02592f7b5386e5bc2b8a076aebc47d90b0ec9ae62be4b76daadc083b3ef"
     PKG_URL="https://github.com/u-boot/u-boot/archive/$PKG_VERSION.tar.gz"
     ;;
 esac

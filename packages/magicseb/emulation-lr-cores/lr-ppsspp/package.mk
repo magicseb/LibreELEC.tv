@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-ppsspp"
-PKG_VERSION="b4438c57421e3c1c8b946a872d2b54a44189365c" #v1.8.0
+PKG_VERSION="06dc3dbd29d9f5f05b8c4dca56fa4018bca47b47" #v1.8.0
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/hrydgard/ppsspp"
 PKG_URL="https://github.com/hrydgard/ppsspp.git"

@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-puae"
-PKG_VERSION="8333daad83b8f917a31c55939e2440aa8670863a"
-PKG_SHA256="82e7fa78b1c32bcebf89b9495e1b014e7019f4b238cdc327962c0ab7138f7e04"
+PKG_VERSION="b5a7acbcea11771cd112265e384bb2befa65cafb"
+PKG_SHA256="2f5011da94070fb2121daca497e4d375631720fd8e71b6098175e5658ee98149"
 PKG_LICENSE="GPLv3"
 PKG_ARCH="arm i386 x86_64"
 PKG_SITE="https://github.com/libretro/libretro-uae"

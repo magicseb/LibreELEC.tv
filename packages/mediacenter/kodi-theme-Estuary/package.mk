@@ -6,8 +6,7 @@ PKG_VERSION="1.0"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.kodi.tv"
 PKG_URL=""
-PKG_DEPENDS_TARGET="toolchain kodi"
-PKG_NEED_UNPACK="$(get_pkg_directory $MEDIACENTER)"
+PKG_DEPENDS_TARGET="kodi"
 PKG_LONGDESC="Kodi Mediacenter default theme."
 PKG_TOOLCHAIN="manual"
 
@@ -18,8 +17,6 @@ makeinstall_target() {
 
 #Patch for Emulationstation/Retroarch
     patch -d $INSTALL/usr/share/kodi/addons/skin.estuary -p1 < $PKG_DIR/files/kodi-theme-Estuary-100.02-emulationstation-menu.patch
-    patch -d $INSTALL/usr/share/kodi/addons/skin.estuary -p1 < $PKG_DIR/files/kodi-theme-Estuary-100.03-retroarch-menu.patch 
-
-
+    patch -d $INSTALL/usr/share/kodi/addons/skin.estuary -p1 < $PKG_DIR/files/kodi-theme-Estuary-100.03-retroarch-menu.patch
 }
 

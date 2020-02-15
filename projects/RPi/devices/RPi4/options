@@ -2,8 +2,6 @@
 # Device defaults
 ################################################################################
 
-  LINUX="raspberrypi4-4.19"
-
   # NOOBS supported hex versions (legacy) is not relevant for RPi4
     unset NOOBS_HEX
 
@@ -16,4 +14,4 @@
     OPENGLES="mesa"
     GRAPHIC_DRIVERS="vc4"
     KODIPLAYER_DRIVER="mesa"
-    #KODI_VENDOR="raspberrypi4"
+    KODI_VENDOR="default"

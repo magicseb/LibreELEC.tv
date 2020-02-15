@@ -3,13 +3,13 @@
 
 PKG_NAME="Python3"
 # When changing PKG_VERSION remember to sync PKG_PYTHON_VERSION!
-PKG_VERSION="3.7.5"
-PKG_SHA256="e85a76ea9f3d6c485ec1780fca4e500725a4a7bbc63c78ebc44170de9b619d94"
+PKG_VERSION="3.7.6"
+PKG_SHA256="55a2cce72049f0794e9a11a84862e9039af9183603b78bc60d89539f82cf533f"
 PKG_LICENSE="OSS"
 PKG_SITE="http://www.python.org/"
 PKG_URL="http://www.python.org/ftp/python/$PKG_VERSION/${PKG_NAME::-1}-$PKG_VERSION.tar.xz"
 PKG_DEPENDS_HOST="zlib:host bzip2:host libffi:host util-linux:host xz:host"
-PKG_DEPENDS_TARGET="toolchain Python3:host sqlite expat zlib bzip2 xz openssl libffi readline ncurses"
+PKG_DEPENDS_TARGET="toolchain Python3:host sqlite expat zlib bzip2 xz openssl libffi readline ncurses util-linux"
 PKG_LONGDESC="Python3 is an interpreted object-oriented programming language."
 PKG_TOOLCHAIN="autotools"
 
@@ -72,7 +72,7 @@ PKG_CONFIGURE_OPTS_TARGET="ac_cv_prog_HAS_HG=/bin/false
                            --enable-curses
                            --disable-pydoc
                            --disable-test-modules
-                           --disable-lib2to3
+                           --enable-lib2to3
                            --disable-idle3
                            --without-cxx-main
                            --with-expat=system
@@ -120,7 +120,7 @@ post_makeinstall_target() {
 
   PKG_INSTALL_PATH_LIB=$INSTALL/usr/lib/$PKG_PYTHON_VERSION
 
-  for dir in config compiler sysconfigdata lib-dynload/sysconfigdata lib2to3 test; do
+  for dir in config compiler sysconfigdata lib-dynload/sysconfigdata lib2to3/tests test; do
     rm -rf $PKG_INSTALL_PATH_LIB/$dir
   done
 
@@ -129,6 +129,8 @@ post_makeinstall_target() {
   rm -rf $INSTALL/usr/bin/pyvenv
   rm -rf $INSTALL/usr/bin/python*-config
   rm -rf $INSTALL/usr/bin/smtpd.py $INSTALL/usr/bin/smtpd.py.*
+
+  find $INSTALL -name '*.o' -delete
 
   python_compile $PKG_INSTALL_PATH_LIB
 

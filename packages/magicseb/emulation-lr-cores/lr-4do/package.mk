@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present magicseb (https://github.com/magicseb)
 
 PKG_NAME="lr-4do"
-PKG_VERSION="b6ad4bc8548f2f3792cd929ccf26d9078b73a1c0"
+PKG_VERSION="6e2762dfea4fb7cfe9cd2fef50a34bd65ea770d1"
 PKG_ARCH="any"
 PKG_LICENSE="LGPL with additional notes"
 PKG_SITE="https://github.com/libretro/4do-libretro"

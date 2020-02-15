@@ -19,8 +19,8 @@
 ################################################################################
 
 PKG_NAME="lr-craft"
-PKG_VERSION="afc1fade46cb876dcc0ca57c993c8d59670b68df"
-PKG_SHA256="d567524474b17510b31494b7dec4840405f15d197fe664126164daa33e1a9ae2"
+PKG_VERSION="d1b832825b9cc500328efdc0f0a78517f1c5b479"
+PKG_SHA256="86db436a6614563e279e2f4fcdd7e5dc7e906bed5bd7f97755b6186ee40d6f40"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="MIT"

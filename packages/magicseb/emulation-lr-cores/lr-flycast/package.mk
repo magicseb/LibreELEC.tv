@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-flycast"
-PKG_VERSION="f191ee8da8dce7ea67ea135109b441914ea1e95c"
+PKG_VERSION="ef88919955967a091779910c83c68f0123384db5"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/flycast"
 PKG_URL="$PKG_SITE.git"
@@ -79,7 +79,7 @@ case $DEVICE in
       PKG_MAKE_OPTS_TARGET+=" platform=rpi3"
       ;;
     RPi4)
-      PKG_MAKE_OPTS_TARGET+=" platform=rpi4-gles-neon DEBUG=1" #DEBUG CAN BE ENABLED, YOU CAN USE CHD WITH THIS
+      PKG_MAKE_OPTS_TARGET+=" platform=rpi4 DEBUG=1" #DEBUG CAN BE ENABLED, YOU CAN USE CHD WITH THIS
       ;;
 
   esac
