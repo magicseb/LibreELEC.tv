@@ -265,6 +265,7 @@ setup_toolchain() {
     NINJA_OPTS+=" -v"
     MAKEFLAGS+=" V=1 VERBOSE=1"
   fi
+  export MAKEFLAGS
 
   # average load limit
   if [ "${CONCURRENCY_LOAD}" != "0" ]; then

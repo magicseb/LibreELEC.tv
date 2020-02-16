@@ -282,6 +282,26 @@ devices = \
         'dtb': 'rk3399-orangepi.dtb',
         'config': 'evb-rk3399_config'
       },
+      'khadas-edge-v': {
+        'dtb': 'rk3399-khadas-edge-v.dtb',
+        'config': 'evb-rk3399_config'
+      },
+      'nanopc-t4': {
+        'dtb': 'rk3399-nanopc-t4.dtb',
+        'config': 'evb-rk3399_config'
+      },
+      'nanopi-m4': {
+        'dtb': 'rk3399-nanopi-m4.dtb',
+        'config': 'evb-rk3399_config'
+      },
+      'nanopi-neo4': {
+        'dtb': 'rk3399-nanopi-neo4.dtb',
+        'config': 'evb-rk3399_config'
+      },
+      'orangepi': {
+        'dtb': 'rk3399-orangepi.dtb',
+        'config': 'evb-rk3399_config'
+      },
       'rock960': {
         'dtb': 'rk3399-rock960.dtb',
         'config': 'evb-rk3399_config'
