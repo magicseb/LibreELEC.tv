@@ -6,7 +6,7 @@
  						</item>
 +						<item>
 +							<label>Retroarch</label>
-+							<onclick>XBMC.RunScript(/usr/bin/frontend-retroarch.py)</onclick>
++							<onclick>RunScript(/usr/bin/frontend-retroarch.py)</onclick>
 +							<thumb>DefaultAddonGameRA.png</thumb>
 +							<property name="id">retroarch</property>
 +							<visible>!Skin.HasSetting(HomeMenuNoRetroarchButton)</visible>

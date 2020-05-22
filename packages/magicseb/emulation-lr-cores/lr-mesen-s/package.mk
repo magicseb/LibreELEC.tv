@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-mesen-s"
-PKG_VERSION="93cccd34dc67727f750a368faee7158963440b30"
-PKG_SHA256="2c08bf05cc964313bede4769cee4cf855efaf1254c13fd9b130d1fad87933eba"
+PKG_VERSION="371a7a1ac8af5f100352996188c175c5c6bdaaa0"
+#PKG_SHA256="e8b782affffb9adb219bf1242a7e61a673c1fb23d979cb389f4ec2d34ff06711"
 PKG_ARCH="arm x86_64"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/SourMesen/Mesen-S"

@@ -1,25 +1,30 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
-# Copyright (C) 0riginally created by Escalade (https://github.com/escalade)
-# Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
+# SPDX-License-Identifier: GPL-2.0
+# Copyright (C) 2018-present Frank Hartung (supervisedthinking (@) gmail.com)
 
 PKG_NAME="vlc"
-PKG_VERSION="3.0.7.1"
-PKG_SHA256="0655804371096772f06104b75c21cde8a76e3b6c8a2fdadc97914f082c6264f5"
-PKG_LICENSE="GPL"
+PKG_VERSION="3.0.8"
+PKG_SHA256="e0149ef4a20a19b9ecd87309c2d27787ee3f47dfd47c6639644bc1f6fd95bdf6"
+PKG_LICENSE="GPL-2"
 PKG_SITE="http://www.videolan.org"
-PKG_URL="http://get.videolan.org/vlc/$PKG_VERSION/vlc-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain dbus gnutls ffmpeg libmpeg2 zlib flac libvorbis"
+PKG_URL="http://get.videolan.org/vlc/${PKG_VERSION}/vlc-${PKG_VERSION}.tar.xz"
+PKG_DEPENDS_TARGET="toolchain dbus gnutls ffmpeg libmpeg2 zlib flac-system libvorbis-system"
 PKG_LONGDESC="VideoLAN multimedia player and streamer"
 
-# MMAL (Multimedia Abstraction Layer) support patches
-if [ "${OPENGLES}" = "bcm2835-driver" ]; then
-  PKG_PATCH_DIRS="MMAL"
-fi
+configure_package() {
+  # MMAL (Multimedia Abstraction Layer) support patches
+  if [ "${OPENGLES}" = "bcm2835-driver" ]; then
+    PKG_PATCH_DIRS="MMAL"
+  fi
 
-if [ "${OPENGLES}" = "mesa" ]; then
-  PKG_PATCH_DIRS="MMAL"
-fi
+  # Mesa 3D support patch
+  if [ "${OPENGLES}" = "mesa" ]; then
+    PKG_PATCH_DIRS="OpenGL"
+  fi
 
+  if target_has_feature "(neon|sse)"; then
+    PKG_DEPENDS_TARGET+=" dav1d libvpx-system"
+  fi
+}
 
 pre_configure_target() {
   PKG_CONFIGURE_OPTS_TARGET="--enable-silent-rules \
@@ -72,6 +77,7 @@ pre_configure_target() {
                              --disable-schroedinger \
                              --disable-png \
                              --disable-x264 \
+                             --disable-x26410b \
                              --disable-fluidsynth \
                              --disable-zvbi \
                              --disable-telx \
@@ -101,7 +107,6 @@ pre_configure_target() {
                              --disable-ncurses \
                              --disable-goom \
                              --disable-projectm \
-                             --disable-vsxu \
                              --enable-udev \
                              --disable-mtp \
                              --disable-lirc \
@@ -115,8 +120,7 @@ pre_configure_target() {
                              --disable-crystalhd \
                              --disable-dxva2 \
                              --disable-aom \
-                             --disable-dav1d \
-			     --disable-vpx \
+                             --disable-gst-decode \
                              --disable-vlc"
 
   # X11 Support
@@ -131,8 +135,9 @@ pre_configure_target() {
     PKG_CONFIGURE_OPTS_TARGET+=" --enable-mmal"
   fi
 
-  if [ "${OPENGLES}" = "mesa" ]; then
-    PKG_CONFIGURE_OPTS_TARGET+=" --enable-mmal --enable-gles2"
+  # GLES2 Support for RPi4
+  if [ "${DEVICE}" = "RPi4" ]; then
+    PKG_CONFIGURE_OPTS_TARGET+=" --enable-gles2"
   fi
 
   # NEON Support
@@ -140,13 +145,22 @@ pre_configure_target() {
     PKG_CONFIGURE_OPTS_TARGET+=" --enable-neon"
   fi
 
+  # libdav1d & libvpx Support
+  if target_has_feature "(neon|sse)"; then
+    PKG_CONFIGURE_OPTS_TARGET+=" --enable-dav1d \
+                                 --enable-vpx"
+  else
+    PKG_CONFIGURE_OPTS_TARGET+=" --disable-dav1d \
+                                 --disable-vpx"
+  fi
+
   # Fix outdated automake for Linux Mint 18.04
   sed -e "s/am__api_version='1.16'/am__api_version='1.15'/" -i ${PKG_BUILD}/configure
-  export LDFLAGS="$LDFLAGS -lresolv"
+  LDFLAGS+=" -lresolv"
 }
 
 post_makeinstall_target() {
   # Clean up
-  rm -rf $INSTALL/usr/bin
-  rm -rf $INSTALL/usr/share
+  rm -rf ${INSTALL}/usr/bin
+  rm -rf ${INSTALL}/usr/share
 }

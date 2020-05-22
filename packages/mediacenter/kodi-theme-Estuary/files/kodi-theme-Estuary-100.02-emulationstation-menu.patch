@@ -6,7 +6,7 @@
  						</item>
 +						<item>
 +							<label>Emulationstation</label>
-+							<onclick>XBMC.RunScript(/usr/bin/frontend-emulationstation.py)</onclick>
++							<onclick>RunScript(/usr/bin/frontend-emulationstation.py)</onclick>
 +							<thumb>DefaultAddonGameES.png</thumb>
 +							<property name="id">emulationstation</property>
 +							<visible>!Skin.HasSetting(HomeMenuNoEmulationstationButton)</visible>

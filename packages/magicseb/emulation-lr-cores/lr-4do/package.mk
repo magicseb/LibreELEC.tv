@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present magicseb (https://github.com/magicseb)
 
 PKG_NAME="lr-4do"
-PKG_VERSION="6e2762dfea4fb7cfe9cd2fef50a34bd65ea770d1"
+PKG_VERSION="d7d21936f0c81f1541f2f7625ed2d9184c07e92e"
 PKG_ARCH="any"
 PKG_LICENSE="LGPL with additional notes"
 PKG_SITE="https://github.com/libretro/4do-libretro"
@@ -23,5 +23,5 @@ make_target() {
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/libretro
-  cp 4do_libretro.so $INSTALL/usr/lib/libretro/
+  cp opera_libretro.so $INSTALL/usr/lib/libretro/
 }

@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-vice"
-PKG_VERSION="3ab6a83a65aace0fef10b1f83394bd814a0abf3f"
+PKG_VERSION="8d6673ded005167b6457e150caefd1e955791ea2"
 #PKG_SHA256="ad46aa3f03f0dfddb6673c9aa813d26a80696d04a8131de326ca4f2c7464f212"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/vice-libretro"
@@ -15,7 +15,7 @@ GET_HANDLER_SUPPORT="git"
 PKG_LIBNAME="vice_x64_libretro.so"
 PKG_LIBPATH="$PKG_LIBNAME"
 
-PKG_MAKE_OPTS_TARGET="-f Makefile.libretro GIT_VERSION=${PKG_VERSION:0:7}"
+PKG_MAKE_OPTS_TARGET="-f Makefile GIT_VERSION=${PKG_VERSION:0:7}"
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/libretro

@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-samples"
-PKG_VERSION="2506fa126e8ff221bd5720291220cfc9638af5ff"
-PKG_SHA256="a8e797b55190e6204362a8eef6de8ee3a616c37285c2923231016dd8cea28886"
+PKG_VERSION="094d8d807da9dff5a0ec5ab4958cb68eb8c275ce"
+PKG_SHA256="f7811fec7555e9e3dbab544aecc7f9014e308929c4d21b11c7a220f66e6db653"
 PKG_LICENSE="MIT"
 PKG_SITE="https://github.com/libretro/libretro-samples"
 PKG_URL="https://github.com/libretro/libretro-samples/archive/$PKG_VERSION.tar.gz"

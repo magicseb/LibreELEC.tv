@@ -19,7 +19,7 @@
 ################################################################################
 
 PKG_NAME="lr-uae4arm"
-PKG_VERSION="0e9dd6e2e8c1d08df0532a429afc8fa9f5e9ca3a"
+PKG_VERSION="25b687b174152b17de3b7ab9813dc34e9e81d325"
 PKG_REV="1"
 PKG_ARCH="arm"
 PKG_LICENSE="GPL"
