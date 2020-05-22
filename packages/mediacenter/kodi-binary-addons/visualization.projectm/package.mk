@@ -3,9 +3,9 @@
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="visualization.projectm"
-PKG_VERSION="2.3.4-Leia"
-PKG_SHA256="d6a11b53b55df6cf1dd2adea8c9b559d6b0bb1270eef9a8be8396599a205be3b"
-PKG_REV="1"
+PKG_VERSION="3.0.1-Matrix"
+PKG_SHA256="c5dc37779303524ecaa90fdab27f916d51f2e4ca64fa387174a1f9cce0512377"
+PKG_REV="3"
 PKG_ARCH="x86_64"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/xbmc/visualization.projectm"
@@ -24,5 +24,4 @@ fi
 
 pre_configure_target() {
   export LDFLAGS=`echo $LDFLAGS | sed -e "s|-Wl,--as-needed||"`
-  sed -i "s|\${PROJECTM_PREFIX}|$SYSROOT_PREFIX\/usr|" -i $PKG_BUILD/FindProjectM.cmake
 }

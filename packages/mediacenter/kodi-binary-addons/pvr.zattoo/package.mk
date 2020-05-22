@@ -2,8 +2,8 @@
 # Copyright (C) 2017-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="pvr.zattoo"
-PKG_VERSION="19.2.8-Matrix"
-PKG_SHA256="35a17b851468cbb8d23f95fd5a79e2537f820025d770b812ebfab3391b5e86ab"
+PKG_VERSION="19.2.17-Matrix"
+PKG_SHA256="76a0f565e7daae728a37f2912246aada273cfe5259aa2f3c627a4b317c138dc7"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"

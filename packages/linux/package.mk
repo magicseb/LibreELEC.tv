@@ -6,7 +6,7 @@ PKG_NAME="linux"
 PKG_LICENSE="GPL"
 PKG_SITE="http://www.kernel.org"
 PKG_DEPENDS_HOST="ccache:host rsync:host openssl:host"
-PKG_DEPENDS_TARGET="toolchain linux:host cpio:host kmod:host xz:host keyutils $KERNEL_EXTRA_DEPENDS_TARGET"
+PKG_DEPENDS_TARGET="toolchain linux:host kmod:host xz:host keyutils $KERNEL_EXTRA_DEPENDS_TARGET"
 PKG_NEED_UNPACK="$LINUX_DEPENDS $(get_pkg_directory initramfs) $(get_pkg_variable initramfs PKG_NEED_UNPACK)"
 PKG_LONGDESC="This package contains a precompiled kernel image and the modules."
 PKG_IS_KERNEL_PKG="yes"
@@ -16,21 +16,21 @@ PKG_PATCH_DIRS="$LINUX"
 
 case "$LINUX" in
   amlogic)
-    PKG_VERSION="4d856f72c10ecb060868ed10ff1b1453943fc6c8" # 5.3.0
-    PKG_SHA256="d3d49f2f7c06dd5acfd0f3337690e10eb2a3401be12154d470b41c255e603b3b"
+    PKG_VERSION="98d54f81e36ba3bf92172791eba5ca5bd813989b" # 5.6-rc4
+    PKG_SHA256="93d86760f8c2bc694c3a0ac6ceaa78034fe7d4026221d8480cd9696074d59a46"
     PKG_URL="https://github.com/torvalds/linux/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     PKG_PATCH_DIRS="amlogic"
     ;;
   raspberrypi)
-    PKG_VERSION="2d26b74c133847286842ff1a2c8f5d4c1837bc30" # 5.4.16
-    PKG_SHA256="e5dd94565a1808b0877b2722c91370695756df7838c8a13e20a497f0d7169b34"
+    PKG_VERSION="cda6aaf08ad0f88926611ec50e7de4c4b4f88832" # 5.4.35 with ISP
+    PKG_SHA256="b14f6aab5a4c32d71e203bb745bd78bc24c4daf04c5b29114fab30b177276bf2"
     PKG_URL="https://github.com/raspberrypi/linux/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     ;;
   *)
-    PKG_VERSION="5.5"
-    PKG_SHA256="a6fbd4ee903c128367892c2393ee0d9657b6ed3ea90016d4dc6f1f6da20b2330"
+    PKG_VERSION="5.6.6"
+    PKG_SHA256="6484ced005e4be5696d6ab0438a9674b9eac89831b4019822f1b0155e7a66bd4"
     PKG_URL="https://www.kernel.org/pub/linux/kernel/v5.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_PATCH_DIRS="default"
     ;;
@@ -66,50 +66,55 @@ for pkg in $(get_pkg_variable initramfs PKG_DEPENDS_TARGET); do
 done
 
 post_patch() {
-  cp $PKG_KERNEL_CFG_FILE $PKG_BUILD/.config
-
-  sed -i -e "s|@INITRAMFS_SOURCE@|$BUILD/image/initramfs.cpio|" $PKG_BUILD/.config
-
-  # set default hostname based on $DISTRONAME
-    sed -i -e "s|@DISTRONAME@|$DISTRONAME|g" $PKG_BUILD/.config
-
-  # disable swap support if not enabled
-  if [ ! "$SWAP_SUPPORT" = yes ]; then
-    sed -i -e "s|^CONFIG_SWAP=.*$|# CONFIG_SWAP is not set|" $PKG_BUILD/.config
-  fi
-
-  # disable nfs support if not enabled
-  if [ ! "$NFS_SUPPORT" = yes ]; then
-    sed -i -e "s|^CONFIG_NFS_FS=.*$|# CONFIG_NFS_FS is not set|" $PKG_BUILD/.config
-  fi
-
-  # disable cifs support if not enabled
-  if [ ! "$SAMBA_SUPPORT" = yes ]; then
-    sed -i -e "s|^CONFIG_CIFS=.*$|# CONFIG_CIFS is not set|" $PKG_BUILD/.config
-  fi
-
-  # disable iscsi support if not enabled
-  if [ ! "$ISCSI_SUPPORT" = yes ]; then
-    sed -i -e "s|^CONFIG_SCSI_ISCSI_ATTRS=.*$|# CONFIG_SCSI_ISCSI_ATTRS is not set|" $PKG_BUILD/.config
-    sed -i -e "s|^CONFIG_ISCSI_TCP=.*$|# CONFIG_ISCSI_TCP is not set|" $PKG_BUILD/.config
-    sed -i -e "s|^CONFIG_ISCSI_BOOT_SYSFS=.*$|# CONFIG_ISCSI_BOOT_SYSFS is not set|" $PKG_BUILD/.config
-    sed -i -e "s|^CONFIG_ISCSI_IBFT_FIND=.*$|# CONFIG_ISCSI_IBFT_FIND is not set|" $PKG_BUILD/.config
-    sed -i -e "s|^CONFIG_ISCSI_IBFT=.*$|# CONFIG_ISCSI_IBFT is not set|" $PKG_BUILD/.config
-  fi
-
-  # disable lima/panfrost if libmali is configured
-  if [ "$OPENGLES" = "libmali" ]; then
-    sed -e "s|^CONFIG_DRM_LIMA=.*$|# CONFIG_DRM_LIMA is not set|" -i $PKG_BUILD/.config
-    sed -e "s|^CONFIG_DRM_PANFROST=.*$|# CONFIG_DRM_PANFROST is not set|" -i $PKG_BUILD/.config
-  fi
-
-  # prepare the tree for kernel packages if the build dir has been removed and linux get unpacked again
+  # linux was already built and its build dir autoremoved - prepare it again for kernel packages
   if [ -d $PKG_INSTALL/.image ]; then
-    kernel_make -C $PKG_BUILD oldconfig
+    cp -p $PKG_INSTALL/.image/.config $PKG_BUILD
     kernel_make -C $PKG_BUILD prepare
 
     # restore the required Module.symvers from an earlier build
     cp -p $PKG_INSTALL/.image/Module.symvers $PKG_BUILD
+  else
+    cp $PKG_KERNEL_CFG_FILE $PKG_BUILD/.config
+
+    sed -i -e "s|@INITRAMFS_SOURCE@|$(kernel_initramfs_confs) $BUILD/initramfs|" $PKG_BUILD/.config
+
+    # set default hostname based on $DISTRONAME
+      sed -i -e "s|@DISTRONAME@|$DISTRONAME|g" $PKG_BUILD/.config
+
+    # disable swap support if not enabled
+    if [ ! "$SWAP_SUPPORT" = yes ]; then
+      sed -i -e "s|^CONFIG_SWAP=.*$|# CONFIG_SWAP is not set|" $PKG_BUILD/.config
+    fi
+
+    # disable nfs support if not enabled
+    if [ ! "$NFS_SUPPORT" = yes ]; then
+      sed -i -e "s|^CONFIG_NFS_FS=.*$|# CONFIG_NFS_FS is not set|" $PKG_BUILD/.config
+    fi
+
+    # disable cifs support if not enabled
+    if [ ! "$SAMBA_SUPPORT" = yes ]; then
+      sed -i -e "s|^CONFIG_CIFS=.*$|# CONFIG_CIFS is not set|" $PKG_BUILD/.config
+    fi
+
+    # disable iscsi support if not enabled
+    if [ ! "$ISCSI_SUPPORT" = yes ]; then
+      sed -i -e "s|^CONFIG_SCSI_ISCSI_ATTRS=.*$|# CONFIG_SCSI_ISCSI_ATTRS is not set|" $PKG_BUILD/.config
+      sed -i -e "s|^CONFIG_ISCSI_TCP=.*$|# CONFIG_ISCSI_TCP is not set|" $PKG_BUILD/.config
+      sed -i -e "s|^CONFIG_ISCSI_BOOT_SYSFS=.*$|# CONFIG_ISCSI_BOOT_SYSFS is not set|" $PKG_BUILD/.config
+      sed -i -e "s|^CONFIG_ISCSI_IBFT_FIND=.*$|# CONFIG_ISCSI_IBFT_FIND is not set|" $PKG_BUILD/.config
+      sed -i -e "s|^CONFIG_ISCSI_IBFT=.*$|# CONFIG_ISCSI_IBFT is not set|" $PKG_BUILD/.config
+    fi
+
+    # disable lima/panfrost if libmali is configured
+    if [ "$OPENGLES" = "libmali" ]; then
+      sed -e "s|^CONFIG_DRM_LIMA=.*$|# CONFIG_DRM_LIMA is not set|" -i $PKG_BUILD/.config
+      sed -e "s|^CONFIG_DRM_PANFROST=.*$|# CONFIG_DRM_PANFROST is not set|" -i $PKG_BUILD/.config
+    fi
+
+    # disable wireguard support if not enabled
+    if [ ! "$WIREGUARD_SUPPORT" = yes ]; then
+      sed -e "s|^CONFIG_WIREGUARD=.*$|# CONFIG_WIREGUARD is not set|" -i $PKG_BUILD/.config
+    fi
   fi
 }
 
@@ -238,7 +243,7 @@ make_target() {
 
 makeinstall_target() {
   mkdir -p $INSTALL/.image
-  cp -p arch/${TARGET_KERNEL_ARCH}/boot/${KERNEL_TARGET} System.map Module.symvers $INSTALL/.image/
+  cp -p arch/${TARGET_KERNEL_ARCH}/boot/${KERNEL_TARGET} System.map .config Module.symvers $INSTALL/.image/
 
   kernel_make INSTALL_MOD_PATH=$INSTALL/$(get_kernel_overlay_dir) modules_install
   rm -f $INSTALL/$(get_kernel_overlay_dir)/lib/modules/*/build
@@ -260,7 +265,8 @@ makeinstall_target() {
     rm -f $INSTALL/usr/share/bootloader/bcm283*.dtb
 
     # install overlay dtbs
-    for dtb in arch/$TARGET_KERNEL_ARCH/boot/dts/overlays/*.dtbo; do
+    for dtb in arch/$TARGET_KERNEL_ARCH/boot/dts/overlays/*.dtb \
+               arch/$TARGET_KERNEL_ARCH/boot/dts/overlays/*.dtbo; do
       cp $dtb $INSTALL/usr/share/bootloader/overlays 2>/dev/null || :
     done
     cp -p arch/$TARGET_KERNEL_ARCH/boot/dts/overlays/README $INSTALL/usr/share/bootloader/overlays

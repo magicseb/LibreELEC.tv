@@ -5,18 +5,20 @@
 # with 1.0.0 repeat delay is broken. test on upgrade
 
 PKG_NAME="v4l-utils"
-PKG_VERSION="1.18.0"
-PKG_SHA256="6cb60d822eeed20486a03cc23e0fc65956fbc1e85e0c1a7477f68bbd9802880d"
+PKG_VERSION="1.18.1"
+PKG_SHA256="25fc42253722401f8742f04dc50a444dfa9b75378e7d09b55035bcbb44c5f342"
 PKG_LICENSE="GPL"
 PKG_SITE="http://linuxtv.org/"
 PKG_URL="http://linuxtv.org/downloads/v4l-utils/$PKG_NAME-$PKG_VERSION.tar.bz2"
-PKG_DEPENDS_TARGET="toolchain alsa-lib systemd"
+PKG_DEPENDS_TARGET="toolchain alsa-lib systemd elfutils ir-bpf-decoders"
 PKG_LONGDESC="Linux V4L2 and DVB API utilities and v4l libraries (libv4l)."
+PKG_TOOLCHAIN="autotools"
 
 PKG_CONFIGURE_OPTS_TARGET="--without-jpeg \
-	--disable-bpf \
+	--enable-bpf \
 	--enable-static \
-	--disable-shared"
+	--disable-shared \
+	--disable-doxygen-doc"
 
 pre_configure_target() {
   # cec-ctl fails to build in subdirs
@@ -43,6 +45,7 @@ makeinstall_target() {
   fi
   make install DESTDIR=$INSTALL PREFIX=/usr -C utils/dvb
   make install DESTDIR=$INSTALL PREFIX=/usr -C utils/v4l2-ctl
+  cp ${PKG_BUILD}/contrib/lircd2toml.py ${INSTALL}/usr/bin/
 }
 
 create_multi_keymap() {

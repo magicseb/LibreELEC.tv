@@ -107,6 +107,16 @@ devices = \
         'config': 'orangepi_plus_defconfig'
       },
     },
+    'H5' : {
+      'orangepi-pc2': {
+        'dtb': 'sun50i-h5-orangepi-pc2.dtb',
+        'config': 'orangepi_pc2_defconfig'
+      },
+      'tritium-h5': {
+        'dtb': 'sun50i-h5-libretech-all-h3-cc.dtb',
+        'config': 'libretech_all_h3_cc_h5_defconfig'
+      },
+    },
     'H6': {
       'beelink-gs1' : {
         'dtb' : 'sun50i-h6-beelink-gs1.dtb',
@@ -116,12 +126,20 @@ devices = \
         'dtb': 'sun50i-h6-orangepi-3.dtb',
         'config': 'orangepi_3_defconfig'
       },
+      'orangepi-lite2': {
+        'dtb': 'sun50i-h6-orangepi-lite2.dtb',
+        'config': 'orangepi_lite2_defconfig'
+      },
       'orangepi-one-plus': {
         'dtb': 'sun50i-h6-orangepi-one-plus.dtb',
         'config': 'orangepi_one_plus_defconfig'
       },
       'pine-h64': {
         'dtb': 'sun50i-h6-pine-h64.dtb',
+        'config': 'pine_h64_defconfig'
+      },
+      'pine-h64-model-b': {
+        'dtb': 'sun50i-h6-pine-h64-model-b.dtb',
         'config': 'pine_h64_defconfig'
       },
       'tanix-tx6' : {
@@ -136,6 +154,7 @@ devices = \
         'dtb': '',
         'config': 'p212_defconfig'
       },
+<<<<<<< HEAD
       's905': {
         'dtb': 'meson-gxbb-p200.dtb',
         'config': 'p200_defconfig'
@@ -148,6 +167,20 @@ devices = \
         'dtb': 'meson-gxm-khadas-vim2.dtb',
         'config': 'khadas-vim2_defconfig'
       },
+=======
+      'khadas-vim': {
+        'dtb': 'meson-gxl-s905x-khadas-vim.dtb',
+        'config': 'khadas-vim_defconfig'
+      },
+      'khadas-vim2': {
+        'dtb': 'meson-gxm-khadas-vim2.dtb',
+        'config': 'khadas-vim2_defconfig'
+      },
+      'lafrite': {
+        'dtb': 'meson-gxl-s805x-libretech-ac.dtb',
+        'config': 'libretech-ac_defconfig'
+      },
+>>>>>>> 3050332b5d91bfe1be884efb201e5ea463356323
       'lepotato': {
         'dtb': 'meson-gxl-s905x-libretech-cc.dtb',
         'config': 'libretech-cc_defconfig'
@@ -165,6 +198,14 @@ devices = \
       'box': {
         'dtb': '',
         'config': 'p212_defconfig'
+      },
+      'khadas-vim3': {
+        'dtb': 'meson-g12b-a311d-khadas-vim3.dtb',
+        'config': 'khadas-vim3_defconfig'
+      },
+      'khadas-vim3l': {
+        'dtb': 'meson-sm1-khadas-vim3l.dtb',
+        'config': 'khadas-vim3l_defconfig'
       },
       'odroid-n2': {
         'dtb': 'meson-g12b-odroid-n2.dtb',

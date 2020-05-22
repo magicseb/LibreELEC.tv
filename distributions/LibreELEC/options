@@ -82,7 +82,7 @@
 # build with UPnP support (yes / no)
   KODI_UPNP_SUPPORT="yes"
 
-# build with MySQL support (mysql / mariadb / none)
+# build with MySQL support (mariadb / none)
   KODI_MYSQL_SUPPORT="mariadb"
 
 # build xbmc with optical drive support (yes / no)
@@ -198,9 +198,8 @@
 # Addon Server Url
   ADDON_SERVER_URL="https://addons.libreelec.tv"
 
-# set the addon dirs
-  ADDON_PATH="$ADDON_VERSION/${DEVICE:-$PROJECT}/$TARGET_ARCH"
-  ADDON_URL="$ADDON_SERVER_URL/$ADDON_PATH"
+# set the default addon project
+  ADDON_PROJECT="${DEVICE:-$PROJECT}"
 
 # Default size of system partition, in MB, eg. 512
   SYSTEM_SIZE=1024
