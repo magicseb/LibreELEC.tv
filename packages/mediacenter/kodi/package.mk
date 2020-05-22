@@ -254,6 +254,11 @@ pre_configure_target() {
   export LIBS="$LIBS -lncurses"
 }
 
+#Retroarch/ES icons
+post_unpack(){
+cp $PKG_DIR/files/* $PKG_BUILD/addons/skin.estuary/media/
+}
+
 post_makeinstall_target() {
   mkdir -p $INSTALL/.noinstall
     mv $INSTALL/usr/share/kodi/addons/skin.estouchy \

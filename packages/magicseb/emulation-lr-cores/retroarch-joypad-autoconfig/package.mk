@@ -12,15 +12,7 @@ PKG_LONGDESC="RetroArch joypad autoconfig files"
 PKG_TOOLCHAIN="manual"
 GET_HANDLER_SUPPORT="git"
 
-post_unpack() {
-  rm $PKG_BUILD/configure $PKG_BUILD/Makefile
-}
-
 makeinstall_target() {
-  mkdir -p $INSTALL/usr/share/retroarch/autoconfig
-  cp -r * $INSTALL/usr/share/retroarch/autoconfig
-}
-
-post_makeinstall_target () {
-  cp -r $PKG_DIR/config/* $INSTALL/usr/share/retroarch/autoconfig
+  cd ${PKG_BUILD}
+  make install INSTALLDIR="${INSTALL}/usr/share/retroarch/autoconfig"
 }
