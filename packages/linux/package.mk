@@ -23,14 +23,14 @@ case "$LINUX" in
     PKG_PATCH_DIRS="amlogic"
     ;;
   raspberrypi)
-    PKG_VERSION="cda6aaf08ad0f88926611ec50e7de4c4b4f88832" # 5.4.35 with ISP
-    PKG_SHA256="b14f6aab5a4c32d71e203bb745bd78bc24c4daf04c5b29114fab30b177276bf2"
+    PKG_VERSION="7048ac9fd3b918d83a71caf5c94bb061a2866794" # 5.4.42
+    PKG_SHA256="758eaeab008092013eb79ac5cda422f8d49cf76245910887ca9c27eb0d4ccf49"
     PKG_URL="https://github.com/raspberrypi/linux/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     ;;
   *)
-    PKG_VERSION="5.6.6"
-    PKG_SHA256="6484ced005e4be5696d6ab0438a9674b9eac89831b4019822f1b0155e7a66bd4"
+    PKG_VERSION="5.7.2"
+    PKG_SHA256="6065ae820e2d52a77a549ef97444c36adf7ab2969b294460256f028b4eed7909"
     PKG_URL="https://www.kernel.org/pub/linux/kernel/v5.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_PATCH_DIRS="default"
     ;;
@@ -154,7 +154,7 @@ pre_make_target() {
   if [ "$TARGET_ARCH" = "x86_64" ]; then
     # copy some extra firmware to linux tree
     mkdir -p $PKG_BUILD/external-firmware
-      cp -a $(get_build_dir kernel-firmware)/{amdgpu,amd-ucode,i915,radeon,e100,rtl_nic} $PKG_BUILD/external-firmware
+      cp -a $(get_build_dir kernel-firmware)/.copied-firmware/{amdgpu,amd-ucode,i915,radeon,e100,rtl_nic} $PKG_BUILD/external-firmware
 
     cp -a $(get_build_dir intel-ucode)/intel-ucode $PKG_BUILD/external-firmware
 
