@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present magicseb (https://github.com/magicseb)
 
 PKG_NAME="lr-beetle-gba"
-PKG_VERSION="135afdbb9591655a3e016b75abba07e481f6d406"
+PKG_VERSION="30ee7923a566f95aa0b2dd14fd21ae1074a89fd4"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/beetle-gba-libretro"

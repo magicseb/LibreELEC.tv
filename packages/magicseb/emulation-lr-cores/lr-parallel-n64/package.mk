@@ -4,7 +4,7 @@
 
 PKG_NAME="lr-parallel-n64"
 PKG_VERSION="7e204b0fda06185fd4d5a134cdd3b14996c29687"
-PKG_VERSION="d59e033bc9447169bcd44fbd6c38bcec29356935" #working version with Rockchip
+PKG_VERSION="a5e772e73a95cf247650d6ec6416b31cbfc7341c" #working version with Rockchip
 #PKG_SHA256="d3836179a7d597f8afa1674b6c445ca32e1db9fe00685d36f5d3ca451a6151f0"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/parallel-n64"

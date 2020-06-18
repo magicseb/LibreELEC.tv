@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present magicseb (https://github.com/magicseb)
 
 PKG_NAME="lr-beetle-pcfx"
-PKG_VERSION="7bba6699d6f903bd701b0aa525d845de8427fee6"
+PKG_VERSION="f0d284854a1973196c36590505f70c3404cc37b4"
 PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/beetle-pcfx-libretro"

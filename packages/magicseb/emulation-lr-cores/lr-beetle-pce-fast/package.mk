@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-beetle-pce-fast"
-PKG_VERSION="40a42b7f43f029760c92bf0b2097e7d4b90ed29c"
-PKG_SHA256="65cd88e9f1eadcea55f866b4f74a38510fb456f9e1c8fb43f2a802357e6be367"
+PKG_VERSION="14d5d40efc3ac263a8c542134000cb1642b0a50c"
+PKG_SHA256="51476b72c5aff7f13b65263f5912080c7bc854992ec4741bd3e621e989aac797"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/beetle-pce-fast-libretro"
 PKG_URL="https://github.com/libretro/beetle-pce-fast-libretro/archive/$PKG_VERSION.tar.gz"

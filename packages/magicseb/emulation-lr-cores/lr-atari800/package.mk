@@ -2,7 +2,7 @@
 # Copyright (C) 2018-present 5schatten (https://github.com/5schatten)
 
 PKG_NAME="lr-atari800"
-PKG_VERSION="b0156bf157130aba17a69dcd3d9139e776fbdecb"
+PKG_VERSION="59820eb2b007a9d0e76f0380dfb0580c96bd14e8"
 PKG_SHA256="2b72b166c3f2e9308b3106faa6927f9958820278f712d860fd6351cb4585eefc"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/libretro-atari800"
